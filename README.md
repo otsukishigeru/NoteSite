@@ -1,6 +1,6 @@
 # 大槻繁のnoteメッセージ紹介サイト
 
-大槻繁（1_s_o / 大槻一史）が [note.com](https://note.com/ichi_s_otsuki) に発表してきた論考・エッセイのメッセージを紹介する公開Webサイトです。
+大槻繁（1_s_o / 大槻）が [note.com](https://note.com/ichi_s_otsuki) に発表してきた論考・エッセイのメッセージを紹介する公開Webサイトです。
 
 ## サイト構成
 
