@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="大槻繁（1_s_o）のnote記事を紹介するサイト。知働化経営・思考の技法・ソフトウェア工学・哲学にまたがる124本の論考と、そこから抽出した20の原則を掲載しています。">
+<meta property="og:title"       content="大槻繁のnoteメッセージ — 知働化経営・思考の技法">
+<meta property="og:description" content="124本のnote記事から抽出した知働化の知恵・原則を紹介します。">
+<meta property="og:type"        content="website">
+<title>大槻繁のnoteメッセージ — 知働化経営・思考の技法</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* フェードインアニメーション */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     ヘッダー / ナビゲーション
+     ================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">一</div>
+      <div class="logo-text">
+        <span class="logo-main">大槻繁のnoteメッセージ</span>
+        <span class="logo-sub">知働化経営・思考の技法・ソフトウェア工学</span>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="#purpose">目的</a>
+      <a class="nav-link" href="#index">記事一覧</a>
+      <a class="nav-link" href="#principles">原則</a>
+      <a class="nav-link" href="#design">資料</a>
+      <a class="nav-link cta" href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- モバイルナビ -->
+<nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="#purpose">① このサイトについて</a>
+  <a href="#index">② note記事インデックス</a>
+  <a href="#principles">③ 主要なメッセージ</a>
+  <a href="#design">④ デザインされた資料</a>
+  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">⑤ お問い合わせ</a>
+</nav>
+
+<!-- ================================================================
+     ヒーロー
+     ================================================================ -->
+<section class="hero" aria-label="メインビジュアル">
+  <div class="hero-inner">
+    <div class="hero-text-col">
+      <p class="hero-eyebrow">SHIGERU OTSUKI / NOTE MESSAGES</p>
+      <h1 class="hero-h1">
+        <em>知働化経営</em>の哲学と<br>思考の技法を、<br>広く伝えるために。
+      </h1>
+      <p class="hero-lead">
+        大槻繁（1_s_o）がnote.comに発表してきた124本の論考。<br>
+        知働化・ソフトウェア工学・組織論・哲学にまたがるメッセージを、<br>
+        このサイトでわかりやすく紹介します。
+      </p>
+      <div class="hero-btns">
+        <a class="btn-hero-primary" href="#index">記事一覧を見る</a>
+        <a class="btn-hero-secondary" href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">note.com で読む ↗</a>
+      </div>
+    </div>
+    <div class="hero-cards" aria-hidden="true">
+      <div class="hero-card">
+        <div class="hero-card-label">知働化</div>
+        <div class="hero-card-title">人働説から知働説へ</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">哲学</div>
+        <div class="hero-card-title">難しいことを難しいままに書く</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">組織論</div>
+        <div class="hero-card-title">目的なき組織は混迷に陥る</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">AI時代</div>
+        <div class="hero-card-title">AIが代替できない人間固有の能力を磨け</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     メインコンテンツ
+     ================================================================ -->
+<main class="main-wrap">
+
+  <!-- ① サイトの目的 -->
+  <section id="purpose" aria-labelledby="purpose-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">①</div>
+      <h2 class="sec-title" id="purpose-heading">このサイトについて</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <div class="purpose-band fade-in">
+      <div class="purpose-text">
+        <p>
+          このサイトは、<strong>大槻繁（1_s_o / 大槻一史）</strong>が
+          <a href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener" style="color:var(--purple-main);">note.com</a>
+          に発表してきた論考・エッセイのメッセージを、より広く、より分かりやすく届けることを目的としています。
+        </p>
+        <p>
+          大槻繁は、<strong>「知働化」</strong>（ちどうか）という概念を中心に、ソフトウェア工学・組織論・哲学・AI時代の人間の役割など、
+          幅広いテーマについて深く考察してきました。その思想の核心は、
+          「体を動かす<em style="font-style:normal;color:var(--purple-main);">人働き</em>から、
+          知識・思考を働かせる<em style="font-style:normal;color:var(--purple-main);">知働き</em>へ」という
+          時代的パラダイムシフトの認識にあります。
+        </p>
+        <p>
+          note.comでの連載は2025年5月から開始され、現在までに<strong>124本</strong>の作品を公開しています。
+          本サイトでは、その記事インデックス・主要な格言と原則・デザインされた資料を
+          ご覧・ご利用いただけます。
+        </p>
+        <a class="btn-note-link" href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          note.com/ichi_s_otsuki で全記事を読む
+        </a>
+      </div>
+      <div class="purpose-note-panel">
+        <div class="note-logo-circle">n</div>
+        <p>note.com<br>ichi_s_otsuki<br><br>2025年5月〜<br>全124本掲載</p>
+        <a href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">記事を読む ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 記事インデックス -->
+  <section id="index" aria-labelledby="index-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">②</div>
+      <h2 class="sec-title" id="index-heading">note掲載記事インデックス</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <p class="index-intro fade-in">
+      全124本の記事を収録したインデックスPDFをご利用いただけます。
+      以下では注目記事を抜粋して紹介しています。
+    </p>
+
+    <div class="article-grid fade-in">
+
+      <!-- フィーチャード記事 -->
+      <article class="art-card featured">
+        <div class="art-thumb">
+          <div class="art-hearts">♥ 18</div>
+          <div class="art-num">001</div>
+        </div>
+        <div class="art-info">
+          <span class="art-tag">思考の技法</span>
+          <h3 class="art-title">難しいことを難しいままに書く</h3>
+          <p class="art-desc">
+            知識や思想を平易に「わかりやすく」するだけでは本質が失われることを論じる。難解さを保ちながら正確に伝えることの重要性を問う。読者への過度な迎合を戒め、思考の深度を大切にする姿勢を示す。
+          </p>
+          <div class="art-meta">2025-05-02</div>
+          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/nbf0897ad7244" target="_blank" rel="noopener">note.comで読む ↗</a>
+        </div>
+      </article>
+
+      <!-- サブ記事 1 -->
+      <article class="art-card">
+        <div class="art-thumb">
+          <div class="art-hearts">♥ 12</div>
+          <div class="art-num">014</div>
+        </div>
+        <div class="art-info">
+          <span class="art-tag">ソフトウェア工学</span>
+          <h3 class="art-title">ソフトウェア学のパラダイムシフト史</h3>
+          <p class="art-desc">ウォータフォールからアジャイル、AI知働化へと続く開発思想の変遷。</p>
+          <div class="art-meta">2025-05-18</div>
+          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/n00cb318c636d" target="_blank" rel="noopener">読む ↗</a>
+        </div>
+      </article>
+
+      <!-- サブ記事 2 -->
+      <article class="art-card">
+        <div class="art-thumb">
+          <div class="art-hearts">♥ 7</div>
+          <div class="art-num">009</div>
+        </div>
+        <div class="art-info">
+          <span class="art-tag">哲学</span>
+          <h3 class="art-title">哲学の系譜：言語ゲーム・心の哲学・新実在論</h3>
+          <p class="art-desc">ヴィトゲンシュタインからガブリエルの新実在論まで。</p>
+          <div class="art-meta">2025-05-13</div>
+          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/n6f6948f6fd13" target="_blank" rel="noopener">読む ↗</a>
+        </div>
+      </article>
+
+      <!-- サブ記事 3 -->
+      <article class="art-card">
+        <div class="art-thumb">
+          <div class="art-hearts">♥ 5</div>
+          <div class="art-num">002</div>
+        </div>
+        <div class="art-info">
+          <span class="art-tag">知働化</span>
+          <h3 class="art-title">人働説から知働説へ</h3>
+          <p class="art-desc">「体を動かす人働き」から「知識・思考を働かせる知働き」へのパラダイムシフト。</p>
+          <div class="art-meta">2025-05-03</div>
+          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/na2c302d3063d" target="_blank" rel="noopener">読む ↗</a>
+        </div>
+      </article>
+
+      <!-- サブ記事 4 -->
+      <article class="art-card">
+        <div class="art-thumb">
+          <div class="art-hearts">♥ 5</div>
+          <div class="art-num">019</div>
+        </div>
+        <div class="art-info">
+          <span class="art-tag">人財・組織</span>
+          <h3 class="art-title">個人の能力と発達</h3>
+          <p class="art-desc">解像度・真摯さ・尊厳という軸で捉える独自の発達観。</p>
+          <div class="art-meta">2025-05-24</div>
+          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/na0c34680dd60" target="_blank" rel="noopener">読む ↗</a>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="index-footer fade-in">
+      <a class="btn-outline" href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">
+        note.comですべての記事を見る ↗
+      </a>
+      <a class="btn-fill" href="assets/pdfs/NoteIdx.pdf" download>
+        📄 記事インデックス全124件（PDF）
+      </a>
+    </div>
+  </section>
+
+  <!-- ③ 主要なメッセージ（原則） -->
+  <section id="principles" aria-labelledby="principles-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">③</div>
+      <h2 class="sec-title" id="principles-heading">主要なメッセージ — 知働化の原則</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <p class="principle-intro fade-in">
+      124本の記事群から抽出した<strong>20の格言・原則</strong>です。
+      知働化・思考の技法・組織論・哲学にわたる知恵をまとめました。<br>
+      全文（各原則のメッセージ・解説・参照元URL付き）はPDFでご覧いただけます。
+    </p>
+
+    <div class="principle-grid">
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">01</div>
+        <h3 class="p-card-title">難しいことを難しいままに書く</h3>
+        <p class="p-card-msg">知識の本質を失わないためには、平易さへの迎合を戒め、思考の深度を守ることが重要である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/nbf0897ad7244" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">02</div>
+        <h3 class="p-card-title">人働説から知働説へ</h3>
+        <p class="p-card-msg">これからの時代、体を動かす「人働き」から知識・思考を働かせる「知働き」へのパラダイムシフトが求められる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/na2c302d3063d" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">03</div>
+        <h3 class="p-card-title">目的なき組織は混迷に陥る</h3>
+        <p class="p-card-msg">事業・活動・システムの目的を明確に設定することなしに、成功はあり得ない。目的こそがすべての判断の拠り所である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n94c8b5fed7c6" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">04</div>
+        <h3 class="p-card-title">昨日の安穏の延長線上に明日はない</h3>
+        <p class="p-card-msg">豊かな将来像を描き、仕組みを作り、それを遂行する一連の活動を怠ると、いつの間にか低迷した状況に転落する。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/ne4ecd4e45d87" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">05</div>
+        <h3 class="p-card-title">哲学は考えることについての病を治療する</h3>
+        <p class="p-card-msg">哲学は抽象的な学問ではなく、思考の歪みや先入観という「病」を癒し、正確な認識と判断を取り戻すための実践的道具である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n5d956db3dc96" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">06</div>
+        <h3 class="p-card-title">変化対応から適応進化へ</h3>
+        <p class="p-card-msg">組織は変化に「対応」するだけでは不十分で、自律的に「適応・進化」する能力を育むことが真の競争力となる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n325181484944" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">07</div>
+        <h3 class="p-card-title">知識は与えられるものではなく、自ら構成するものである</h3>
+        <p class="p-card-msg">真の知識は外から与えられるものでなく、自らが問い・探求・対話を通じて構成・組み立てていくものである。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n38467b1d6ebb" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">08</div>
+        <h3 class="p-card-title">発達の本質：解像度・真摯さ・尊厳</h3>
+        <p class="p-card-msg">人の成長は「解像度（細かく見る力）」「真摯さ（向き合う誠実さ）」「尊厳（自己尊重）」の三つによって測られる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n250790eaf2c8" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">09</div>
+        <h3 class="p-card-title">AIが代替できない人間固有の能力を磨け</h3>
+        <p class="p-card-msg">AI時代に求められるのは、AIには真似できない創造性・判断力・意味形成・倫理的感性という人間固有の能力である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/neb02cd2ed246" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">10</div>
+        <h3 class="p-card-title">言語ゲームが現実をつくる</h3>
+        <p class="p-card-msg">言語は単に現実を「記述」するだけでなく、それ自体が現実を「構成」する力を持つ。言葉の選択は世界観の選択である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n3c5047391680" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">11</div>
+        <h3 class="p-card-title">アーキテクトは全体の設計思想を担う存在である</h3>
+        <p class="p-card-msg">ソフトウェア・組織・システムのアーキテクトとは、技術者でも管理者でもなく、全体の意図・構造・価値を体現する知的設計者である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/nb44939fcb380" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">12</div>
+        <h3 class="p-card-title">人財の創造的カテゴリが組織の価値を決める</h3>
+        <p class="p-card-msg">AI時代において組織の価値は、創造的に考えるアーキテクト型人材と、それを支える技能型人材がいかに連携・組織化されるかによって決まる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n3b2e95dfe869" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">13</div>
+        <h3 class="p-card-title">死の行進からの脱却には本質的な方法論の転換が必要</h3>
+        <p class="p-card-msg">ソフトウェアプロジェクトの崩壊は管理強化では解決しない。知識・目的・構造を根本から問い直す思考の転換が必要である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n861e3979bfeb" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">14</div>
+        <h3 class="p-card-title">組織知能は暗黙知・形式知・実践知の三位一体</h3>
+        <p class="p-card-msg">組織が知性を持つとは、言語化された形式知だけでなく、暗黙の経験知と実際の行動知が三位一体となって機能することである。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/ne015c297417d" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">15</div>
+        <h3 class="p-card-title">プラグマティズム：真理は実践において証明される</h3>
+        <p class="p-card-msg">真理や知識の価値は、抽象的な正しさではなく、実際に役立つかどうか（実践的有用性）によって判断されるべきである。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n0da9890f40d8" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">16</div>
+        <h3 class="p-card-title">社会的現実は集合的志向性によって構成される</h3>
+        <p class="p-card-msg">お金・法律・組織などの社会的事実は物理的実体ではなく、人々の集合的な承認と志向性によって成立している。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n957275fe758c" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">17</div>
+        <h3 class="p-card-title">ソフトウェア学はパラダイムシフトの連続である</h3>
+        <p class="p-card-msg">ウォータフォールからアジャイル、そしてAI時代の知働化へ。ソフトウェア開発の歴史は思考様式の根本的転換の繰り返しである。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n00cb318c636d" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">18</div>
+        <h3 class="p-card-title">偉人・賢人の肩の上に立って思考する</h3>
+        <p class="p-card-msg">知的巨人たちの著作・思想を深く学び追跡し、その肩の上に立つことで、独自の思考の高みに到達できる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/nc8d9149f100b" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">19</div>
+        <h3 class="p-card-title">対話こそが組織の知性を高める根本手段</h3>
+        <p class="p-card-msg">個人の思考の限界を超えるために、オープンな対話・ディスコースの場を設け、集合的に知を構成していく対話文化が組織知性の源泉となる。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/na67ca4778f0b" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">20</div>
+        <h3 class="p-card-title">目的策定は存在意義のデザインである</h3>
+        <p class="p-card-msg">個人・組織・システムにとって「何のために存在するか」という目的を設計することは、単なる目標設定を超えた、存在意義そのものを創造する行為である。</p>
+        <div class="p-card-source"><a href="https://note.com/ichi_s_otsuki/n/n94c8b5fed7c6" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+    </div>
+
+    <div class="principle-footer fade-in">
+      <a class="btn-fill" href="assets/pdfs/Principle.pdf" download>
+        📄 格言・教え集 全20条（PDF）をダウンロード
+      </a>
+    </div>
+  </section>
+
+  <!-- ④ デザインされたメッセージ例 -->
+  <section id="design" aria-labelledby="design-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">④</div>
+      <h2 class="sec-title" id="design-heading">デザインされたメッセージ例</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="design-feature fade-in">
+      <div class="pdf-showcase">
+        <a class="pdf-cover-link" href="assets/pdfs/知働化経営の哲学.pdf" target="_blank" rel="noopener" aria-label="知働化経営の哲学PDFを開く">
+          <img class="pdf-cover-img" src="assets/images/chidoka_thumb-01.png" alt="知働化経営の哲学 表紙">
+          <div class="pdf-cover-label">知働化経営の哲学.pdf</div>
+        </a>
+        <p class="pdf-dl-hint">▲ クリックで<span>表示・ダウンロード</span></p>
+      </div>
+      <div class="design-desc-col">
+        <span class="design-label">DESIGNED MESSAGE</span>
+        <h3 class="design-title">知働化経営の哲学</h3>
+        <div class="design-body">
+          <p>
+            note記事の思想を<strong>ビジュアルデザイン</strong>として表現した資料です。
+            「知働化経営」とは、知識・思考・創造性を経営の中心に据えるマネジメント哲学であり、
+            AI時代における組織と人間の新しい関係性を提示します。
+          </p>
+          <p>
+            本資料では、知働化経営の核心的な考え方を、図解・格言・ビジュアルを用いて
+            分かりやすくまとめています。経営者・マネージャー・エンジニアなど、
+            幅広い読者に向けて設計されています。
+          </p>
+          <p>
+            サムネイル画像をクリック、またはボタンからPDFを直接ダウンロードしてご利用ください。
+          </p>
+        </div>
+        <div class="design-cta">
+          <a class="btn-fill" href="assets/pdfs/知働化経営の哲学.pdf" target="_blank" rel="noopener">
+            📄 PDFを表示する
+          </a>
+          <a class="btn-outline" href="assets/pdfs/知働化経営の哲学.pdf" download>
+            ⬇ ダウンロード
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ お問い合わせ -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑤</div>
+      <h2 class="sec-title" id="contact-heading">お問い合わせ</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="contact-section fade-in">
+      <div class="contact-card">
+        <div class="contact-icon" aria-hidden="true">✉</div>
+        <h3>ご質問・ご相談はこちら</h3>
+        <p>
+          知働化経営・思考の技法・ソフトウェア工学に関するご質問、<br>
+          講演・執筆・コンサルティングのご依頼は、<br>
+          株式会社一（いち）のお問い合わせフォームよりお気軽にどうぞ。
+        </p>
+        <a class="btn-contact"
+           href="https://1corp.biz/primary2026/contact.html"
+           target="_blank" rel="noopener">
+          お問い合わせフォームへ →
+        </a>
+        <p class="contact-dest">1corp.biz/primary2026/contact.html</p>
+      </div>
+      <div class="info-card">
+        <h3>関連リンク</h3>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>note記事：<a href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">note.com/ichi_s_otsuki ↗</a></span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>株式会社一（いち）：<a href="https://1corp.biz" target="_blank" rel="noopener">1corp.biz ↗</a></span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>提供サービス：<a href="https://1corp.biz/primary2026/" target="_blank" rel="noopener">primary2026 ↗</a></span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>著者：大槻繁（1_s_o / 大槻一史）</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>note開始：2025年5月 / 全124本掲載（2026年3月現在）</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <p>© 大槻繁 / 株式会社一（いち）</p>
+  <p>
+    <a href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">note.com/ichi_s_otsuki</a>
+    　｜
+    <a href="https://1corp.biz" target="_blank" rel="noopener">1corp.biz</a>
+    　｜
+    <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+  </p>
+</footer>
+
+<!-- ページトップ -->
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script src="js/main.js"></script>
+</body>
+</html>
