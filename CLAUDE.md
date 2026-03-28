@@ -36,3 +36,13 @@
 - 主要メッセージ20件を組み替える
 - 現行の見栄えを踏襲しつつ、項目のみ入れ替える
 - 見直し後は git add . → git commit → git push で保存する
+
+# 記事インデックスの更新手順
+## 代表記事の見直し（10件追加ごと）
+- js/articles.js を開いて記事データを差し替える
+- featured: true は1件のみ（最も読んでほしい記事）
+- 見直し後は git add . → git commit → git push
+
+## PDFインデックスの更新（同タイミング）
+- assets/pdfs/NoteIdx.pdf を新しいものに差し替える
+- ファイル名は NoteIdx.pdf のまま維持する
