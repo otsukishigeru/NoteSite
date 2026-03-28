@@ -148,86 +148,8 @@
       以下では注目記事を抜粋して紹介しています。
     </p>
 
-    <div class="article-grid fade-in">
-
-      <!-- フィーチャード記事 -->
-      <article class="art-card featured">
-        <div class="art-thumb">
-          <div class="art-hearts">♥ 18</div>
-          <div class="art-num">001</div>
-        </div>
-        <div class="art-info">
-          <span class="art-tag">思考の技法</span>
-          <h3 class="art-title">難しいことを難しいままに書く</h3>
-          <p class="art-desc">
-            知識や思想を平易に「わかりやすく」するだけでは本質が失われることを論じる。難解さを保ちながら正確に伝えることの重要性を問う。読者への過度な迎合を戒め、思考の深度を大切にする姿勢を示す。
-          </p>
-          <div class="art-meta">2025-05-02</div>
-          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/nbf0897ad7244" target="_blank" rel="noopener">note.comで読む ↗</a>
-        </div>
-      </article>
-
-      <!-- サブ記事 1 -->
-      <article class="art-card">
-        <div class="art-thumb">
-          <div class="art-hearts">♥ 0</div>
-          <div class="art-num">124</div>
-        </div>
-        <div class="art-info">
-          <span class="art-tag">AI時代</span>
-          <h3 class="art-title">AI による限界費用ゼロ社会</h3>
-          <p class="art-desc">AIがもたらす「限界費用ゼロ社会」を論じる。産業構造・競争原理・価値創造の根本的変化を分析し、新時代の社会デザインへの示唆を提供する。</p>
-          <div class="art-meta">2026-03-25</div>
-          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/n6977fbce4e84" target="_blank" rel="noopener">読む ↗</a>
-        </div>
-      </article>
-
-      <!-- サブ記事 2 -->
-      <article class="art-card">
-        <div class="art-thumb">
-          <div class="art-hearts">♥ 10</div>
-          <div class="art-num">121</div>
-        </div>
-        <div class="art-info">
-          <span class="art-tag">AI時代</span>
-          <h3 class="art-title">AI 時代に要請される人の能力</h3>
-          <p class="art-desc">AI時代において人間に真に求められる能力・資質を論じる。HIとAIの役割分担を明確にし、創造性・判断力・意味形成など人間固有の能力を提示する。</p>
-          <div class="art-meta">2026-02-13</div>
-          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/neb02cd2ed246" target="_blank" rel="noopener">読む ↗</a>
-        </div>
-      </article>
-
-      <!-- サブ記事 3 -->
-      <article class="art-card">
-        <div class="art-thumb">
-          <div class="art-hearts">♥ 4</div>
-          <div class="art-num">051</div>
-        </div>
-        <div class="art-info">
-          <span class="art-tag">哲学</span>
-          <h3 class="art-title">思考の技法：HI と AI のための新実在論</h3>
-          <p class="art-desc">マルクス・ガブリエルの新実在論を基盤に、人間知能（HI）とAIの両方に適した思考の技法の哲学的基盤を論じる。</p>
-          <div class="art-meta">2025-06-26</div>
-          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/n5d956db3dc96" target="_blank" rel="noopener">読む ↗</a>
-        </div>
-      </article>
-
-      <!-- サブ記事 4 -->
-      <article class="art-card">
-        <div class="art-thumb">
-          <div class="art-hearts">♥ 3</div>
-          <div class="art-num">039</div>
-        </div>
-        <div class="art-info">
-          <span class="art-tag">思考の技法</span>
-          <h3 class="art-title">実世界埋込型 抽象山モデル</h3>
-          <p class="art-desc">実世界に埋め込まれた知識の抽象階層を「抽象山」モデルとして可視化・定式化する。具体的現実から高度な抽象概念へと登る知的プロセスをモデル化する。</p>
-          <div class="art-meta">2025-06-14</div>
-          <a class="art-link" href="https://note.com/ichi_s_otsuki/n/nb61684c10bed" target="_blank" rel="noopener">読む ↗</a>
-        </div>
-      </article>
-
-    </div>
+    <!-- 記事カードは js/articles.js で動的生成 -->
+    <div class="article-grid fade-in" id="article-grid"></div>
 
     <div class="index-footer fade-in">
       <a class="btn-outline" href="https://note.com/ichi_s_otsuki" target="_blank" rel="noopener">
@@ -571,6 +493,7 @@
 <!-- ページトップ -->
 <button class="page-top" aria-label="ページトップへ戻る">↑</button>
 
+<script src="js/articles.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
