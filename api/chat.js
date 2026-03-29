@@ -6,6 +6,47 @@
 
 const knowledge = require('../js/knowledge.js');
 
+// ── Upstash Redis REST API ヘルパー ─────────────────────────
+const REDIS_LIST_KEY = 'chat:log';
+const MAX_CHAT_LOGS  = 500;
+
+/**
+ * 対話ログを Upstash Redis の LIST 先頭に追加し、古いものを刈り込む。
+ * LPUSH + LTRIM をパイプラインで1リクエストにまとめる。
+ * 失敗しても例外を上位に伝播させず、コンソールに記録するだけ。
+ */
+async function saveToRedis(entry) {
+  const url   = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return; // 環境変数未設定なら何もしない
+
+  try {
+    await fetch(`${url}/pipeline`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([
+        ['LPUSH', REDIS_LIST_KEY, JSON.stringify(entry)],
+        ['LTRIM', REDIS_LIST_KEY, 0, MAX_CHAT_LOGS - 1],
+      ]),
+    });
+  } catch (err) {
+    console.error('Redis save failed (non-fatal):', err.message);
+  }
+}
+
+/**
+ * 日本時間（JST）の日時文字列を返す
+ */
+function jstNow() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000)
+    .toISOString()
+    .replace('T', ' ')
+    .slice(0, 19) + ' JST';
+}
+
 // 記事インデックスをシステムプロンプト用のテキストに変換
 const knowledgeIndex = knowledge
   .map(a => `[${a.num}]【${a.category}】${a.title}\n  要旨：${a.summary}\n  URL：${a.url}`)
@@ -142,6 +183,15 @@ module.exports = async (req, res) => {
     const textContent = data.content
       ? data.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n')
       : '';
+
+    // ── Upstash Redis に対話ログを保存（非同期・失敗無視）─────
+    const now = Date.now();
+    saveToRedis({
+      id:       now,
+      question: userMessage,
+      answer:   textContent,
+      date:     jstNow(),
+    }); // await しない → チャット応答を遅延させない
 
     return res.status(200).json({
       message: textContent,
