@@ -49,7 +49,7 @@ function jstNow() {
 
 // 記事インデックスをシステムプロンプト用のテキストに変換
 const knowledgeIndex = knowledge
-  .map(a => `[${a.num}]【${a.category}】${a.title}\n  要旨：${a.summary}\n  URL：${a.url}`)
+  .map(a => `[${a.num}]【${a.category}】${a.title} ${a.url}`)
   .join('\n');
 
 const SYSTEM_PROMPT = `あなたは大槻繁（1_s_o）の思想・著作を熟知した研究アシスタントです。
