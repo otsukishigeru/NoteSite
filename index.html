@@ -546,6 +546,17 @@
   const output = document.getElementById('chat-response');
   if (!input || !btn || !output) return;
 
+  function convertLinksAndBreaks(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" rel="noopener" ' +
+        'style="color:var(--navy-main);">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
   async function sendQuestion() {
     const message = input.value.trim();
     if (!message) return;
@@ -563,7 +574,7 @@
       if (!res.ok) throw new Error('API error ' + res.status);
       const data = await res.json();
       output.className = 'chat-response visible';
-      output.textContent = data.message || '回答を取得できませんでした。';
+      output.innerHTML = convertLinksAndBreaks(data.message || '回答を取得できませんでした。');
     } catch (e) {
       output.className = 'chat-response visible error';
       output.textContent = '申し訳ありません。もう一度お試しください。';
