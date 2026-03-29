@@ -21,16 +21,14 @@ async function saveToRedis(entry) {
   if (!url || !token) return; // 環境変数未設定なら何もしない
 
   try {
-    await fetch(`${url}/pipeline`, {
+    const value = encodeURIComponent(JSON.stringify(entry));
+    await fetch(`${url}/lpush/${REDIS_LIST_KEY}/${value}`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([
-        ['LPUSH', REDIS_LIST_KEY, JSON.stringify(entry)],
-        ['LTRIM', REDIS_LIST_KEY, 0, MAX_CHAT_LOGS - 1],
-      ]),
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    await fetch(`${url}/ltrim/${REDIS_LIST_KEY}/0/${MAX_CHAT_LOGS - 1}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
     });
   } catch (err) {
     console.error('Redis save failed (non-fatal):', err.message);
