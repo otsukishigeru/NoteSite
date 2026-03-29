@@ -13,6 +13,29 @@
 /* フェードインアニメーション */
 .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
 .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ⑤ AIチャット */
+.chat-section { max-width: 720px; margin: 0 auto; }
+.chat-intro { color: var(--text-mid); margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.7; }
+.chat-box { display: flex; flex-direction: column; gap: 1rem; }
+.chat-textarea {
+  width: 100%; padding: .875rem 1rem; border: 2px solid var(--navy-pale);
+  border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical;
+  background: #fff; color: var(--text-dark); transition: border-color .2s;
+  box-sizing: border-box;
+}
+.chat-textarea:focus { outline: none; border-color: var(--navy-main); }
+.chat-submit-btn { align-self: flex-end; padding: .75rem 2rem; cursor: pointer; }
+.chat-submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+.chat-response {
+  min-height: 4rem; padding: 1.25rem 1.5rem; border-radius: 8px;
+  background: var(--navy-bg); border-left: 4px solid var(--navy-main);
+  color: var(--text-dark); line-height: 1.8; font-size: .95rem;
+  white-space: pre-wrap; display: none;
+}
+.chat-response.visible { display: block; }
+.chat-response.loading { color: var(--text-mid); font-style: italic; }
+.chat-response.error { border-left-color: #c0392b; background: #fff5f5; color: #c0392b; }
 </style>
 </head>
 <body>
@@ -48,7 +71,8 @@
   <a href="#index">② note記事インデックス</a>
   <a href="#principles">③ 主要なメッセージ</a>
   <a href="#design">④ デザインされた資料</a>
-  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">⑤ お問い合わせ</a>
+  <a href="#ai-chat">⑤ AIに質問する</a>
+  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">⑥ お問い合わせ</a>
 </nav>
 
 <!-- ================================================================
@@ -426,10 +450,29 @@
     </div><!-- /media-grid -->
   </section>
 
-  <!-- ⑤ お問い合わせ -->
-  <section id="contact" aria-labelledby="contact-heading">
+  <!-- ⑤ AIに質問する -->
+  <section id="ai-chat" aria-labelledby="ai-chat-heading">
     <div class="sec-head fade-in">
       <div class="sec-num" aria-hidden="true">⑤</div>
+      <h2 class="sec-title" id="ai-chat-heading">AIに質問する</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="chat-section fade-in">
+      <p class="chat-intro">大槻繁の思想・著作についてAIにご質問いただけます。</p>
+      <div class="chat-box">
+        <textarea id="chat-input" class="chat-textarea" rows="4"
+          placeholder="例：知働化とはどういう意味ですか？"></textarea>
+        <button id="chat-submit" class="btn-fill chat-submit-btn">質問する</button>
+        <div id="chat-response" class="chat-response" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ お問い合わせ -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑥</div>
       <h2 class="sec-title" id="contact-heading">お問い合わせ</h2>
       <div class="sec-rule" aria-hidden="true"></div>
     </div>
@@ -495,5 +538,47 @@
 
 <script src="js/articles.js"></script>
 <script src="js/main.js"></script>
+<script>
+// ── ⑤ AIチャット ────────────────────────────────────
+(function () {
+  const input  = document.getElementById('chat-input');
+  const btn    = document.getElementById('chat-submit');
+  const output = document.getElementById('chat-response');
+  if (!input || !btn || !output) return;
+
+  async function sendQuestion() {
+    const message = input.value.trim();
+    if (!message) return;
+
+    btn.disabled = true;
+    output.className = 'chat-response visible loading';
+    output.textContent = '回答を生成しています...';
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      output.className = 'chat-response visible';
+      output.textContent = data.message || '回答を取得できませんでした。';
+    } catch (e) {
+      output.className = 'chat-response visible error';
+      output.textContent = '申し訳ありません。もう一度お試しください。';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', sendQuestion);
+
+  // Ctrl+Enter でも送信
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendQuestion();
+  });
+})();
+</script>
 </body>
 </html>
