@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理画面 — 対話履歴 | 大槻繁 noteメッセージ</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── 管理画面専用スタイル ─────────────────────────────── */
+.admin-wrap {
+  max-width: 860px;
+  margin: 48px auto 80px;
+  padding: 0 20px;
+}
+
+/* ログインカード */
+.login-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 48px 40px;
+  max-width: 400px;
+  margin: 80px auto 0;
+  text-align: center;
+}
+.login-card h1 {
+  font-size: 1.25rem;
+  color: var(--navy-main);
+  margin-bottom: .5rem;
+}
+.login-card p {
+  color: var(--text-sub);
+  font-size: .9rem;
+  margin-bottom: 1.75rem;
+}
+.login-input {
+  width: 100%;
+  padding: .75rem 1rem;
+  border: 2px solid var(--navy-pale);
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  transition: border-color .2s;
+}
+.login-input:focus { outline: none; border-color: var(--navy-main); }
+.login-error {
+  color: #c0392b;
+  font-size: .85rem;
+  margin-bottom: .75rem;
+  min-height: 1.2em;
+}
+
+/* ページヘッダー */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.admin-header h1 {
+  font-size: 1.4rem;
+  color: var(--navy-main);
+}
+.admin-meta {
+  color: var(--text-sub);
+  font-size: .85rem;
+}
+
+/* 対話ログカード */
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.log-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.5rem;
+  border-left: 4px solid var(--navy-main);
+}
+.log-date {
+  font-size: .78rem;
+  color: var(--text-light);
+  margin-bottom: .6rem;
+}
+.log-q-label,
+.log-a-label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: .15em .5em;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: .3rem;
+}
+.log-q-label {
+  background: var(--navy-pale);
+  color: var(--navy-main);
+}
+.log-a-label {
+  background: #e8f4e8;
+  color: #2d6a2d;
+  margin-top: .75rem;
+}
+.log-q-text {
+  font-size: .95rem;
+  color: var(--text-main);
+  margin-bottom: .25rem;
+  white-space: pre-wrap;
+}
+.log-a-text {
+  font-size: .9rem;
+  color: var(--text-sub);
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.log-a-text a {
+  color: var(--navy-main);
+  text-decoration: underline;
+}
+
+/* ローディング / 空 */
+.admin-status {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--text-light);
+  font-size: .95rem;
+}
+
+/* ログアウトボタン */
+.btn-logout {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .4rem .9rem;
+  font-size: .85rem;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.btn-logout:hover {
+  background: var(--navy-pale);
+  border-color: var(--navy-light);
+}
+
+@media (max-width: 600px) {
+  .login-card { padding: 36px 24px; }
+  .log-card { padding: 1rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">一</div>
+      <div class="logo-text">
+        <span class="logo-main">大槻繁のnoteメッセージ</span>
+        <span class="logo-sub">管理画面 — 対話履歴</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a class="nav-link" href="index.html">← サイトトップ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="admin-wrap">
+
+  <!-- ① ログイン画面 -->
+  <div id="login-section">
+    <div class="login-card">
+      <h1>🔒 管理者ログイン</h1>
+      <p>対話履歴を閲覧するにはパスワードを入力してください。</p>
+      <input id="password-input" class="login-input" type="password"
+        placeholder="パスワード" autocomplete="current-password">
+      <div id="login-error" class="login-error"></div>
+      <button id="login-btn" class="btn-fill" style="width:100%;cursor:pointer;">
+        ログイン
+      </button>
+    </div>
+  </div>
+
+  <!-- ② 履歴一覧（認証後に表示） -->
+  <div id="logs-section" style="display:none;">
+    <div class="admin-header">
+      <div>
+        <h1>対話履歴</h1>
+        <div class="admin-meta" id="logs-meta">最新50件を表示</div>
+      </div>
+      <div style="display:flex;gap:.75rem;align-items:center;">
+        <button id="reload-btn" class="btn-outline" style="cursor:pointer;">
+          🔄 再読み込み
+        </button>
+        <button id="logout-btn" class="btn-logout">ログアウト</button>
+      </div>
+    </div>
+
+    <div id="logs-status" class="admin-status">読み込み中...</div>
+    <div id="log-list" class="log-list"></div>
+  </div>
+
+</div>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <p>© 大槻繁 / 株式会社一（いち）— 管理画面</p>
+</footer>
+
+<script>
+(function () {
+  // ── 状態 ──────────────────────────────────────────────────
+  var savedPassword = '';
+
+  var loginSection  = document.getElementById('login-section');
+  var logsSection   = document.getElementById('logs-section');
+  var passwordInput = document.getElementById('password-input');
+  var loginBtn      = document.getElementById('login-btn');
+  var loginError    = document.getElementById('login-error');
+  var logsMeta      = document.getElementById('logs-meta');
+  var logsStatus    = document.getElementById('logs-status');
+  var logList       = document.getElementById('log-list');
+  var reloadBtn     = document.getElementById('reload-btn');
+  var logoutBtn     = document.getElementById('logout-btn');
+
+  // ── ログイン ──────────────────────────────────────────────
+  function doLogin() {
+    var pw = passwordInput.value.trim();
+    if (!pw) {
+      loginError.textContent = 'パスワードを入力してください。';
+      return;
+    }
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = '認証中...';
+
+    fetchLogs(pw, function (ok, data) {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'ログイン';
+      if (!ok) {
+        loginError.textContent = data || '認証に失敗しました。';
+        return;
+      }
+      savedPassword = pw;
+      loginSection.style.display  = 'none';
+      logsSection.style.display   = '';
+      renderLogs(data);
+    });
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  passwordInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // ── ログアウト ────────────────────────────────────────────
+  logoutBtn.addEventListener('click', function () {
+    savedPassword = '';
+    passwordInput.value = '';
+    loginError.textContent = '';
+    logsSection.style.display  = 'none';
+    loginSection.style.display = '';
+    logList.innerHTML = '';
+  });
+
+  // ── 再読み込み ────────────────────────────────────────────
+  reloadBtn.addEventListener('click', function () {
+    logsStatus.style.display = '';
+    logsStatus.textContent   = '読み込み中...';
+    logList.innerHTML = '';
+    fetchLogs(savedPassword, function (ok, data) {
+      if (!ok) {
+        logsStatus.textContent = 'エラー: ' + (data || '取得に失敗しました。');
+        return;
+      }
+      renderLogs(data);
+    });
+  });
+
+  // ── API 呼び出し ──────────────────────────────────────────
+  function fetchLogs(pw, cb) {
+    fetch('/api/admin?password=' + encodeURIComponent(pw))
+      .then(function (res) {
+        return res.json().then(function (body) {
+          return { status: res.status, body: body };
+        });
+      })
+      .then(function (r) {
+        if (r.status === 200) {
+          cb(true, r.body);
+        } else if (r.status === 401) {
+          cb(false, 'パスワードが正しくありません。');
+        } else {
+          cb(false, r.body.error || ('エラー ' + r.status));
+        }
+      })
+      .catch(function (err) {
+        cb(false, 'ネットワークエラー: ' + err.message);
+      });
+  }
+
+  // ── 履歴の描画 ────────────────────────────────────────────
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function linkify(text) {
+    return escapeHtml(text)
+      .replace(/(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" rel="noopener">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function renderLogs(data) {
+    var logs  = data.logs || [];
+    var count = data.count || 0;
+
+    logsMeta.textContent = '最新 ' + count + ' 件';
+    logsStatus.style.display = 'none';
+    logList.innerHTML = '';
+
+    if (logs.length === 0) {
+      logsStatus.style.display = '';
+      logsStatus.textContent = 'まだ対話履歴がありません。';
+      return;
+    }
+
+    logs.forEach(function (log) {
+      var card = document.createElement('div');
+      card.className = 'log-card';
+      card.innerHTML =
+        '<div class="log-date">' + escapeHtml(log.date || '') + '</div>' +
+        '<div class="log-q-label">Q 質問</div>' +
+        '<div class="log-q-text">' + escapeHtml(log.question || '') + '</div>' +
+        '<div class="log-a-label">A 回答</div>' +
+        '<div class="log-a-text">' + linkify(log.answer || '') + '</div>';
+      logList.appendChild(card);
+    });
+  }
+})();
+</script>
+</body>
+</html>
