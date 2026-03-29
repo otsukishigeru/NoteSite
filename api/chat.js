@@ -174,6 +174,7 @@ module.exports = async (req, res) => {
       return res.status(response.status).json({
         error: 'Claude API リクエストに失敗しました',
         detail: errorText,
+        status: response.status,
       });
     }
 
@@ -199,6 +200,10 @@ module.exports = async (req, res) => {
     });
   } catch (err) {
     console.error('Unexpected error:', err);
-    return res.status(500).json({ error: 'サーバー内部エラーが発生しました', detail: err.message });
+    return res.status(500).json({
+      error: 'サーバー内部エラーが発生しました',
+      detail: err.message,
+      stack: err.stack,
+    });
   }
 };
