@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交流メンバページ | 大槻繁 noteメッセージ</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.members-wrap {
+  max-width: 760px;
+  margin: 48px auto 80px;
+  padding: 0 20px;
+}
+
+/* ログインカード */
+.login-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 48px 40px;
+  max-width: 440px;
+  margin: 80px auto 0;
+}
+.login-card h1 { font-size: 1.2rem; color: var(--navy-main); margin-bottom: .4rem; }
+.login-card p  { color: var(--text-sub); font-size: .9rem; margin-bottom: 1.75rem; }
+.login-input {
+  width: 100%; padding: .75rem 1rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px;
+  font-size: 1rem; margin-bottom: .85rem; box-sizing: border-box;
+  transition: border-color .2s;
+}
+.login-input:focus { outline: none; border-color: var(--navy-main); }
+.login-error { color: #c0392b; font-size: .85rem; margin-bottom: .75rem; min-height: 1.2em; }
+
+/* メンバエリア */
+.member-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.member-header h1 { font-size: 1.3rem; color: var(--navy-main); }
+.member-info { font-size: .88rem; color: var(--text-sub); }
+
+/* ニックネームエリア */
+.nick-area {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.nick-label { font-size: .88rem; color: var(--text-sub); white-space: nowrap; }
+.nick-name  { font-size: 1rem; font-weight: 700; color: var(--navy-main); }
+.nick-input {
+  flex: 1; min-width: 160px; padding: .55rem .9rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px; font-size: .95rem;
+  box-sizing: border-box;
+}
+.nick-input:focus { outline: none; border-color: var(--navy-main); }
+.nick-msg { font-size: .82rem; margin-top: .4rem; width: 100%; }
+.nick-msg.ok  { color: #2d6a2d; }
+.nick-msg.err { color: #c0392b; }
+
+/* コメント投稿 */
+.comment-form {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 1.5rem; margin-bottom: 1.75rem;
+}
+.comment-form h2 { font-size: 1rem; color: var(--navy-main); margin-bottom: 1rem; }
+.comment-textarea {
+  width: 100%; min-height: 100px; padding: .75rem 1rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px;
+  font-size: .95rem; line-height: 1.7; resize: vertical;
+  box-sizing: border-box; font-family: inherit;
+  transition: border-color .2s;
+}
+.comment-textarea:focus { outline: none; border-color: var(--navy-main); }
+.form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: .75rem; flex-wrap: wrap; gap: .5rem; }
+.form-msg { font-size: .85rem; }
+.form-msg.ok  { color: #2d6a2d; }
+.form-msg.err { color: #c0392b; }
+
+/* コメント一覧 */
+.comment-list { display: flex; flex-direction: column; gap: 1rem; }
+.comment-card {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 1.1rem 1.4rem; border-left: 4px solid var(--navy-light);
+}
+.comment-meta {
+  display: flex; align-items: center; gap: .75rem;
+  margin-bottom: .6rem; flex-wrap: wrap;
+}
+.comment-nick { font-weight: 700; font-size: .9rem; color: var(--navy-main); }
+.comment-date { font-size: .78rem; color: var(--text-light); }
+.comment-text { font-size: .95rem; color: var(--text-main); line-height: 1.75; white-space: pre-wrap; }
+
+.members-status { text-align: center; padding: 2.5rem 0; color: var(--text-light); font-size: .95rem; }
+
+.btn-logout {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: .4rem .9rem; font-size: .85rem; color: var(--text-sub); cursor: pointer;
+}
+.btn-logout:hover { background: var(--navy-pale); }
+
+@media (max-width: 600px) {
+  .login-card { padding: 36px 24px; }
+  .comment-card { padding: .9rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">一</div>
+      <div class="logo-text">
+        <span class="logo-main">大槻繁のnoteメッセージ</span>
+        <span class="logo-sub">交流メンバページ</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a class="nav-link" href="index.html">← サイトトップ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="members-wrap">
+
+  <!-- ① ログイン画面 -->
+  <div id="login-section">
+    <div class="login-card">
+      <h1>🤝 交流メンバログイン</h1>
+      <p>登録されたメールアドレスと合言葉を入力してください。</p>
+      <input id="email-input" class="login-input" type="email" placeholder="メールアドレス" autocomplete="email">
+      <input id="passphrase-input" class="login-input" type="password" placeholder="合言葉" autocomplete="current-password">
+      <div id="login-error" class="login-error"></div>
+      <button id="login-btn" class="btn-fill" style="width:100%;cursor:pointer;">ログイン</button>
+    </div>
+  </div>
+
+  <!-- ② メンバエリア（認証後） -->
+  <div id="member-section" style="display:none;">
+
+    <div class="member-header">
+      <div>
+        <h1>交流メンバページ</h1>
+        <div class="member-info" id="member-info"></div>
+      </div>
+      <button id="logout-btn" class="btn-logout">ログアウト</button>
+    </div>
+
+    <!-- ニックネーム -->
+    <div class="nick-area">
+      <span class="nick-label">ニックネーム：</span>
+      <span class="nick-name" id="nick-display">（未設定）</span>
+      <input id="nick-input" class="nick-input" type="text" placeholder="ニックネームを入力">
+      <button id="nick-btn" class="btn-outline" style="cursor:pointer;">変更</button>
+      <div id="nick-msg" class="nick-msg"></div>
+    </div>
+
+    <!-- コメント投稿 -->
+    <div class="comment-form">
+      <h2>💬 コメントを投稿</h2>
+      <textarea id="comment-textarea" class="comment-textarea" placeholder="コメントを入力してください..."></textarea>
+      <div class="form-footer">
+        <div id="post-msg" class="form-msg"></div>
+        <button id="post-btn" class="btn-fill" style="cursor:pointer;">投稿する</button>
+      </div>
+    </div>
+
+    <!-- コメント一覧 -->
+    <div id="comments-status" class="members-status">読み込み中...</div>
+    <div id="comment-list" class="comment-list"></div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>© 大槻繁 / 株式会社一（いち）</p>
+</footer>
+
+<script>
+(function () {
+  var session = { email: '', passphrase: '', nickname: '' };
+
+  var loginSection   = document.getElementById('login-section');
+  var memberSection  = document.getElementById('member-section');
+  var emailInput     = document.getElementById('email-input');
+  var passphraseInput= document.getElementById('passphrase-input');
+  var loginBtn       = document.getElementById('login-btn');
+  var loginError     = document.getElementById('login-error');
+  var memberInfo     = document.getElementById('member-info');
+  var logoutBtn      = document.getElementById('logout-btn');
+  var nickDisplay    = document.getElementById('nick-display');
+  var nickInput      = document.getElementById('nick-input');
+  var nickBtn        = document.getElementById('nick-btn');
+  var nickMsg        = document.getElementById('nick-msg');
+  var commentTextarea= document.getElementById('comment-textarea');
+  var postBtn        = document.getElementById('post-btn');
+  var postMsg        = document.getElementById('post-msg');
+  var commentsStatus = document.getElementById('comments-status');
+  var commentList    = document.getElementById('comment-list');
+
+  // ── ログイン ──────────────────────────────────────────────
+  function doLogin() {
+    var email      = emailInput.value.trim();
+    var passphrase = passphraseInput.value.trim();
+    if (!email || !passphrase) {
+      loginError.textContent = 'メールアドレスと合言葉を入力してください。';
+      return;
+    }
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = '確認中...';
+
+    callMembers({ action: 'login', email: email, passphrase: passphrase }, function (d) {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'ログイン';
+      if (!d.ok) {
+        loginError.textContent = d.error || 'ログインに失敗しました。';
+        return;
+      }
+      session.email      = email;
+      session.passphrase = passphrase;
+      session.nickname   = d.nickname || '';
+      loginSection.style.display  = 'none';
+      memberSection.style.display = '';
+      memberInfo.textContent = email;
+      updateNickDisplay();
+      loadComments();
+    });
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  passphraseInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+
+  // ── ログアウト ────────────────────────────────────────────
+  logoutBtn.addEventListener('click', function () {
+    session = { email: '', passphrase: '', nickname: '' };
+    emailInput.value = '';
+    passphraseInput.value = '';
+    loginError.textContent = '';
+    memberSection.style.display = 'none';
+    loginSection.style.display  = '';
+    commentList.innerHTML = '';
+  });
+
+  // ── ニックネーム ──────────────────────────────────────────
+  function updateNickDisplay() {
+    nickDisplay.textContent = session.nickname || '（未設定）';
+    nickInput.value = session.nickname || '';
+  }
+
+  nickBtn.addEventListener('click', function () {
+    var nick = nickInput.value.trim();
+    if (!nick) { nickMsg.className = 'nick-msg err'; nickMsg.textContent = 'ニックネームを入力してください。'; return; }
+    nickMsg.className = 'nick-msg'; nickMsg.textContent = '保存中...';
+    callMembers({ action: 'setNickname', email: session.email, passphrase: session.passphrase, nickname: nick }, function (d) {
+      if (d.ok) {
+        session.nickname = nick;
+        updateNickDisplay();
+        nickMsg.className = 'nick-msg ok'; nickMsg.textContent = '変更しました。';
+      } else {
+        nickMsg.className = 'nick-msg err'; nickMsg.textContent = d.error || '変更に失敗しました。';
+      }
+    });
+  });
+
+  // ── コメント投稿 ──────────────────────────────────────────
+  postBtn.addEventListener('click', function () {
+    var text = commentTextarea.value.trim();
+    if (!text) { postMsg.className = 'form-msg err'; postMsg.textContent = 'コメントを入力してください。'; return; }
+    postBtn.disabled = true;
+    postMsg.className = 'form-msg'; postMsg.textContent = '投稿中...';
+    callComments({ action: 'postComment', email: session.email, passphrase: session.passphrase, text: text }, function (d) {
+      postBtn.disabled = false;
+      if (d.ok) {
+        commentTextarea.value = '';
+        postMsg.className = 'form-msg ok'; postMsg.textContent = '投稿しました。';
+        loadComments();
+      } else {
+        postMsg.className = 'form-msg err'; postMsg.textContent = d.error || '投稿に失敗しました。';
+      }
+    });
+  });
+
+  // ── コメント一覧 ──────────────────────────────────────────
+  function loadComments() {
+    commentsStatus.style.display = '';
+    commentsStatus.textContent = '読み込み中...';
+    commentList.innerHTML = '';
+    callComments({ action: 'listComments', email: session.email, passphrase: session.passphrase }, function (d) {
+      commentsStatus.style.display = 'none';
+      if (!d.ok) { commentsStatus.style.display = ''; commentsStatus.textContent = 'エラー: ' + (d.error || '取得失敗'); return; }
+      var comments = (d.comments || []).slice().reverse();
+      if (comments.length === 0) {
+        commentsStatus.style.display = '';
+        commentsStatus.textContent = 'まだコメントがありません。最初のコメントを投稿してください。';
+        return;
+      }
+      comments.forEach(function (c) {
+        var card = document.createElement('div');
+        card.className = 'comment-card';
+        card.innerHTML =
+          '<div class="comment-meta">' +
+          '<span class="comment-nick">' + escapeHtml(c.nickname || c.email) + '</span>' +
+          '<span class="comment-date">' + escapeHtml(c.date || '') + '</span>' +
+          '</div>' +
+          '<div class="comment-text">' + escapeHtml(c.text) + '</div>';
+        commentList.appendChild(card);
+      });
+    });
+  }
+
+  // ── API呼び出し ───────────────────────────────────────────
+  function callMembers(body, cb) {
+    fetch('/api/members', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(cb)
+      .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  function callComments(body, cb) {
+    fetch('/api/comments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(cb)
+      .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+})();
+</script>
+</body>
+</html>
