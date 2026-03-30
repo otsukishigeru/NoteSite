@@ -159,6 +159,7 @@
       <button class="tab-btn active" data-tab="members">交流メンバ管理</button>
       <button class="tab-btn" data-tab="passphrase">合言葉変更</button>
       <button class="tab-btn" data-tab="logs">対話履歴</button>
+      <button class="tab-btn" data-tab="comments">コメント管理</button>
     </div>
 
     <!-- タブ：交流メンバ管理 -->
@@ -198,6 +199,15 @@
       </div>
     </div>
 
+    <!-- タブ：コメント管理 -->
+    <div id="tab-comments" class="tab-panel">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+        <button id="comments-reload-btn" class="btn-outline" style="cursor:pointer;">🔄 再読み込み</button>
+      </div>
+      <div id="comments-status" class="admin-status">読み込み中...</div>
+      <div id="comments-list" class="member-list"></div>
+    </div>
+
     <!-- タブ：対話履歴 -->
     <div id="tab-logs" class="tab-panel">
       <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.75rem;align-items:center;">
@@ -234,6 +244,7 @@
       btn.classList.add('active');
       document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
       if (btn.dataset.tab === 'logs') loadLogs();
+      if (btn.dataset.tab === 'comments') loadAdminComments();
       if (btn.dataset.tab === 'members') loadMembers();
     });
   });
@@ -391,6 +402,47 @@
       })
       .catch(function (e) { status.textContent = 'エラー: ' + e.message; });
   }
+
+
+  // ── コメント管理 ────────────────────────────────────────
+  function loadAdminComments() {
+    var status = document.getElementById('comments-status');
+    var list   = document.getElementById('comments-list');
+    status.style.display = ''; status.textContent = '読み込み中...';
+    list.innerHTML = '';
+    fetch('/api/comments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'listComments', email: savedPassword, passphrase: savedPassword })
+    }).then(function(r){ return r.json(); })
+    .then(function(d){
+      status.style.display = 'none';
+      if (!d.ok || !d.comments || d.comments.length === 0) {
+        status.style.display = ''; status.textContent = 'コメントがありません。'; return;
+      }
+      d.comments.slice().reverse().forEach(function(c){
+        var row = document.createElement('div');
+        row.className = 'member-row';
+        row.innerHTML =
+          '<div><div class="member-email">' + escapeHtml(c.nickname || c.email) + '</div>' +
+          '<div class="member-nick">' + escapeHtml(c.date || '') + ' — ' + escapeHtml(c.text) + '</div></div>' +
+          '<button class="btn-remove" data-id="' + escapeHtml(c.id) + '">削除</button>';
+        list.appendChild(row);
+      });
+      list.querySelectorAll('.btn-remove').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          if (!confirm('このコメントを削除しますか？')) return;
+          fetch('/api/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'deleteComment', adminPassword: savedPassword, id: btn.dataset.id })
+          }).then(function(r){ return r.json(); })
+          .then(function(d){ if (d.ok) loadAdminComments(); else alert('削除失敗'); });
+        });
+      });
+    });
+  }
+  document.getElementById('comments-reload-btn').addEventListener('click', loadAdminComments);
 
   document.getElementById('reload-btn').addEventListener('click', loadLogs);
 
