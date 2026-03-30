@@ -3,17 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理画面 — 対話履歴 | 大槻繁 noteメッセージ</title>
+<title>管理画面 | 大槻繁 noteメッセージ</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-/* ── 管理画面専用スタイル ─────────────────────────────── */
 .admin-wrap {
   max-width: 860px;
   margin: 48px auto 80px;
   padding: 0 20px;
 }
-
-/* ログインカード */
 .login-card {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -23,129 +20,93 @@
   margin: 80px auto 0;
   text-align: center;
 }
-.login-card h1 {
-  font-size: 1.25rem;
-  color: var(--navy-main);
-  margin-bottom: .5rem;
-}
-.login-card p {
-  color: var(--text-sub);
-  font-size: .9rem;
-  margin-bottom: 1.75rem;
-}
+.login-card h1 { font-size: 1.25rem; color: var(--navy-main); margin-bottom: .5rem; }
+.login-card p  { color: var(--text-sub); font-size: .9rem; margin-bottom: 1.75rem; }
 .login-input {
-  width: 100%;
-  padding: .75rem 1rem;
-  border: 2px solid var(--navy-pale);
-  border-radius: 8px;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  box-sizing: border-box;
+  width: 100%; padding: .75rem 1rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px;
+  font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;
   transition: border-color .2s;
 }
 .login-input:focus { outline: none; border-color: var(--navy-main); }
-.login-error {
-  color: #c0392b;
-  font-size: .85rem;
-  margin-bottom: .75rem;
-  min-height: 1.2em;
-}
+.login-error { color: #c0392b; font-size: .85rem; margin-bottom: .75rem; min-height: 1.2em; }
 
-/* ページヘッダー */
+/* タブ */
+.admin-tabs {
+  display: flex; gap: .5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--navy-pale);
+}
+.tab-btn {
+  background: none; border: none; padding: .6rem 1.2rem;
+  font-size: .95rem; color: var(--text-sub); cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: color .2s, border-color .2s;
+}
+.tab-btn.active { color: var(--navy-main); border-bottom-color: var(--navy-main); font-weight: 700; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
 .admin-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
 }
-.admin-header h1 {
-  font-size: 1.4rem;
-  color: var(--navy-main);
-}
-.admin-meta {
-  color: var(--text-sub);
-  font-size: .85rem;
-}
+.admin-header h1 { font-size: 1.4rem; color: var(--navy-main); }
+.admin-meta { color: var(--text-sub); font-size: .85rem; }
 
-/* 対話ログカード */
-.log-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+/* メンバ管理 */
+.member-form {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 1.5rem; margin-bottom: 1.5rem;
 }
+.member-form h2 { font-size: 1rem; color: var(--navy-main); margin-bottom: 1rem; }
+.form-row { display: flex; gap: .75rem; align-items: flex-start; flex-wrap: wrap; }
+.form-row input {
+  flex: 1; min-width: 200px; padding: .65rem 1rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px;
+  font-size: .95rem; box-sizing: border-box;
+}
+.form-row input:focus { outline: none; border-color: var(--navy-main); }
+.form-msg { font-size: .85rem; margin-top: .6rem; min-height: 1.2em; }
+.form-msg.ok  { color: #2d6a2d; }
+.form-msg.err { color: #c0392b; }
+
+.member-list { display: flex; flex-direction: column; gap: .6rem; }
+.member-row {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: .85rem 1.25rem; display: flex; align-items: center; justify-content: space-between;
+}
+.member-email { font-size: .95rem; color: var(--text-main); }
+.member-nick  { font-size: .82rem; color: var(--text-sub); margin-top: .2rem; }
+.btn-remove {
+  background: none; border: 1px solid #e0b0b0; border-radius: 6px;
+  padding: .3rem .8rem; font-size: .82rem; color: #c0392b; cursor: pointer;
+  transition: background .2s;
+}
+.btn-remove:hover { background: #fdf0f0; }
+
+/* 対話ログ */
+.log-list { display: flex; flex-direction: column; gap: 1.25rem; }
 .log-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 1.25rem 1.5rem;
-  border-left: 4px solid var(--navy-main);
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.5rem; border-left: 4px solid var(--navy-main);
 }
-.log-date {
-  font-size: .78rem;
-  color: var(--text-light);
-  margin-bottom: .6rem;
+.log-date { font-size: .78rem; color: var(--text-light); margin-bottom: .6rem; }
+.log-q-label, .log-a-label {
+  font-size: .72rem; font-weight: 700; letter-spacing: .05em;
+  padding: .15em .5em; border-radius: 4px; display: inline-block; margin-bottom: .3rem;
 }
-.log-q-label,
-.log-a-label {
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .05em;
-  padding: .15em .5em;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: .3rem;
-}
-.log-q-label {
-  background: var(--navy-pale);
-  color: var(--navy-main);
-}
-.log-a-label {
-  background: #e8f4e8;
-  color: #2d6a2d;
-  margin-top: .75rem;
-}
-.log-q-text {
-  font-size: .95rem;
-  color: var(--text-main);
-  margin-bottom: .25rem;
-  white-space: pre-wrap;
-}
-.log-a-text {
-  font-size: .9rem;
-  color: var(--text-sub);
-  white-space: pre-wrap;
-  line-height: 1.7;
-}
-.log-a-text a {
-  color: var(--navy-main);
-  text-decoration: underline;
-}
+.log-q-label { background: var(--navy-pale); color: var(--navy-main); }
+.log-a-label { background: #e8f4e8; color: #2d6a2d; margin-top: .75rem; }
+.log-q-text { font-size: .95rem; color: var(--text-main); margin-bottom: .25rem; white-space: pre-wrap; }
+.log-a-text { font-size: .9rem; color: var(--text-sub); white-space: pre-wrap; line-height: 1.7; }
+.log-a-text a { color: var(--navy-main); text-decoration: underline; }
 
-/* ローディング / 空 */
-.admin-status {
-  text-align: center;
-  padding: 3rem 0;
-  color: var(--text-light);
-  font-size: .95rem;
-}
-
-/* ログアウトボタン */
+.admin-status { text-align: center; padding: 3rem 0; color: var(--text-light); font-size: .95rem; }
 .btn-logout {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: .4rem .9rem;
-  font-size: .85rem;
-  color: var(--text-sub);
-  cursor: pointer;
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: .4rem .9rem; font-size: .85rem; color: var(--text-sub); cursor: pointer;
   transition: background .2s, border-color .2s;
 }
-.btn-logout:hover {
-  background: var(--navy-pale);
-  border-color: var(--navy-light);
-}
+.btn-logout:hover { background: var(--navy-pale); border-color: var(--navy-light); }
 
 @media (max-width: 600px) {
   .login-card { padding: 36px 24px; }
@@ -155,14 +116,13 @@
 </head>
 <body>
 
-<!-- ヘッダー -->
 <header class="site-header">
   <div class="header-inner">
     <div class="logo-block">
       <div class="logo-icon">一</div>
       <div class="logo-text">
         <span class="logo-main">大槻繁のnoteメッセージ</span>
-        <span class="logo-sub">管理画面 — 対話履歴</span>
+        <span class="logo-sub">管理画面</span>
       </div>
     </div>
     <nav class="header-nav">
@@ -177,174 +137,271 @@
   <div id="login-section">
     <div class="login-card">
       <h1>🔒 管理者ログイン</h1>
-      <p>対話履歴を閲覧するにはパスワードを入力してください。</p>
+      <p>管理画面へのアクセスにはパスワードが必要です。</p>
       <input id="password-input" class="login-input" type="password"
         placeholder="パスワード" autocomplete="current-password">
       <div id="login-error" class="login-error"></div>
-      <button id="login-btn" class="btn-fill" style="width:100%;cursor:pointer;">
-        ログイン
-      </button>
+      <button id="login-btn" class="btn-fill" style="width:100%;cursor:pointer;">ログイン</button>
     </div>
   </div>
 
-  <!-- ② 履歴一覧（認証後に表示） -->
-  <div id="logs-section" style="display:none;">
+  <!-- ② 管理画面（認証後） -->
+  <div id="admin-section" style="display:none;">
+
+    <!-- ヘッダー -->
     <div class="admin-header">
-      <div>
-        <h1>対話履歴</h1>
-        <div class="admin-meta" id="logs-meta">最新50件を表示</div>
+      <h1>管理画面</h1>
+      <button id="logout-btn" class="btn-logout">ログアウト</button>
+    </div>
+
+    <!-- タブ -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="members">交流メンバ管理</button>
+      <button class="tab-btn" data-tab="passphrase">合言葉変更</button>
+      <button class="tab-btn" data-tab="logs">対話履歴</button>
+    </div>
+
+    <!-- タブ：交流メンバ管理 -->
+    <div id="tab-members" class="tab-panel active">
+
+      <!-- メンバ追加 -->
+      <div class="member-form">
+        <h2>➕ メンバを追加</h2>
+        <div class="form-row">
+          <input id="add-email" type="email" placeholder="メールアドレス">
+          <button id="add-btn" class="btn-fill" style="cursor:pointer;">追加</button>
+        </div>
+        <div id="add-msg" class="form-msg"></div>
       </div>
-      <div style="display:flex;gap:.75rem;align-items:center;">
-        <button id="reload-btn" class="btn-outline" style="cursor:pointer;">
-          🔄 再読み込み
-        </button>
-        <button id="logout-btn" class="btn-logout">ログアウト</button>
+
+      <!-- メンバ一覧 -->
+      <div class="member-form">
+        <h2>👥 登録メンバ一覧</h2>
+        <div id="member-status" class="admin-status" style="padding:1rem 0;">読み込み中...</div>
+        <div id="member-list" class="member-list"></div>
+      </div>
+
+    </div>
+
+    <!-- タブ：合言葉変更 -->
+    <div id="tab-passphrase" class="tab-panel">
+      <div class="member-form">
+        <h2>🔑 合言葉を変更</h2>
+        <p style="font-size:.9rem;color:var(--text-sub);margin-bottom:1rem;">
+          変更後は既存の交流メンバに新しい合言葉をお伝えください。
+        </p>
+        <div class="form-row">
+          <input id="new-passphrase" type="text" placeholder="新しい合言葉">
+          <button id="passphrase-btn" class="btn-fill" style="cursor:pointer;">変更する</button>
+        </div>
+        <div id="passphrase-msg" class="form-msg"></div>
       </div>
     </div>
 
-    <div id="logs-status" class="admin-status">読み込み中...</div>
-    <div id="log-list" class="log-list"></div>
-  </div>
+    <!-- タブ：対話履歴 -->
+    <div id="tab-logs" class="tab-panel">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.75rem;align-items:center;">
+        <div class="admin-meta" id="logs-meta"></div>
+        <button id="reload-btn" class="btn-outline" style="cursor:pointer;">🔄 再読み込み</button>
+      </div>
+      <div id="logs-status" class="admin-status">読み込み中...</div>
+      <div id="log-list" class="log-list"></div>
+    </div>
 
+  </div>
 </div>
 
-<!-- フッター -->
 <footer class="site-footer">
   <p>© 大槻繁 / 株式会社一（いち）— 管理画面</p>
 </footer>
 
 <script>
 (function () {
-  // ── 状態 ──────────────────────────────────────────────────
   var savedPassword = '';
 
   var loginSection  = document.getElementById('login-section');
-  var logsSection   = document.getElementById('logs-section');
+  var adminSection  = document.getElementById('admin-section');
   var passwordInput = document.getElementById('password-input');
   var loginBtn      = document.getElementById('login-btn');
   var loginError    = document.getElementById('login-error');
-  var logsMeta      = document.getElementById('logs-meta');
-  var logsStatus    = document.getElementById('logs-status');
-  var logList       = document.getElementById('log-list');
-  var reloadBtn     = document.getElementById('reload-btn');
   var logoutBtn     = document.getElementById('logout-btn');
+
+  // ── タブ切り替え ──────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab === 'logs') loadLogs();
+      if (btn.dataset.tab === 'members') loadMembers();
+    });
+  });
 
   // ── ログイン ──────────────────────────────────────────────
   function doLogin() {
     var pw = passwordInput.value.trim();
-    if (!pw) {
-      loginError.textContent = 'パスワードを入力してください。';
-      return;
-    }
+    if (!pw) { loginError.textContent = 'パスワードを入力してください。'; return; }
     loginError.textContent = '';
     loginBtn.disabled = true;
     loginBtn.textContent = '認証中...';
-
-    fetchLogs(pw, function (ok, data) {
-      loginBtn.disabled = false;
-      loginBtn.textContent = 'ログイン';
-      if (!ok) {
-        loginError.textContent = data || '認証に失敗しました。';
-        return;
-      }
-      savedPassword = pw;
-      loginSection.style.display  = 'none';
-      logsSection.style.display   = '';
-      renderLogs(data);
-    });
+    fetch('/api/admin?password=' + encodeURIComponent(pw))
+      .then(function (r) { return r.json().then(function (b) { return { status: r.status, body: b }; }); })
+      .then(function (r) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'ログイン';
+        if (r.status === 200) {
+          savedPassword = pw;
+          loginSection.style.display = 'none';
+          adminSection.style.display = '';
+          loadMembers();
+        } else {
+          loginError.textContent = r.status === 401 ? 'パスワードが正しくありません。' : '認証に失敗しました。';
+        }
+      })
+      .catch(function (e) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'ログイン';
+        loginError.textContent = 'ネットワークエラー: ' + e.message;
+      });
   }
 
   loginBtn.addEventListener('click', doLogin);
-  passwordInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') doLogin();
-  });
+  passwordInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
 
   // ── ログアウト ────────────────────────────────────────────
   logoutBtn.addEventListener('click', function () {
     savedPassword = '';
     passwordInput.value = '';
     loginError.textContent = '';
-    logsSection.style.display  = 'none';
+    adminSection.style.display = 'none';
     loginSection.style.display = '';
-    logList.innerHTML = '';
   });
 
-  // ── 再読み込み ────────────────────────────────────────────
-  reloadBtn.addEventListener('click', function () {
-    logsStatus.style.display = '';
-    logsStatus.textContent   = '読み込み中...';
-    logList.innerHTML = '';
-    fetchLogs(savedPassword, function (ok, data) {
-      if (!ok) {
-        logsStatus.textContent = 'エラー: ' + (data || '取得に失敗しました。');
+  // ── メンバ管理 ────────────────────────────────────────────
+  function membersApi(body, cb) {
+    body.adminPassword = savedPassword;
+    fetch('/api/members', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(function (r) { return r.json(); })
+    .then(cb)
+    .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  function loadMembers() {
+    var status = document.getElementById('member-status');
+    var list   = document.getElementById('member-list');
+    status.style.display = '';
+    status.textContent = '読み込み中...';
+    list.innerHTML = '';
+    membersApi({ action: 'listMembers' }, function (data) {
+      status.style.display = 'none';
+      if (!data.ok) { status.style.display = ''; status.textContent = 'エラー: ' + (data.error || '取得失敗'); return; }
+      var members = data.members || [];
+      if (members.length === 0) {
+        status.style.display = '';
+        status.textContent = 'まだメンバが登録されていません。';
         return;
       }
-      renderLogs(data);
+      members.forEach(function (m) {
+        var row = document.createElement('div');
+        row.className = 'member-row';
+        row.innerHTML =
+          '<div><div class="member-email">' + escapeHtml(m.email) + '</div>' +
+          (m.nickname ? '<div class="member-nick">ニックネーム：' + escapeHtml(m.nickname) + '</div>' : '') +
+          '</div>' +
+          '<button class="btn-remove" data-email="' + escapeHtml(m.email) + '">削除</button>';
+        list.appendChild(row);
+      });
+      list.querySelectorAll('.btn-remove').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!confirm(btn.dataset.email + ' を削除しますか？')) return;
+          membersApi({ action: 'removeMember', email: btn.dataset.email }, function (d) {
+            if (d.ok) loadMembers();
+            else alert('削除失敗: ' + (d.error || ''));
+          });
+        });
+      });
+    });
+  }
+
+  // メンバ追加
+  document.getElementById('add-btn').addEventListener('click', function () {
+    var email = document.getElementById('add-email').value.trim();
+    var msg   = document.getElementById('add-msg');
+    if (!email) { msg.className = 'form-msg err'; msg.textContent = 'メールアドレスを入力してください。'; return; }
+    msg.className = 'form-msg'; msg.textContent = '処理中...';
+    membersApi({ action: 'addMember', email: email }, function (d) {
+      if (d.ok) {
+        msg.className = 'form-msg ok';
+        msg.textContent = d.message || '登録しました。';
+        document.getElementById('add-email').value = '';
+        loadMembers();
+      } else {
+        msg.className = 'form-msg err';
+        msg.textContent = d.error || '登録に失敗しました。';
+      }
     });
   });
 
-  // ── API 呼び出し ──────────────────────────────────────────
-  function fetchLogs(pw, cb) {
-    fetch('/api/admin?password=' + encodeURIComponent(pw))
-      .then(function (res) {
-        return res.json().then(function (body) {
-          return { status: res.status, body: body };
+  // ── 合言葉変更 ────────────────────────────────────────────
+  document.getElementById('passphrase-btn').addEventListener('click', function () {
+    var passphrase = document.getElementById('new-passphrase').value.trim();
+    var msg = document.getElementById('passphrase-msg');
+    if (!passphrase) { msg.className = 'form-msg err'; msg.textContent = '合言葉を入力してください。'; return; }
+    msg.className = 'form-msg'; msg.textContent = '処理中...';
+    membersApi({ action: 'setPassphrase', passphrase: passphrase }, function (d) {
+      if (d.ok) {
+        msg.className = 'form-msg ok'; msg.textContent = '合言葉を変更しました。';
+        document.getElementById('new-passphrase').value = '';
+      } else {
+        msg.className = 'form-msg err'; msg.textContent = d.error || '変更に失敗しました。';
+      }
+    });
+  });
+
+  // ── 対話履歴 ──────────────────────────────────────────────
+  function loadLogs() {
+    var status = document.getElementById('logs-status');
+    var list   = document.getElementById('log-list');
+    var meta   = document.getElementById('logs-meta');
+    status.style.display = ''; status.textContent = '読み込み中...';
+    list.innerHTML = '';
+    fetch('/api/admin?password=' + encodeURIComponent(savedPassword))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        status.style.display = 'none';
+        var logs = data.logs || [];
+        meta.textContent = '最新 ' + (data.count || logs.length) + ' 件';
+        if (logs.length === 0) { status.style.display = ''; status.textContent = 'まだ対話履歴がありません。'; return; }
+        logs.forEach(function (log) {
+          var card = document.createElement('div');
+          card.className = 'log-card';
+          card.innerHTML =
+            '<div class="log-date">' + escapeHtml(log.date || '') + '</div>' +
+            '<div class="log-q-label">Q 質問</div>' +
+            '<div class="log-q-text">' + escapeHtml(log.question || '') + '</div>' +
+            '<div class="log-a-label">A 回答</div>' +
+            '<div class="log-a-text">' + linkify(log.answer || '') + '</div>';
+          list.appendChild(card);
         });
       })
-      .then(function (r) {
-        if (r.status === 200) {
-          cb(true, r.body);
-        } else if (r.status === 401) {
-          cb(false, 'パスワードが正しくありません。');
-        } else {
-          cb(false, r.body.error || ('エラー ' + r.status));
-        }
-      })
-      .catch(function (err) {
-        cb(false, 'ネットワークエラー: ' + err.message);
-      });
+      .catch(function (e) { status.textContent = 'エラー: ' + e.message; });
   }
 
-  // ── 履歴の描画 ────────────────────────────────────────────
+  document.getElementById('reload-btn').addEventListener('click', loadLogs);
+
+  // ── ユーティリティ ────────────────────────────────────────
   function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-
   function linkify(text) {
     return escapeHtml(text)
-      .replace(/(https?:\/\/[^\s]+)/g,
-        '<a href="$1" target="_blank" rel="noopener">$1</a>')
+      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
       .replace(/\n/g, '<br>');
-  }
-
-  function renderLogs(data) {
-    var logs  = data.logs || [];
-    var count = data.count || 0;
-
-    logsMeta.textContent = '最新 ' + count + ' 件';
-    logsStatus.style.display = 'none';
-    logList.innerHTML = '';
-
-    if (logs.length === 0) {
-      logsStatus.style.display = '';
-      logsStatus.textContent = 'まだ対話履歴がありません。';
-      return;
-    }
-
-    logs.forEach(function (log) {
-      var card = document.createElement('div');
-      card.className = 'log-card';
-      card.innerHTML =
-        '<div class="log-date">' + escapeHtml(log.date || '') + '</div>' +
-        '<div class="log-q-label">Q 質問</div>' +
-        '<div class="log-q-text">' + escapeHtml(log.question || '') + '</div>' +
-        '<div class="log-a-label">A 回答</div>' +
-        '<div class="log-a-text">' + linkify(log.answer || '') + '</div>';
-      logList.appendChild(card);
-    });
   }
 })();
 </script>

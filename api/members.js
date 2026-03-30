@@ -24,6 +24,7 @@ export default async function handler(req, res) {
   const body = req.body || {};
   const { action } = body;
 
+  // ① 合言葉照合（ログイン）
   if (action === 'login') {
     const { email, passphrase } = body;
     const raw = await kvGet('members');
@@ -35,6 +36,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, nickname });
   }
 
+  // ② メンバ登録（admin用）
   if (action === 'addMember') {
     const { adminPassword, email } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
@@ -47,6 +49,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  // ③ メンバ削除（admin用）
   if (action === 'removeMember') {
     const { adminPassword, email } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
@@ -58,6 +61,21 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  // ④ メンバ一覧（admin用）
+  if (action === 'listMembers') {
+    const { adminPassword } = body;
+    if (adminPassword !== process.env.ADMIN_PASSWORD)
+      return res.status(403).json({ ok: false, error: '管理者パスワードが違います' });
+    const raw = await kvGet('members');
+    const emails = raw ? JSON.parse(raw) : [];
+    const members = await Promise.all(emails.map(async (email) => {
+      const nickname = await kvGet(`nick:${email}`) || '';
+      return { email, nickname };
+    }));
+    return res.status(200).json({ ok: true, members });
+  }
+
+  // ⑤ ニックネーム登録・変更（メンバ用）
   if (action === 'setNickname') {
     const { email, passphrase, nickname } = body;
     const raw = await kvGet('members');
@@ -69,6 +87,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  // ⑥ 合言葉変更（admin用）
   if (action === 'setPassphrase') {
     const { adminPassword, passphrase } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
