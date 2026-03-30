@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 
   async function kvGet(key) {
-    const r = await fetch(`${KV_URL}/get/${key}`, {
+    const r = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
       headers: { Authorization: `Bearer ${KV_TOKEN}` }
     });
     const d = await r.json();
@@ -16,13 +16,8 @@ export default async function handler(req, res) {
   }
 
   async function kvSet(key, value) {
-    await fetch(`${KV_URL}/set/${key}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${KV_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ value })
+    await fetch(`${KV_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` }
     });
   }
 
