@@ -16,21 +16,21 @@ export default async function handler(req, res) {
   }
 
   async function kvSet(key, value) {
-    await fetch(`${KV_URL}/set/${key}`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value })
+    await fetch(`${KV_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${KV_TOKEN}` }
     });
   }
 
-  const { action } = req.body || {};
+  const body = req.body || {};
+  const { action } = body;
 
   // ① 合言葉照合（ログイン）
   if (action === 'login') {
-    const { email, passphrase } = req.body;
-    const members = JSON.parse(await kvGet('members') || '[]');
-    const isMember = members.includes(email);
-    if (!isMember) return res.status(403).json({ ok: false, error: 'メンバ登録がありません' });
+    const { email, passphrase } = body;
+    const raw = await kvGet('members');
+    const members = raw ? JSON.parse(raw) : [];
+    if (!members.includes(email)) return res.status(403).json({ ok: false, error: 'メンバ登録がありません' });
     const saved = await kvGet('passphrase');
     if (passphrase !== saved) return res.status(403).json({ ok: false, error: '合言葉が違います' });
     const nickname = await kvGet(`nick:${email}`) || '';
@@ -39,10 +39,11 @@ export default async function handler(req, res) {
 
   // ② メンバ登録（admin用）
   if (action === 'addMember') {
-    const { adminPassword, email } = req.body;
+    const { adminPassword, email } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
       return res.status(403).json({ ok: false, error: '管理者パスワードが違います' });
-    const members = JSON.parse(await kvGet('members') || '[]');
+    const raw = await kvGet('members');
+    const members = raw ? JSON.parse(raw) : [];
     if (members.includes(email)) return res.status(200).json({ ok: true, message: '既に登録済みです' });
     members.push(email);
     await kvSet('members', JSON.stringify(members));
@@ -51,10 +52,11 @@ export default async function handler(req, res) {
 
   // ③ メンバ削除（admin用）
   if (action === 'removeMember') {
-    const { adminPassword, email } = req.body;
+    const { adminPassword, email } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
       return res.status(403).json({ ok: false, error: '管理者パスワードが違います' });
-    const members = JSON.parse(await kvGet('members') || '[]');
+    const raw = await kvGet('members');
+    const members = raw ? JSON.parse(raw) : [];
     const updated = members.filter(m => m !== email);
     await kvSet('members', JSON.stringify(updated));
     return res.status(200).json({ ok: true });
@@ -62,8 +64,9 @@ export default async function handler(req, res) {
 
   // ④ ニックネーム登録・変更（メンバ用）
   if (action === 'setNickname') {
-    const { email, passphrase, nickname } = req.body;
-    const members = JSON.parse(await kvGet('members') || '[]');
+    const { email, passphrase, nickname } = body;
+    const raw = await kvGet('members');
+    const members = raw ? JSON.parse(raw) : [];
     if (!members.includes(email)) return res.status(403).json({ ok: false, error: 'メンバ登録がありません' });
     const saved = await kvGet('passphrase');
     if (passphrase !== saved) return res.status(403).json({ ok: false, error: '合言葉が違います' });
@@ -73,7 +76,7 @@ export default async function handler(req, res) {
 
   // ⑤ 合言葉変更（admin用）
   if (action === 'setPassphrase') {
-    const { adminPassword, passphrase } = req.body;
+    const { adminPassword, passphrase } = body;
     if (adminPassword !== process.env.ADMIN_PASSWORD)
       return res.status(403).json({ ok: false, error: '管理者パスワードが違います' });
     await kvSet('passphrase', passphrase);
