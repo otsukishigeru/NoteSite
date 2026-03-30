@@ -64,6 +64,17 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, comments });
   }
 
+
+  // ④ コメント一覧取得（admin用）
+  if (action === 'listCommentsAdmin') {
+    const { adminPassword } = body;
+    if (adminPassword !== process.env.ADMIN_PASSWORD)
+      return res.status(403).json({ ok: false, error: '管理者パスワードが違います' });
+    const raw = await kvGet('comments');
+    const comments = raw ? JSON.parse(raw) : [];
+    return res.status(200).json({ ok: true, comments });
+  }
+
   // ③ コメント削除（admin用）
   if (action === 'deleteComment') {
     const { adminPassword, id } = body;

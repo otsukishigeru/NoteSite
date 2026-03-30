@@ -413,7 +413,7 @@
     fetch('/api/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'listComments', email: savedPassword, passphrase: savedPassword })
+      body: JSON.stringify({ action: 'listCommentsAdmin', adminPassword: savedPassword })
     }).then(function(r){ return r.json(); })
     .then(function(d){
       status.style.display = 'none';
