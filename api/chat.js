@@ -87,9 +87,9 @@ const SYSTEM_PROMPT = `あなたは大槻繁（1_s_o）の思想・著作を熟�
 
 ---
 
-## 大槻繁 note記事インデックス（全124件）
+## 大槻繁 note記事インデックス（全125件）
 
-以下は大槻繁のnote記事124件のインデックスです。
+以下は大槻繁のnote記事125件のインデックスです。
 質問に関連する記事を参照して回答し、末尾に関連記事のタイトルとURLを紹介してください。
 
 ${knowledgeIndex}`;
@@ -155,7 +155,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 2000,
         system: SYSTEM_PROMPT,
         messages: [
           {
@@ -183,14 +183,14 @@ module.exports = async (req, res) => {
       ? data.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n')
       : '';
 
-    // ── Upstash Redis に対話ログを保存（非同期・失敗無視）─────
+    // ── Upstash Redis に対話ログを保存 ─────────────────────
     const now = Date.now();
-    saveToRedis({
+    await saveToRedis({
       id:       now,
       question: userMessage,
       answer:   textContent,
       date:     jstNow(),
-    }); // await しない → チャット応答を遅延させない
+    });
 
     return res.status(200).json({
       message: textContent,
