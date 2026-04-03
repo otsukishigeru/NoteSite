@@ -872,6 +872,13 @@ const knowledge = [
     category: "AI時代",
     summary: "AIがもたらす限界費用ゼロ社会の産業構造・競争原理・価値創造への根本的影響を論じる。",
     url: "https://note.com/ichi_s_otsuki/n/n6977fbce4e84"
+  },
+  {
+    num: "125",
+    title: "chidouka-lab.comの構築",
+    category: "AI時代",
+    date: "2026-04-01",
+    url: "https://note.com/ichi_s_otsuki/n/n7fcd1d214d72"
   }
 ];
 
