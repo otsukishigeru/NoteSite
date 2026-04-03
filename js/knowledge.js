@@ -879,6 +879,14 @@ const knowledge = [
     category: "AI時代",
     date: "2026-04-01",
     url: "https://note.com/ichi_s_otsuki/n/n7fcd1d214d72"
+  },
+  {
+    num: "126",
+    title: "ティール思想とアスケル思想の対比",
+    category: "AI時代",
+    date: "2026-04-03",
+    summary: "ピーター・ティールとアマンダ・アスケルの思想対比を通じ、AIの価値観設計をめぐる哲学的対立を考察。AIテクノロジーの社会浸透の方向性を問う。",
+    url: "https://note.com/ichi_s_otsuki/n/nf18fe4ad69e7"
   }
 ];
 
