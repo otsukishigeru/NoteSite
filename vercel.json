@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/carl/:path*",
+      "destination": "https://notesite-carl.vercel.app/:path*"
+    }
+  ]
+}
