@@ -2,10 +2,725 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=/ichi_s_otsuki/">
-<title>chidouka-lab.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="知働化コミュニティ — 知働化活動（探究・実践・啓蒙）に関わっている人々の状況をお知らせし、交流のきっかけを提供するコミュニティサイト。">
+<meta property="og:title"       content="知働化コミュニティ — chidouka-lab.com">
+<meta property="og:description" content="知働化活動に関わる人々をつなぐコミュニティ。大槻繁・野村一行・萩原正義・塩田英二の活動を紹介します。">
+<meta property="og:type"        content="website">
+<title>知働化コミュニティ — chidouka-lab.com</title>
+<style>
+/* ================================================================
+   知働化コミュニティ メインサイト
+   ================================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:          #F4F6F9;
+  --white:       #ffffff;
+  --dark:        #0E1420;
+  --mid:         #1E2A40;
+  --text-main:   #0E1420;
+  --text-sub:    #4A5568;
+  --text-light:  #8A96A8;
+  --border:      #D8DCE6;
+  --shadow-sm:   0 2px 8px rgba(14,20,32,.07);
+  --shadow-md:   0 4px 20px rgba(14,20,32,.12);
+  --shadow-lg:   0 8px 40px rgba(14,20,32,.18);
+  --radius:      12px;
+  --radius-lg:   20px;
+  --max-w:       1040px;
+  --header-h:    64px;
+
+  /* サブサイトカラー */
+  --col-iso:     #1d2f5f;   /* ichi_s_otsuki ネイビー */
+  --col-carl:    #1a4a2e;   /* carl 深緑 */
+  --col-hg:      #5C2407;   /* Hg 焦げ茶 */
+  --col-st:      #3D1558;   /* St 濃い紫 */
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background: var(--bg); color: var(--text-main); line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── スクロールバー ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--border); }
+::-webkit-scrollbar-thumb { background: #8A96A8; border-radius: 3px; }
+
+/* ── フェードイン ── */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ================================================================
+   ヘッダー
+   ================================================================ */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 2px solid var(--dark);
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 24px; height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo-block { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 42px; height: 42px; background: var(--dark); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; font-weight: 900; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(14,20,32,.4);
+}
+.logo-text-block { display: flex; flex-direction: column; line-height: 1.2; }
+.logo-main { font-size: 15px; font-weight: 800; color: var(--dark); }
+.logo-sub  { font-size: 10px; color: var(--text-light); letter-spacing: .02em; }
+
+.header-nav { display: flex; align-items: center; gap: 4px; }
+.nav-link {
+  padding: 6px 12px; border-radius: 20px; font-size: 12px;
+  color: var(--text-sub); transition: background .2s, color .2s; white-space: nowrap;
+}
+.nav-link:hover { background: var(--bg); color: var(--dark); }
+.nav-link.cta {
+  background: var(--dark); color: #fff;
+  font-weight: 600; padding: 7px 16px;
+  box-shadow: 0 2px 8px rgba(14,20,32,.35);
+}
+.nav-link.cta:hover { background: var(--mid); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  width: 32px; cursor: pointer; padding: 4px;
+}
+.hamburger span { display: block; height: 2px; background: var(--dark); border-radius: 2px; transition: .3s; }
+
+/* ================================================================
+   ヒーロー
+   ================================================================ */
+.hero {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 60%, #2D3F6E 100%);
+  padding: 72px 24px 64px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.hero-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center;
+  position: relative;
+}
+.hero-eyebrow {
+  font-size: 10px; letter-spacing: 4px; color: #8EB4E3;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.hero-h1 {
+  font-size: clamp(28px, 4vw, 46px); font-weight: 900;
+  color: #fff; line-height: 1.25; margin-bottom: 18px;
+}
+.hero-h1 em { color: #8EB4E3; font-style: normal; }
+.hero-lead {
+  font-size: 14px; color: rgba(255,255,255,.78); line-height: 1.9; margin-bottom: 32px;
+  max-width: 520px;
+}
+.hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-badge {
+  padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.85);
+  transition: background .2s;
+}
+.hero-badge:hover { background: rgba(255,255,255,.1); }
+
+/* ParadigmIcon ── ヒーロー右に配置 */
+.hero-icon-wrap {
+  flex-shrink: 0; width: 220px; display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+}
+.hero-icon-img {
+  width: 200px; opacity: .55; filter: invert(1) brightness(1.2);
+  transition: opacity .3s;
+}
+.hero-icon-wrap:hover .hero-icon-img { opacity: .80; }
+.hero-icon-caption {
+  font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,.5);
+  text-align: center; text-transform: uppercase;
+}
+
+/* ================================================================
+   コミュニティについて
+   ================================================================ */
+.about-section {
+  max-width: var(--max-w); margin: 0 auto; padding: 56px 24px 0;
+}
+.section-head {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+}
+.section-label {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-light); white-space: nowrap;
+}
+.section-rule { flex: 1; height: 1px; background: var(--border); }
+.section-title { font-size: 20px; font-weight: 800; color: var(--dark); }
+
+.about-band {
+  background: var(--white); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md); padding: 40px 48px;
+  display: grid; grid-template-columns: 1fr 240px; gap: 40px; align-items: center;
+}
+.about-text p {
+  font-size: 14px; color: var(--text-sub); line-height: 1.95; margin-bottom: 14px;
+}
+.about-text strong { color: var(--dark); }
+.about-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.stat-card {
+  background: var(--bg); border-radius: var(--radius); padding: 20px 16px; text-align: center;
+  border: 1px solid var(--border);
+}
+.stat-num { font-size: 32px; font-weight: 900; color: var(--dark); line-height: 1; }
+.stat-label { font-size: 11px; color: var(--text-light); margin-top: 6px; }
+
+/* ================================================================
+   メンバーサブサイト（4枚カード）
+   ================================================================ */
+.members-section {
+  max-width: var(--max-w); margin: 0 auto; padding: 56px 24px 0;
+}
+.member-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+
+/* ─ カード本体 ─ */
+.member-card {
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-md);
+  display: flex; flex-direction: column;
+  transition: transform .25s, box-shadow .25s;
+  text-decoration: none;
+}
+.member-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+
+/* ─ カード上部（サブサイトベースカラー） ─ */
+.card-top {
+  padding: 28px 28px 22px; position: relative; overflow: hidden;
+}
+.card-top::before {
+  content:''; position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E");
+}
+.card-eyebrow {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,.65); margin-bottom: 10px; position: relative;
+}
+.card-name {
+  font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; position: relative;
+}
+.card-role {
+  font-size: 12px; color: rgba(255,255,255,.75); position: relative; line-height: 1.4;
+}
+.card-tagline {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.18);
+  font-size: 13px; color: rgba(255,255,255,.9); font-weight: 600; position: relative;
+  line-height: 1.5;
+}
+
+/* ─ カード下部（白背景） ─ */
+.card-body {
+  background: var(--white); padding: 20px 28px; flex: 1;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.card-desc {
+  font-size: 12px; color: var(--text-sub); line-height: 1.8; flex: 1;
+}
+.card-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.card-chip {
+  font-size: 10px; padding: 3px 10px; border-radius: 20px;
+  font-weight: 600;
+}
+.card-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px; border-top: 1px solid var(--border);
+  font-size: 12px; font-weight: 700;
+}
+.card-cta-arrow { font-size: 16px; transition: transform .2s; }
+.member-card:hover .card-cta-arrow { transform: translateX(4px); }
+
+/* ─ 個別カラー ─ */
+.card-iso  .card-top { background: linear-gradient(135deg, #0f1e3d 0%, #1d2f5f 60%, #2a4280 100%); }
+.card-carl .card-top { background: linear-gradient(135deg, #0d2818 0%, #1a4a2e 60%, #2d6a4f 100%); }
+.card-hg   .card-top { background: linear-gradient(135deg, #2C0F04 0%, #5C2407 60%, #8B4220 100%); }
+.card-st   .card-top { background: linear-gradient(135deg, #1A0830 0%, #3D1558 60%, #6B35A0 100%); }
+
+.card-iso  .card-chip { background: #dce6f4; color: #1d2f5f; }
+.card-carl .card-chip { background: #d8f3dc; color: #1a4a2e; }
+.card-hg   .card-chip { background: #F4DDD0; color: #5C2407; }
+.card-st   .card-chip { background: #EDE0F5; color: #3D1558; }
+
+.card-iso  .card-cta { color: #1d2f5f; }
+.card-carl .card-cta { color: #1a4a2e; }
+.card-hg   .card-cta { color: #5C2407; }
+.card-st   .card-cta { color: #3D1558; }
+
+/* ================================================================
+   お知らせ / コミュニティ情報
+   ================================================================ */
+.info-section {
+  max-width: var(--max-w); margin: 0 auto; padding: 56px 24px 0;
+}
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.info-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); padding: 32px;
+  border-top: 4px solid var(--dark);
+}
+.info-card-title {
+  font-size: 15px; font-weight: 800; color: var(--dark); margin-bottom: 16px;
+}
+.info-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--text-sub); line-height: 1.6;
+}
+.info-item:last-child { border-bottom: none; }
+.info-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--dark);
+  flex-shrink: 0; margin-top: 5px;
+}
+.info-item a { color: var(--dark); font-weight: 600; }
+.info-item a:hover { text-decoration: underline; }
+
+/* ================================================================
+   フッター
+   ================================================================ */
+.site-footer {
+  background: var(--dark); color: rgba(255,255,255,.65);
+  text-align: center; padding: 36px 24px;
+  font-size: 12px; line-height: 2;
+  margin-top: 80px;
+}
+.site-footer a { color: rgba(255,255,255,.65); }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+
+/* ================================================================
+   ページトップ
+   ================================================================ */
+.page-top {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--dark); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: var(--shadow-md);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  cursor: pointer; z-index: 50; border: none;
+}
+.page-top.visible { opacity: 1; pointer-events: auto; }
+.page-top:hover { transform: translateY(-2px); }
+
+/* ================================================================
+   モバイルナビ
+   ================================================================ */
+.mobile-nav {
+  display: none; position: fixed; inset: 0; z-index: 90;
+  background: var(--dark); padding: 80px 32px 32px;
+  flex-direction: column; gap: 4px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  padding: 14px 0; font-size: 16px; color: rgba(255,255,255,.9);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.mobile-nav a.cta { color: #8EB4E3; font-weight: 700; }
+
+/* ================================================================
+   レスポンシブ ≤ 768px
+   ================================================================ */
+@media (max-width: 768px) {
+  :root { --header-h: 56px; }
+  .header-nav { display: none; }
+  .hamburger  { display: flex; }
+
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-icon-wrap { display: none; }
+  .hero { padding: 48px 20px 40px; }
+
+  .about-band { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+  .member-grid { grid-template-columns: 1fr; }
+  .info-grid   { grid-template-columns: 1fr; }
+
+  .about-section, .members-section, .info-section { padding-left: 16px; padding-right: 16px; }
+}
+@media (max-width: 480px) {
+  .about-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
 </head>
 <body>
-<p><a href="/ichi_s_otsuki/">こちらへ移動します...</a></p>
+
+<!-- ================================================================
+     ヘッダー
+     ================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">知</div>
+      <div class="logo-text-block">
+        <span class="logo-main">知働化コミュニティ</span>
+        <span class="logo-sub">chidouka-lab.com</span>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="#about">コミュニティについて</a>
+      <a class="nav-link" href="#members">メンバーサイト</a>
+      <a class="nav-link" href="#info">お知らせ</a>
+      <a class="nav-link" href="ichi_s_otsuki/members.html" target="_blank" rel="noopener">交流メンバ</a>
+      <a class="nav-link cta" href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="#about">コミュニティについて</a>
+  <a href="#members">メンバーサイト</a>
+  <a href="#info">お知らせ</a>
+  <a href="ichi_s_otsuki/members.html" target="_blank" rel="noopener">交流メンバ</a>
+  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">お問い合わせ</a>
+</nav>
+
+<!-- ================================================================
+     ヒーロー
+     ================================================================ -->
+<section class="hero" aria-label="メインビジュアル">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eyebrow">CHIDOUKA COMMUNITY / chidouka-lab.com</p>
+      <h1 class="hero-h1">
+        <em>知働化</em>コミュニティ
+      </h1>
+      <p class="hero-lead">
+        知働化活動（探究・実践・啓蒙など）に関わっている人々の状況をお知らせし、
+        交流のきっかけにしていただくことを意図したコミュニティサイトです。<br>
+        それぞれのメンバーが発信するメッセージを、ここから探索できます。
+      </p>
+      <div class="hero-badges">
+        <a class="hero-badge" href="/ichi_s_otsuki/">大槻繁 ichi_s_otsuki</a>
+        <a class="hero-badge" href="/carl/">野村一行 carl</a>
+        <a class="hero-badge" href="/Hg/">萩原正義 Hg</a>
+        <a class="hero-badge" href="/St/">塩田英二 St</a>
+      </div>
+    </div>
+    <!-- ParadigmIcon — さりげなく右に配置 -->
+    <div class="hero-icon-wrap" aria-hidden="true">
+      <img class="hero-icon-img" src="assets/images/ParadigmIcon.png" alt="人働説から知働説へ">
+      <span class="hero-icon-caption">人働説 → 知働説</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     コミュニティについて
+     ================================================================ -->
+<section id="about" class="about-section">
+  <div class="section-head fade-in">
+    <span class="section-label">About</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">コミュニティについて</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="about-band fade-in">
+    <div class="about-text">
+      <p>
+        <strong>「知働化」</strong>（ちどうか）とは、従来の人月主義的な「人働説」から
+        価値創造を重視する「知働説」へのパラダイムシフトを指す概念です。
+        AI・ソフトウェア工学・組織論・哲学が交差するこの時代において、
+        知働化をテーマに探究・実践・啓蒙を続けるメンバーたちが集まっています。
+      </p>
+      <p>
+        本サイトは各メンバーが発信するnote記事・格言・教えを横断的に紹介し、
+        <strong>知働化に関心を持つ人々の交流のきっかけ</strong>となることを目的としています。
+        知働化研究会（缶詰会）の活動成果もここから確認できます。
+      </p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="stat-num">4</div>
+        <div class="stat-label">メンバーサイト</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">150<span style="font-size:18px">+</span></div>
+        <div class="stat-label">格言・記事</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">207</div>
+        <div class="stat-label">缶詰会 回数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">各サイトで質問可能</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     メンバーサイト（4枚プレビューカード）
+     ================================================================ -->
+<section id="members" class="members-section">
+  <div class="section-head fade-in">
+    <span class="section-label">Members</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">メンバーサイト</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="member-grid">
+
+    <!-- ① 大槻繁 ichi_s_otsuki -->
+    <a href="/ichi_s_otsuki/" class="member-card card-iso fade-in">
+      <div class="card-top">
+        <p class="card-eyebrow">SHIGERU OTSUKI / ichi_s_otsuki</p>
+        <div class="card-name">大槻繁</div>
+        <div class="card-role">知働化経営・思考の技法・ソフトウェア工学・哲学</div>
+        <div class="card-tagline">
+          知働化の知恵を、思考の技法とともに広く伝えるために。
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          note.comに126本の論考を発表。知働化・ソフトウェア工学・哲学・システム学・デザイン学を統合した独自の思想体系を持つ。
+          20の原則とAIへの問答で、知働化の本質を探求します。
+        </p>
+        <div class="card-chips">
+          <span class="card-chip">126本のnote記事</span>
+          <span class="card-chip">20の原則</span>
+          <span class="card-chip">AI問答</span>
+        </div>
+        <div class="card-cta">
+          <span>サイトを開く</span>
+          <span class="card-cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ② 野村一行 carl -->
+    <a href="/carl/" class="member-card card-carl fade-in">
+      <div class="card-top">
+        <p class="card-eyebrow">KAZUYUKI NOMURA / carl / t0rapa</p>
+        <div class="card-name">野村一行</div>
+        <div class="card-role">知働化の思想・ソフトウェア工学・哲学・AI時代</div>
+        <div class="card-tagline">
+          知働化の哲学とAI時代の人間論を、広く伝えるために。
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          note.comに13本の論考を発表。意識・クオリア・4E認知・エナクティヴィズム・AI哲学など、
+          哲学と認知科学とAIが交差する最前線の問いを探求します。
+        </p>
+        <div class="card-chips">
+          <span class="card-chip">13本のnote記事</span>
+          <span class="card-chip">10の原則</span>
+          <span class="card-chip">AI問答</span>
+        </div>
+        <div class="card-cta">
+          <span>サイトを開く</span>
+          <span class="card-cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ③ 萩原正義 Hg -->
+    <a href="/Hg/" class="member-card card-hg fade-in">
+      <div class="card-top">
+        <p class="card-eyebrow">MASAYOSHI HAGIWARA / Hg</p>
+        <div class="card-name">萩原正義</div>
+        <div class="card-role">AI進化論・制約の哲学・理論と実務・システム思考</div>
+        <div class="card-tagline">
+          知働化のアーキテクトの実践の勘所を、広く伝えるために。
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          知働化研究会（缶詰会）の議事録から抽出した15の格言・教え。
+          AIと人間の本質的な違い・制約と創造性・理論と実務の統合・システム全体設計の知恵をまとめます。
+        </p>
+        <div class="card-chips">
+          <span class="card-chip">15の格言</span>
+          <span class="card-chip">缶詰会発言録</span>
+          <span class="card-chip">AI問答</span>
+        </div>
+        <div class="card-cta">
+          <span>サイトを開く</span>
+          <span class="card-cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ④ 塩田英二 St -->
+    <a href="/St/" class="member-card card-st fade-in">
+      <div class="card-top">
+        <p class="card-eyebrow">EIJI SHIOTA / St</p>
+        <div class="card-name">塩田英二</div>
+        <div class="card-role">実践知・技術史・守破離・投資判断・知働化の道</div>
+        <div class="card-tagline">
+          知働化の道（みち）の心構えを、広く伝えるために。
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          知働化研究会（缶詰会）の議事録から抽出した12の格言・教え。
+          情報の実用性・投資タイミング・技術史の視点・守破離の精神にわたる実践知をまとめます。
+        </p>
+        <div class="card-chips">
+          <span class="card-chip">12の格言</span>
+          <span class="card-chip">缶詰会発言録</span>
+          <span class="card-chip">AI問答</span>
+        </div>
+        <div class="card-cta">
+          <span>サイトを開く</span>
+          <span class="card-cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     お知らせ / コミュニティ情報
+     ================================================================ -->
+<section id="info" class="info-section">
+  <div class="section-head fade-in">
+    <span class="section-label">Info</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">お知らせ・コミュニティ情報</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="info-grid fade-in">
+    <div class="info-card">
+      <div class="info-card-title">最新の活動</div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年4月</strong>　萩原正義（Hg）・塩田英二（St）のサイトを公開。缶詰会第200〜207回の格言を掲載しました。</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年4月</strong>　大槻繁（ichi_s_otsuki）のnote最新記事（第126番）を公開。</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年4月</strong>　知働化コミュニティサイト（本サイト）を開設しました。</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span>各サブサイトのAI問答機能で、メンバーの思想・格言に基づいた回答を取得できます。</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">コミュニティリンク</div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><a href="/ichi_s_otsuki/members.html" target="_blank" rel="noopener">交流メンバー一覧 ↗</a>（ichi_s_otsukiサイト内）</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span>知働化研究会（缶詰会）：第207回まで開催（2026年4月現在）</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><a href="http://www.1corp.co.jp" target="_blank" rel="noopener">株式会社一（いち） ↗</a></span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせフォーム ↗</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     フッター
+     ================================================================ -->
+<footer class="site-footer">
+  <p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">知働化コミュニティ</p>
+  <p>
+    <a href="/ichi_s_otsuki/">大槻繁</a>　｜
+    <a href="/carl/">野村一行</a>　｜
+    <a href="/Hg/">萩原正義</a>　｜
+    <a href="/St/">塩田英二</a>
+  </p>
+  <p style="margin-top:10px;">
+    <a href="http://www.1corp.co.jp" target="_blank" rel="noopener">株式会社一（いち）</a>
+    　｜
+    <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+  </p>
+  <p style="margin-top:14px;font-size:10px;opacity:.5;">© 知働化コミュニティ / 株式会社一（いち）</p>
+</footer>
+
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ハンバーガーメニュー
+  const hamburger = document.querySelector('.hamburger');
+  const mobileNav = document.querySelector('.mobile-nav');
+  hamburger?.addEventListener('click', () => {
+    mobileNav?.classList.toggle('open');
+    const spans = hamburger.querySelectorAll('span');
+    if (mobileNav?.classList.contains('open')) {
+      spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+      spans[1].style.opacity   = '0';
+      spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+    } else {
+      spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    }
+  });
+  // モバイルナビのリンクをクリックで閉じる
+  mobileNav?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => mobileNav.classList.remove('open'));
+  });
+
+  // ページトップ
+  const topBtn = document.querySelector('.page-top');
+  window.addEventListener('scroll', () => {
+    topBtn?.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+  topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // スムーズスクロール
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const offset = document.querySelector('.site-header')?.offsetHeight ?? 64;
+      window.scrollTo({ top: target.offsetTop - offset - 8, behavior: 'smooth' });
+      mobileNav?.classList.remove('open');
+    });
+  });
+
+  // フェードイン
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+});
+</script>
 </body>
 </html>
