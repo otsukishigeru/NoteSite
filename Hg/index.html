@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="萩原正義（Hagiwara）の知働化メッセージサイト。知働化研究会のZoom議事録から抽出した15の格言・教えを掲載。AI進化論・制約の哲学・理論と実務・システム思考にわたる実践の勘所を紹介します。">
+<meta property="og:title"       content="萩原正義のメッセージ — 知働化のアーキテクト">
+<meta property="og:description" content="知働化研究会Zoom議事録から抽出した15の格言・実践の勘所を紹介します。">
+<meta property="og:type"        content="website">
+<title>萩原正義のメッセージ — 知働化のアーキテクト</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ================================================================
+     ヘッダー / ナビゲーション
+     ================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">知</div>
+      <div class="logo-text">
+        <span class="logo-main">萩原正義のメッセージ</span>
+        <span class="logo-sub">AI進化論・制約の哲学・理論と実務・システム思考</span>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="#purpose">目的</a>
+      <a class="nav-link" href="#principles">格言・原則</a>
+      <a class="nav-link" href="#ai-chat">AIに質問</a>
+      <a class="nav-link" href="#contact">関連</a>
+      <a class="nav-link" href="https://chidouka-lab.com/ichi_s_otsuki/" target="_blank" rel="noopener">知働化Lab</a>
+      <a class="nav-link cta" href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- モバイルナビ -->
+<nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="#purpose">① このサイトについて</a>
+  <a href="#principles">③ 格言・知働化の原則</a>
+  <a href="#ai-chat">⑤ AIに質問する</a>
+  <a href="#contact">⑥ 関連リンク</a>
+  <a href="https://chidouka-lab.com/ichi_s_otsuki/" target="_blank" rel="noopener">知働化Labトップ</a>
+  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">お問い合わせ</a>
+</nav>
+
+<!-- ================================================================
+     ヒーロー
+     ================================================================ -->
+<section class="hero" aria-label="メインビジュアル">
+  <div class="hero-inner">
+    <div class="hero-text-col">
+      <p class="hero-eyebrow">MASAYOSHI HAGIWARA / CHIDOKA MESSAGES</p>
+      <h1 class="hero-h1">
+        <em>知働化</em>のアーキテクトの<br>実践の勘所を、<br>広く伝えるために。
+      </h1>
+      <p class="hero-lead">
+        萩原正義（Hagiwara）が知働化研究会（缶詰会）で語った15の格言・教え。<br>
+        AI進化論・制約の哲学・理論と実務の統合・システム思考にわたる<br>
+        実践の勘所をこのサイトで紹介します。
+      </p>
+      <div class="hero-btns">
+        <a class="btn-hero-primary" href="#principles">格言・原則を見る</a>
+        <a class="btn-hero-secondary" href="#ai-chat">AIに質問する</a>
+      </div>
+    </div>
+    <div class="hero-cards" aria-hidden="true">
+      <div class="hero-card">
+        <div class="hero-card-label">AI進化論</div>
+        <div class="hero-card-title">AIの時間軸は人間を超える</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">制約の哲学</div>
+        <div class="hero-card-title">制約は方向性を定める枠組みである</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">理論と実務</div>
+        <div class="hero-card-title">実装者のみが知る真の困難</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">システム思考</div>
+        <div class="hero-card-title">局所最適は全体の非効率を生む</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     メインコンテンツ
+     ================================================================ -->
+<main class="main-wrap">
+
+  <!-- ① サイトの目的 -->
+  <section id="purpose" aria-labelledby="purpose-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">①</div>
+      <h2 class="sec-title" id="purpose-heading">このサイトについて</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <div class="purpose-band fade-in">
+      <div class="purpose-text">
+        <p>
+          このサイトは、<strong>萩原正義（Hagiwara）</strong>が
+          知働化研究会（缶詰会）のZoom会合にて語った言葉を分析・抽出し、
+          格言・教えとして広く伝えることを目的としています。
+        </p>
+        <p>
+          萩原正義は、<strong>「知働化」</strong>（ちどうか）の実践的アーキテクトとして、
+          AIと人間の本質的な違い・制約と創造性・理論と実務の統合・システム全体設計など、
+          幅広いテーマについて深く考察してきました。その思想の核心は、
+          「<em style="font-style:normal;color:var(--green-main);">制約の中でこそ実践的思考は価値を生む</em>」
+          という信念にあります。
+        </p>
+        <p>
+          本サイトでは、第200回〜第207回（2025年12月〜2026年4月）の議事録から抽出した
+          <strong>15の格言・教え</strong>と、それに基づくAI問答をご覧いただけます。
+        </p>
+        <a class="btn-note-link" href="#principles">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          15の格言・原則を見る
+        </a>
+      </div>
+      <div class="purpose-note-panel">
+        <div class="note-logo-circle">缶</div>
+        <p>知働化研究会<br>缶詰会<br><br>第200〜207回<br>15の格言収録</p>
+        <a href="#principles">格言を見る ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 主要なメッセージ（原則） -->
+  <section id="principles" aria-labelledby="principles-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">③</div>
+      <h2 class="sec-title" id="principles-heading">主要なメッセージ — 知働化の原則</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <p class="principle-intro fade-in">
+      知働化研究会（缶詰会）Zoom議事録から抽出した<strong>15の格言・教え</strong>です。<br>
+      AI進化論・制約の哲学・理論と実務の統合・システム思考にわたる実践の勘所をまとめました。<br>
+      全文（各格言のメッセージ・解説・出典付き）はPDFでご覧いただけます。
+    </p>
+
+    <div class="principle-grid">
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">01</div>
+        <h3 class="p-card-title">AIの進化は人間の時間軸を超える</h3>
+        <p class="p-card-msg">AIエージェントの自律性は、人間が数日間続けられない作業を継続しながら指数的に進化する。その社会的インパクトを甘く見てはならない。</p>
+        <div class="p-card-source"><span>第200回（2025年12月6日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">02</div>
+        <h3 class="p-card-title">AIと人間の思考は根本的に異なる仕組みで動く</h3>
+        <p class="p-card-msg">AIは結論と論拠を同時に生成するが、人間は論証的・時系列的に思考する。この根本的な違いを理解せずにAIを評価することは無意味である。</p>
+        <div class="p-card-source"><span>第201回（2025年12月20日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">03</div>
+        <h3 class="p-card-title">生産性の向上は、人間の幸福を保証しない</h3>
+        <p class="p-card-msg">AIが生産性を倍増させても、労働時間が短縮されるとは限らない。技術の進化と社会の変化は別の速度で動く。</p>
+        <div class="p-card-source"><span>第201回（2025年12月20日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">04</div>
+        <h3 class="p-card-title">制約こそが現実であり、最適化の出発点である</h3>
+        <p class="p-card-msg">複雑性はすべて単純化できない。リソースの制約は完全には除去できない。その制約の中での最適解を真剣に考えよ。</p>
+        <div class="p-card-source"><span>第203回（2026年1月24日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">05</div>
+        <h3 class="p-card-title">制約は能力を奪うのではなく、その方向性を定める</h3>
+        <p class="p-card-msg">早期に制約を適用するとAIの思考能力は制限されるが、潜在能力は高くなる。制約なき力は方向性を失う。</p>
+        <div class="p-card-source"><span>第204回（2026年2月14日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">06</div>
+        <h3 class="p-card-title">真の困難は、実装者のみが知る</h3>
+        <p class="p-card-msg">プロダクト開発の複雑さとコストは、実際に作った人間にしか理解できない。理論家と実装者の距離を縮めることが組織知性を高める。</p>
+        <div class="p-card-source"><span>第204回（2026年2月14日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">07</div>
+        <h3 class="p-card-title">表面的な自動化に差別化の力はない</h3>
+        <p class="p-card-msg">企業のワークフローにはドメイン固有の知識が深く組み込まれており、単純なコード生成やプロセス自動化だけでは競争優位は生まれない。</p>
+        <div class="p-card-source"><span>第204回（2026年2月14日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">08</div>
+        <h3 class="p-card-title">定量的な指標なくして、因果は見えない</h3>
+        <p class="p-card-msg">メトリクスを持つことで初めて現象の因果構造が可視化される。感覚的な判断だけでは、複雑な現実を正確に把握することはできない。</p>
+        <div class="p-card-source"><span>第204回（2026年2月14日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">09</div>
+        <h3 class="p-card-title">理論と実務の乖離は、繰り返す失敗の温床である</h3>
+        <p class="p-card-msg">教科書に書いていない実務の詳細こそが設計の本質を左右する。現場から離れた知識体系は、何度も同じ失敗を生み出す。</p>
+        <div class="p-card-source"><span>第205回（2026年3月7日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">10</div>
+        <h3 class="p-card-title">自動化の局所最適は、全体の非効率を生む</h3>
+        <p class="p-card-msg">AIで作業を自動生成して人に渡すだけでは、レビューのボトルネックが発生し組織全体の生産性は上がらない。部分の効率化が全体の非効率をもたらす。</p>
+        <div class="p-card-source"><span>第205回（2026年3月7日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">11</div>
+        <h3 class="p-card-title">抽象と具体を結びつけた思想が、実践の羅針盤となる</h3>
+        <p class="p-card-msg">哲学的な思考とシステム設計・産業構造の変革を統合した視点がなければ、本質的な問題解決は難しい。思想は現実を変える力を持つ。</p>
+        <div class="p-card-source"><span>第205回（2026年3月7日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">12</div>
+        <h3 class="p-card-title">高度な技術を導入する前に、基盤を固めよ</h3>
+        <p class="p-card-msg">データ分析基盤が整っていないままAIを導入しても機能しない。基本的な要件が整備されていなければ、高度な技術は砂上の楼閣に終わる。</p>
+        <div class="p-card-source"><span>第205回（2026年3月7日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">13</div>
+        <h3 class="p-card-title">技術が制度を壊すとき、新制度の設計が急務となる</h3>
+        <p class="p-card-msg">コピーコストがゼロになった時代において、知識の価値と権利関係を規定する既存制度は崩壊する。対応を後手にするな。</p>
+        <div class="p-card-source"><span>第206回（2026年3月21日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">14</div>
+        <h3 class="p-card-title">知識の流出こそが、組織の最大リスクである</h3>
+        <p class="p-card-msg">専門知識を持つ熟練者の引退に伴い、暗黙知と文書化されていない技術が失われる。知識の継承と外部化を急げ。</p>
+        <div class="p-card-source"><span>第207回（2026年4月4日）</span></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">15</div>
+        <h3 class="p-card-title">全体を見ることは、捨てる細部を選ぶことから始まる</h3>
+        <p class="p-card-msg">全体像の把握は情報のすべてを確認することではなく、本質的な特徴を選び取り、それ以外を捨てることである。</p>
+        <div class="p-card-source"><span>第207回（2026年4月4日）</span></div>
+      </div>
+
+    </div>
+
+    <div class="principle-footer fade-in">
+      <a class="btn-fill" href="assets/pdfs/Principle.pdf" download>
+        📄 格言・原則集 全15条（PDF）をダウンロード
+      </a>
+    </div>
+  </section>
+
+  <!-- ⑤ AIに質問する -->
+  <section id="ai-chat" aria-labelledby="ai-chat-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑤</div>
+      <h2 class="sec-title" id="ai-chat-heading">AIに質問する</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="chat-section fade-in">
+      <p class="chat-intro">
+        萩原正義の格言・教えについてAIにご質問いただけます。<br>
+        AI進化論・制約の哲学・理論と実務の統合・システム思考・知識継承など、<br>
+        15の格言をもとに回答します。
+      </p>
+      <div class="chat-box">
+        <textarea id="chat-input" class="chat-textarea" rows="4"
+          placeholder="例：AIと人間の思考の違いは何ですか？　/ 制約はなぜ重要なのですか？　/ 理論と実務の乖離をどう解消しますか？"></textarea>
+        <button id="chat-submit" class="btn-fill chat-submit-btn">質問する</button>
+        <div id="chat-response" class="chat-response" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ 関連リンク -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑥</div>
+      <h2 class="sec-title" id="contact-heading">関連リンク</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="contact-section fade-in">
+      <div class="contact-card">
+        <div class="contact-icon" aria-hidden="true">✉</div>
+        <h3>ご質問・ご相談はこちら</h3>
+        <p>
+          知働化・AI導入・組織設計・アーキテクチャに関するご質問、<br>
+          講演・執筆・コンサルティングのご依頼は、<br>
+          株式会社一（いち）のお問い合わせフォームよりお気軽にどうぞ。
+        </p>
+        <a class="btn-contact"
+           href="https://1corp.biz/primary2026/contact.html"
+           target="_blank" rel="noopener">
+          お問い合わせフォームへ →
+        </a>
+        <p class="contact-dest">1corp.biz/primary2026/contact.html</p>
+      </div>
+      <div class="info-card">
+        <h3>著者情報</h3>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>著者：萩原正義（Masayoshi Hagiwara）</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>所属：知働化研究会（缶詰会）</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>収録期間：第200〜207回（2025年12月〜2026年4月）</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>格言数：全15条</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>知働化Labトップ：<a href="https://chidouka-lab.com/ichi_s_otsuki/" target="_blank" rel="noopener">chidouka-lab.com ↗</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <p>© 萩原正義 / 株式会社一（いち）</p>
+  <p>
+    <a href="https://chidouka-lab.com/ichi_s_otsuki/" target="_blank" rel="noopener">知働化Lab</a>
+    　｜
+    <a href="http://www.1corp.co.jp" target="_blank" rel="noopener">www.1corp.co.jp</a>
+    　｜
+    <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+  </p>
+</footer>
+
+<!-- ページトップ -->
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script src="js/main.js"></script>
+<script>
+// ── ⑤ AIチャット ────────────────────────────────────
+(function () {
+  const input  = document.getElementById('chat-input');
+  const btn    = document.getElementById('chat-submit');
+  const output = document.getElementById('chat-response');
+  if (!input || !btn || !output) return;
+
+  function convertLinksAndBreaks(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" rel="noopener" ' +
+        'style="color:var(--green-main);">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  async function sendQuestion() {
+    const message = input.value.trim();
+    if (!message) return;
+
+    btn.disabled = true;
+    output.className = 'chat-response visible loading';
+    output.textContent = '回答を生成しています...';
+
+    try {
+      const res = await fetch('/api/hg/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      output.className = 'chat-response visible';
+      output.innerHTML = convertLinksAndBreaks(data.message || '回答を取得できませんでした。');
+    } catch (e) {
+      output.className = 'chat-response visible error';
+      output.textContent = '申し訳ありません。もう一度お試しください。';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', sendQuestion);
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendQuestion();
+  });
+})();
+</script>
+</body>
+</html>
