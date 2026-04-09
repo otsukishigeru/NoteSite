@@ -4,7 +4,7 @@
 // CORS: chidouka-lab.com からのアクセスを許可
 // =============================================
 
-const knowledge = require('../js/knowledge.js');
+const knowledge = require('../ichi_s_otsuki/js/knowledge.js');
 
 // ── Upstash Redis REST API ヘルパー ─────────────────────────
 const REDIS_LIST_KEY = 'chat:log';
