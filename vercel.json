@@ -1,12 +1,2 @@
 {
-  "rewrites": [
-    {
-      "source": "/carl",
-      "destination": "https://notesite-carl.vercel.app/"
-    },
-    {
-      "source": "/carl/(.*)",
-      "destination": "https://notesite-carl.vercel.app/$1"
-    }
-  ]
 }

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="野村一行（t0rapa）のnote記事を紹介するサイト。知働化・ソフトウェア工学・組織論・哲学・AI時代の人間の役割にまたがる13本の論考と、そこから抽出した原則を掲載しています。">
+<meta property="og:title"       content="野村一行のnoteメッセージ — 知働化の思想">
+<meta property="og:description" content="13本のnote記事から抽出した知働化の知恵・原則を紹介します。">
+<meta property="og:type"        content="website">
+<title>野村一行のnoteメッセージ — 知働化の思想</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* フェードインアニメーション */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ⑤ AIチャット */
+.chat-section { max-width: 720px; margin: 0 auto; }
+.chat-intro { color: var(--text-mid); margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.7; }
+.chat-box { display: flex; flex-direction: column; gap: 1rem; }
+.chat-textarea {
+  width: 100%; padding: .875rem 1rem; border: 2px solid var(--green-pale);
+  border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical;
+  background: #fff; color: var(--text-dark); transition: border-color .2s;
+  box-sizing: border-box;
+}
+.chat-textarea:focus { outline: none; border-color: var(--green-main); }
+.chat-submit-btn { align-self: flex-end; padding: .75rem 2rem; cursor: pointer; }
+.chat-submit-btn:disabled { opacity: .6; cursor: not-allowed; }
+.chat-response {
+  min-height: 4rem; padding: 1.25rem 1.5rem; border-radius: 8px;
+  background: var(--green-bg); border-left: 4px solid var(--green-main);
+  color: var(--text-dark); line-height: 1.8; font-size: .95rem;
+  white-space: pre-wrap; display: none;
+}
+.chat-response.visible { display: block; }
+.chat-response.loading { color: var(--text-mid); font-style: italic; }
+.chat-response.error { border-left-color: #c0392b; background: #fff5f5; color: #c0392b; }
+
+/* PDF サムネイル（画像なし時のフォールバック） */
+.pdf-cover-placeholder {
+  width: 100%; aspect-ratio: 3/4; max-width: 220px;
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+  border-radius: 8px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .75rem;
+  color: #fff; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  transition: transform .2s, box-shadow .2s;
+}
+.pdf-cover-placeholder:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.pdf-cover-placeholder .pdf-ph-icon { font-size: 3rem; }
+.pdf-cover-placeholder .pdf-ph-title { font-size: .85rem; text-align: center; padding: 0 .75rem; line-height: 1.4; }
+.pdf-cover-placeholder .pdf-ph-label {
+  font-size: .7rem; background: rgba(255,255,255,.2);
+  padding: .2rem .6rem; border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     ヘッダー / ナビゲーション
+     ================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">知</div>
+      <div class="logo-text">
+        <span class="logo-main">野村一行のnoteメッセージ</span>
+        <span class="logo-sub">知働化の思想・ソフトウェア工学・哲学・AI時代</span>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="#purpose">目的</a>
+      <a class="nav-link" href="#index">記事一覧</a>
+      <a class="nav-link" href="#principles">原則</a>
+      <a class="nav-link" href="#design">資料</a>
+      <a class="nav-link" href="#ai-chat">AIに質問</a>
+      <a class="nav-link" href="https://chidouka-lab.com/members.html" target="_blank" rel="noopener">交流メンバ</a>
+      <a class="nav-link cta" href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- モバイルナビ -->
+<nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="#purpose">① このサイトについて</a>
+  <a href="#index">② note記事インデックス</a>
+  <a href="#principles">③ 主要なメッセージ</a>
+  <a href="#design">④ デザインされた資料</a>
+  <a href="#ai-chat">⑤ AIに質問する</a>
+  <a href="https://chidouka-lab.com/members.html" target="_blank" rel="noopener">⑥ 交流メンバ</a>
+  <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener" class="cta">⑦ お問い合わせ</a>
+</nav>
+
+<!-- ================================================================
+     ヒーロー
+     ================================================================ -->
+<section class="hero" aria-label="メインビジュアル">
+  <div class="hero-inner">
+    <div class="hero-text-col">
+      <p class="hero-eyebrow">KAZUYUKI NOMURA / NOTE MESSAGES</p>
+      <h1 class="hero-h1">
+        <em>知働化</em>の哲学と<br>AI時代の人間論を、<br>広く伝えるために。
+      </h1>
+      <p class="hero-lead">
+        野村一行（t0rapa）がnote.comに発表してきた13本の論考。<br>
+        知働化・ソフトウェア工学・組織論・哲学にまたがるメッセージを、<br>
+        このサイトでわかりやすく紹介します。
+      </p>
+      <div class="hero-btns">
+        <a class="btn-hero-primary" href="#index">記事一覧を見る</a>
+        <a class="btn-hero-secondary" href="https://note.com/carl" target="_blank" rel="noopener">note.com で読む ↗</a>
+      </div>
+    </div>
+    <div class="hero-cards" aria-hidden="true">
+      <div class="hero-card">
+        <div class="hero-card-label">知働化</div>
+        <div class="hero-card-title">人働説から知働説へ</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">哲学</div>
+        <div class="hero-card-title">パラダイムシフトを生きる思考術</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">組織論</div>
+        <div class="hero-card-title">目的なき知働きは迷走する</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">AI時代</div>
+        <div class="hero-card-title">AIが代替できない人間固有の知働きを磨け</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     メインコンテンツ
+     ================================================================ -->
+<main class="main-wrap">
+
+  <!-- ① サイトの目的 -->
+  <section id="purpose" aria-labelledby="purpose-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">①</div>
+      <h2 class="sec-title" id="purpose-heading">このサイトについて</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <div class="purpose-band fade-in">
+      <div class="purpose-text">
+        <p>
+          このサイトは、<strong>野村一行（t0rapa）</strong>が
+          <a href="https://note.com/carl" target="_blank" rel="noopener" style="color:var(--green-main);">note.com</a>
+          に発表してきた論考・エッセイのメッセージを、より広く、より分かりやすく届けることを目的としています。
+        </p>
+        <p>
+          野村一行は、<strong>「知働化」</strong>（ちどうか）という概念を中心に、ソフトウェア工学・組織論・哲学・AI時代の人間の役割など、
+          幅広いテーマについて深く考察してきました。その思想の核心は、
+          「体を動かす<em style="font-style:normal;color:var(--green-main);">人働き</em>から、
+          知識・思考を働かせる<em style="font-style:normal;color:var(--green-main);">知働き</em>へ」という
+          時代的パラダイムシフトの認識にあります。
+        </p>
+        <p>
+          note.comでの連載は2025年8月から開始され、現在までに<strong>13本</strong>の作品を公開しています。
+          本サイトでは、その記事インデックス・主要な格言と原則・デザインされた資料を
+          ご覧・ご利用いただけます。
+        </p>
+        <a class="btn-note-link" href="https://note.com/carl" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          note.com/carl で全記事を読む
+        </a>
+      </div>
+      <div class="purpose-note-panel">
+        <div class="note-logo-circle">n</div>
+        <p>note.com<br>carl<br><br>2025年8月〜<br>全13本掲載</p>
+        <a href="https://note.com/carl" target="_blank" rel="noopener">記事を読む ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② 記事インデックス -->
+  <section id="index" aria-labelledby="index-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">②</div>
+      <h2 class="sec-title" id="index-heading">note掲載記事インデックス</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <p class="index-intro fade-in">
+      全13本の記事を収録したインデックスPDFをご利用いただけます。
+      以下では注目記事を抜粋して紹介しています。
+    </p>
+
+    <!-- 記事カードは js/articles.js で動的生成 -->
+    <div class="article-grid fade-in" id="article-grid"></div>
+
+    <div class="index-footer fade-in">
+      <a class="btn-outline" href="https://note.com/carl" target="_blank" rel="noopener">
+        note.comですべての記事を見る ↗
+      </a>
+      <a class="btn-fill" href="assets/pdfs/NoteIdx.pdf" download>
+        📄 記事インデックス全13件（PDF）
+      </a>
+    </div>
+  </section>
+
+  <!-- ③ 主要なメッセージ（原則） -->
+  <section id="principles" aria-labelledby="principles-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">③</div>
+      <h2 class="sec-title" id="principles-heading">主要なメッセージ — 知働化の原則</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+    <p class="principle-intro fade-in">
+      13本の記事群から抽出した<strong>10の格言・原則</strong>です。
+      知働化・AI時代・組織論・哲学にわたる知恵をまとめました。<br>
+      全文（各原則のメッセージ・解説・参照元URL付き）はPDFでご覧いただけます。
+    </p>
+
+    <div class="principle-grid">
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">01</div>
+        <h3 class="p-card-title">意識とはAI時代を問い直す哲学的出発点である</h3>
+        <p class="p-card-msg">AIの進化が迫る根本的な問いは「意識とは何か」である。この問いなくして、人間とAIの関係性を真に理解することはできない。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n5443f07c0613" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">02</div>
+        <h3 class="p-card-title">真の知能は世界と関わり、意味を創造し続ける存在である</h3>
+        <p class="p-card-msg">知能の本質は情報処理の速度や量にあるのではなく、世界との関わりの中で意味を創造し続ける能動的な営みにある。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n8cb0445bac18" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">03</div>
+        <h3 class="p-card-title">哲学の問いは「存在」から「知識」へ、そして「心」へと深化する</h3>
+        <p class="p-card-msg">哲学の歴史は問いの深化の歴史である。存在論から認識論へ、そして心の哲学へ。AI時代において、この深化はさらなる問いを要求している。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n5f30cd617f81" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">04</div>
+        <h3 class="p-card-title">AIは道具から思考の協働者へと進化しつつある</h3>
+        <p class="p-card-msg">AIはもはや単なる道具ではなく、人間と思考を共にする協働者へと変わりつつある。この変化が人間の知的役割を根本から問い直している。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/nc8c7713110c0" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">05</div>
+        <h3 class="p-card-title">流暢に答えることと理解していることは本質的に異なる</h3>
+        <p class="p-card-msg">AIが流暢な言語を生成できることと、真に「理解している」こととは本質的に別の問題である。この区別を見失うことが、最も危険な錯誤を生む。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n5f30cd617f81" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">06</div>
+        <h3 class="p-card-title">クオリアは科学的説明が届かない主観的体験の核心である</h3>
+        <p class="p-card-msg">「赤の赤さ」「痛みの痛さ」という主観的体験＝クオリアは、いかなる物理的・計算論的説明によっても完全には捉えられない。これが意識のハード問題の核心である。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/nd3e57c98fe37" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">07</div>
+        <h3 class="p-card-title">意識の本質は、情報の量ではなく統合の度合いにある</h3>
+        <p class="p-card-msg">統合情報理論（IIT）が示すように、意識の豊かさは処理する情報量ではなく、情報がいかに高度に統合されているかによって決まる。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/nbb758b30d31c" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">08</div>
+        <h3 class="p-card-title">認知は脳の中にあるのではなく、身体と世界の相互作用の中にある</h3>
+        <p class="p-card-msg">身体性認知科学の洞察は根本的だ。認知・思考・意識は脳という器官に閉じておらず、身体と環境との絶え間ない相互作用の中でこそ成立する。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n13480d742ed8" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">09</div>
+        <h3 class="p-card-title">「行動しながら世界と関わる」ことが真の知能の姿である</h3>
+        <p class="p-card-msg">真の知能とは、静的な情報処理ではなく、行動を通じて世界と動的に関わり続けることである。この視点がAI研究にも人間論にも根本的転換をもたらす。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n13480d742ed8" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+      <div class="p-card fade-in">
+        <div class="p-card-num">10</div>
+        <h3 class="p-card-title">意識の未完成さこそが、人間に探求の余地を残してくれている</h3>
+        <p class="p-card-msg">意識がいまだ完全には解明されていないという事実は、欠落ではなく豊かさである。この「未完成さ」こそが、人間に永遠の探求と成長の余地を与えている。</p>
+        <div class="p-card-source"><a href="https://note.com/carl/n/n640b4e4fbe2e" target="_blank" rel="noopener">参照元 ↗</a></div>
+      </div>
+
+    </div>
+
+    <div class="principle-footer fade-in">
+      <a class="btn-fill" href="assets/pdfs/Principle.pdf" download>
+        📄 格言・原則集 全10条（PDF）をダウンロード
+      </a>
+    </div>
+  </section>
+
+  <!-- ④ デザインされたメッセージ例 -->
+  <section id="design" aria-labelledby="design-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">④</div>
+      <h2 class="sec-title" id="design-heading">デザインされたメッセージ例</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="design-feature fade-in">
+      <div class="pdf-showcase">
+        <a class="pdf-cover-placeholder" href="assets/pdfs/Museum_of_the_Mind.pdf" target="_blank" rel="noopener" aria-label="Museum of the Mind PDFを開く">
+          <div class="pdf-ph-icon">📄</div>
+          <div class="pdf-ph-title">Museum of the Mind</div>
+          <div class="pdf-ph-label">PDF</div>
+        </a>
+        <p class="pdf-dl-hint">▲ クリックで<span>表示・ダウンロード</span></p>
+      </div>
+      <div class="design-desc-col">
+        <span class="design-label">DESIGNED MESSAGE</span>
+        <h3 class="design-title">Museum of the Mind</h3>
+        <div class="design-body">
+          <p>
+            note連載13本の思想を<strong>NotebookLM</strong>でまとめたスライド資料です。
+            「意識・クオリア・AI・哲学」という野村一行の探求テーマを、
+            図解・格言・ビジュアルを組み合わせてひとつの「心の博物館」として表現しています。
+          </p>
+          <p>
+            意識とはAI時代の哲学的出発点であるという視点から、
+            クオリア・統合情報理論・身体性認知・拡張する心へと
+            思索の旅をたどるデザイン資料です。
+          </p>
+          <p>
+            ボタンからPDFを表示・ダウンロードしてご利用ください。
+          </p>
+        </div>
+        <div class="design-cta">
+          <a class="btn-fill" href="assets/pdfs/Museum_of_the_Mind.pdf" target="_blank" rel="noopener">
+            📄 PDFを表示する
+          </a>
+          <a class="btn-outline" href="assets/pdfs/Museum_of_the_Mind.pdf" download="Museum_of_the_Mind.pdf">
+            ⬇ ダウンロード
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 音声・動画メディアカード -->
+    <div class="media-grid fade-in">
+
+      <!-- 音声ファイル -->
+      <div class="media-card">
+        <div class="media-icon-wrap audio-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+            <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <div class="media-info">
+          <span class="media-type-label">AUDIO</span>
+          <h3 class="media-title">AIとクオリアと<br>拡張する心</h3>
+          <p class="media-desc">
+            NotebookLMが生成した音声解説。AIの進化とクオリア（主観的体験）の問題、
+            そして「拡張する心」という概念を通じて、人間の意識とAIの関係性を語ります。
+          </p>
+          <div class="media-cta">
+            <a class="btn-fill" href="assets/media/AIとクオリアと拡張する心.m4a" target="_blank" rel="noopener">
+              ▶ 再生する
+            </a>
+            <a class="btn-outline" href="assets/media/AIとクオリアと拡張する心.m4a" download="AIとクオリアと拡張する心.m4a">
+              ⬇ ダウンロード
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 動画ファイル -->
+      <div class="media-card">
+        <div class="media-icon-wrap video-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+            <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/>
+          </svg>
+        </div>
+        <div class="media-info">
+          <span class="media-type-label">VIDEO</span>
+          <h3 class="media-title">エンジニアのための哲学：<br>AI時代のツールキット</h3>
+          <p class="media-desc">
+            NotebookLMが生成した動画解説。意識・クオリア・身体性認知・統合情報理論など、
+            エンジニアが知っておくべき哲学的ツールキットをAI時代の文脈で映像解説します。
+          </p>
+          <div class="media-cta">
+            <a class="btn-fill" href="assets/media/エンジニアのための哲学：AI時代のツールキット.mp4" target="_blank" rel="noopener">
+              ▶ 再生する
+            </a>
+            <a class="btn-outline" href="assets/media/エンジニアのための哲学：AI時代のツールキット.mp4" download="エンジニアのための哲学：AI時代のツールキット.mp4">
+              ⬇ ダウンロード
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /media-grid -->
+  </section>
+
+  <!-- ⑤ AIに質問する -->
+  <section id="ai-chat" aria-labelledby="ai-chat-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑤</div>
+      <h2 class="sec-title" id="ai-chat-heading">AIに質問する</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="chat-section fade-in">
+      <p class="chat-intro">
+        野村一行（t0rapa）の思想・著作についてAIにご質問いただけます。<br>
+        意識・クオリア・4E認知・AI哲学・心の哲学史など、
+        13本のnote記事をもとに回答します。
+      </p>
+      <div class="chat-box">
+        <textarea id="chat-input" class="chat-textarea" rows="4"
+          placeholder="例：クオリアとは何ですか？　/ 意識のハード問題を教えてください　/ System 0とはどういう概念ですか？"></textarea>
+        <button id="chat-submit" class="btn-fill chat-submit-btn">質問する</button>
+        <div id="chat-response" class="chat-response" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ お問い合わせ -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="sec-head fade-in">
+      <div class="sec-num" aria-hidden="true">⑥</div>
+      <h2 class="sec-title" id="contact-heading">お問い合わせ</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
+    </div>
+
+    <div class="contact-section fade-in">
+      <div class="contact-card">
+        <div class="contact-icon" aria-hidden="true">✉</div>
+        <h3>ご質問・ご相談はこちら</h3>
+        <p>
+          意識・クオリア・AI哲学・認知科学・心の哲学に関するご質問、<br>
+          講演・執筆・コンサルティングのご依頼は、<br>
+          株式会社一（いち）のお問い合わせフォームよりお気軽にどうぞ。
+        </p>
+        <a class="btn-contact"
+           href="https://1corp.biz/primary2026/contact.html"
+           target="_blank" rel="noopener">
+          お問い合わせフォームへ →
+        </a>
+        <p class="contact-dest">1corp.biz/primary2026/contact.html</p>
+      </div>
+      <div class="info-card">
+        <h3>関連リンク</h3>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>note記事：<a href="https://note.com/carl" target="_blank" rel="noopener">note.com/carl ↗</a></span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>著者：野村一行（t0rapa）</span>
+        </div>
+        <div class="info-row">
+          <div class="info-dot" aria-hidden="true"></div>
+          <span>note開始：2025年8月 / 全13本掲載（2026年4月現在）</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <p>© 野村一行 / 株式会社一（いち）</p>
+  <p>
+    <a href="https://note.com/carl" target="_blank" rel="noopener">note.com/carl</a>
+    　｜
+    <a href="http://www.1corp.co.jp" target="_blank" rel="noopener">www.1corp.co.jp</a>
+    　｜
+    <a href="https://1corp.biz/primary2026/contact.html" target="_blank" rel="noopener">お問い合わせ</a>
+  </p>
+</footer>
+
+<!-- ページトップ -->
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script src="js/articles.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ── ⑤ AIチャット ────────────────────────────────────
+(function () {
+  const input  = document.getElementById('chat-input');
+  const btn    = document.getElementById('chat-submit');
+  const output = document.getElementById('chat-response');
+  if (!input || !btn || !output) return;
+
+  function convertLinksAndBreaks(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" rel="noopener" ' +
+        'style="color:var(--green-main);">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  async function sendQuestion() {
+    const message = input.value.trim();
+    if (!message) return;
+
+    btn.disabled = true;
+    output.className = 'chat-response visible loading';
+    output.textContent = '回答を生成しています...';
+
+    try {
+      const res = await fetch('/api/carl/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      output.className = 'chat-response visible';
+      output.innerHTML = convertLinksAndBreaks(data.message || '回答を取得できませんでした。');
+    } catch (e) {
+      output.className = 'chat-response visible error';
+      output.textContent = '申し訳ありません。もう一度お試しください。';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  btn.addEventListener('click', sendQuestion);
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendQuestion();
+  });
+})();
+</script>
+</body>
+</html>
