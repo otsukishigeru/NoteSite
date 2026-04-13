@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI-COCOMO コストモデル シミュレータ — 生成AI時代のソフトウェア開発コスト推定ツール">
+<title>AI-COCOMO コストモデル シミュレータ — chidouka-lab.com</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">AI</div>
+      <div>
+        <div class="logo-text">AI-COCOMO</div>
+        <div class="logo-sub">chidouka-lab.com</div>
+      </div>
+    </div>
+    <a class="back-link" href="/">← コミュニティTOP</a>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <p class="hero-eyebrow">AI-COCOMO / chidouka-lab.com</p>
+  <h1 class="hero-h1"><em>AI-COCOMO</em> コストモデル シミュレータ</h1>
+  <p class="hero-lead">生成AI時代のソフトウェア開発コスト推定ツール</p>
+</section>
+
+<!-- メインコンテンツ -->
+<div class="main-wrap">
+
+  <!-- 左カラム：入力エリア -->
+  <div class="input-col">
+
+    <!-- モデル概要（折りたたみ） -->
+    <div class="panel overview-section">
+      <div class="panel-header" data-toggle="overview-body">
+        <span class="panel-icon">📐</span>
+        <span class="panel-title">モデル概要</span>
+        <span class="toggle-arrow">▾</span>
+      </div>
+      <div class="panel-body" id="overview-body">
+        <p style="font-size:13px;color:var(--text-sub);margin-bottom:14px;">
+          AI-COCOMOは、COCOMO IIモデルを生成AI時代に拡張したコストモデルです。<br>
+          総コストを以下の3層に分離して算出します。
+        </p>
+        <div class="formula-block">
+<span class="formula-main">C_total = C_human + C_AI + C_integration</span>
+
+<span class="formula-note">・C_human（人的コスト）：COCOMO IIの工数算出にAI代替率αを適用
+・C_AI（AIコスト）  ：トークン消費量 + ライセンス費用
+・C_integration    ：AIとの協働レビュー・修正のオーバーヘッド</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- プリセット -->
+    <div class="panel preset-section">
+      <div class="panel-header" data-toggle="preset-body">
+        <span class="panel-icon">⚡</span>
+        <span class="panel-title">プリセット</span>
+        <span class="toggle-arrow">▾</span>
+      </div>
+      <div class="panel-body hidden" id="preset-body">
+        <div class="preset-list">
+          <button class="preset-btn" id="preset-current">
+            知働化サイト（現状AI支援）
+            <small>FP=36, α=60%, Claude Sonnet相当</small>
+          </button>
+          <button class="preset-btn" id="preset-maxai">
+            知働化サイト（AI最大委任）
+            <small>FP=36, α=85%, 高頻度AI活用</small>
+          </button>
+          <button class="preset-btn" id="preset-noai">
+            従来型開発（AI無し）
+            <small>FP=36, α=0%, ウォーターフォール相当</small>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- パラメータ タブ -->
+    <div class="panel tabs-wrap">
+      <div class="tab-list">
+        <button class="tab-btn active" data-tab-group="params" data-tab="basic">基本パラメータ</button>
+        <button class="tab-btn" data-tab-group="params" data-tab="sf">スケールファクタ</button>
+        <button class="tab-btn" data-tab-group="params" data-tab="em">コストドライバ</button>
+        <button class="tab-btn" data-tab-group="params" data-tab="ai">AI設定</button>
+      </div>
+
+      <!-- タブ1: 基本パラメータ -->
+      <div class="tab-panel active" data-tab-group="params" id="tab-basic">
+
+        <!-- FP -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              ファンクションポイント数
+              <span class="param-symbol">FP</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">IFPUG法で計測したシステムの機能規模。画面・帳票・ファイル・インターフェースなどの複雑度を数値化したもの。</span>
+              </span>
+            </div>
+            <span class="param-value" id="val-fp"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-fp">
+        </div>
+
+        <!-- 言語 -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              言語（CF: FP→KLOC換算係数）
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">言語ごとの1FPあたりのソースコード行数（SLOC）。Python=15, TypeScript=20, Go=30, C#=46, Java=53, C=128。</span>
+              </span>
+            </div>
+          </div>
+          <select class="param-select" id="sel-lang"></select>
+        </div>
+
+        <!-- 再利用率 -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              再利用率
+              <span class="param-symbol">R_reuse</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">OSS・AI生成テンプレート・既存コードの再利用割合。高いほど実質的な開発規模が小さくなりコスト減。</span>
+              </span>
+            </div>
+            <span class="param-value" id="val-rreuse"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-rreuse">
+        </div>
+
+        <!-- 人件費単価 -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              人件費単価（¥/時間）
+              <span class="param-symbol">LaborRate</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">人月÷160時間で算出。例：人月100万円＝6,250円/h。フリーランス上位層は12,500円/h程度。</span>
+              </span>
+            </div>
+            <span class="param-value" id="val-labor"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-labor">
+        </div>
+
+        <!-- 為替レート -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              為替レート（¥/$）
+              <span class="param-symbol">FX</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">AIのAPI料金はドル建てのため、円換算に使用します。</span>
+              </span>
+            </div>
+            <span class="param-value" id="val-fx"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-fx">
+        </div>
+      </div>
+
+      <!-- タブ2: スケールファクタ -->
+      <div class="tab-panel" data-tab-group="params" id="tab-sf">
+        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">値が小さいほど良い（コスト削減）。0=Very High ～ 5=Very Low</p>
+
+        <!-- PREC -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              先例性
+              <span class="param-symbol">PREC</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">類似プロジェクトの経験。経験豊富なほどコスト減。0=非常に高い経験, 5=全く未経験</span>
+              </span>
+            </div>
+            <span class="param-value sf-label" id="sf-label-prec"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-prec">
+        </div>
+
+        <!-- FLEX -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              開発柔軟性
+              <span class="param-symbol">FLEX</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">要求仕様の柔軟さ。柔軟なほどコスト減。0=非常に柔軟, 5=厳格に固定</span>
+              </span>
+            </div>
+            <span class="param-value sf-label" id="sf-label-flex"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-flex">
+        </div>
+
+        <!-- RESL -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              リスク解消
+              <span class="param-symbol">RESL</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">技術リスクの事前解消度合い。0=完全解消, 5=未解消のリスク多数</span>
+              </span>
+            </div>
+            <span class="param-value sf-label" id="sf-label-resl"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-resl">
+        </div>
+
+        <!-- TEAM -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              チーム結束度
+              <span class="param-symbol">TEAM</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">チームの連携・コミュニケーション品質。0=非常に高い結束, 5=バラバラで低摩擦</span>
+              </span>
+            </div>
+            <span class="param-value sf-label" id="sf-label-team"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-team">
+        </div>
+
+        <!-- PMAT -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              プロセス成熟度
+              <span class="param-symbol">PMAT</span>
+              <span class="tooltip-wrap">
+                <button class="tooltip-btn" tabindex="0">?</button>
+                <span class="tooltip-box">開発プロセスの成熟度（テスト自動化・CI/CD等）。0=非常に成熟, 5=未整備</span>
+              </span>
+            </div>
+            <span class="param-value sf-label" id="sf-label-pmat"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-pmat">
+        </div>
+
+        <div class="tab-summary" id="sf-summary"></div>
+      </div>
+
+      <!-- タブ3: コストドライバ（EM） -->
+      <div class="tab-panel" data-tab-group="params" id="tab-em">
+        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">0.50〜1.50。1.0が基準。高い能力系EMは1.0未満にするとコスト減。</p>
+
+        <!-- RELY -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              要求される信頼性
+              <span class="param-symbol">RELY</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">障害時の影響度。ミッションクリティカルほど高くなりコスト増。</span></span>
+            </div>
+            <span class="param-value" id="val-rely"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-rely">
+        </div>
+
+        <!-- DATA -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              データ複雑度
+              <span class="param-symbol">DATA</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">データ構造の複雑さ。RDB設計や大量データは高め。</span></span>
+            </div>
+            <span class="param-value" id="val-data"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-data">
+        </div>
+
+        <!-- CPLX -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              製品複雑度
+              <span class="param-symbol">CPLX</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">処理ロジックの複雑さ。アルゴリズム・分岐・再帰が多いほど高い。</span></span>
+            </div>
+            <span class="param-value" id="val-cplx"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-cplx">
+        </div>
+
+        <!-- RUSE -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              要求される再利用性
+              <span class="param-symbol">RUSE</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">他プロジェクトでの再利用要求度。汎用ライブラリ化が必要な場合は高め。</span></span>
+            </div>
+            <span class="param-value" id="val-ruse"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-ruse">
+        </div>
+
+        <!-- PLAT -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              プラットフォーム制約
+              <span class="param-symbol">PLAT</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">メモリ・性能などの実行環境制約。組み込み系は高い。</span></span>
+            </div>
+            <span class="param-value" id="val-plat"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-plat">
+        </div>
+
+        <!-- PCAP -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              人員能力
+              <span class="param-symbol">PCAP</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">開発者の能力レベル。高能力（0.70〜0.80）はコスト大幅減。</span></span>
+            </div>
+            <span class="param-value" id="val-pcap"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-pcap">
+        </div>
+
+        <!-- PEXP -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              人員経験
+              <span class="param-symbol">PEXP</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">ドメイン知識・業務経験の深さ。豊富な経験でコスト減。</span></span>
+            </div>
+            <span class="param-value" id="val-pexp"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-pexp">
+        </div>
+
+        <!-- AILX（新規） -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              AI活用習熟度 ✨
+              <span class="param-symbol">AILX</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">【AI-COCOMO拡張】プロンプト設計・AIツール運用力。高習熟（低EM値）でコスト削減。また統合コストの算出にも使用。</span></span>
+            </div>
+            <span class="param-value" id="val-ailx"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-ailx">
+        </div>
+
+        <!-- TOOL -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              ツール成熟度
+              <span class="param-symbol">TOOL</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">CI/CD・AI統合開発環境の整備度。整備されているほどコスト減。</span></span>
+            </div>
+            <span class="param-value" id="val-tool"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-tool">
+        </div>
+
+        <!-- SCED -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              スケジュール圧縮
+              <span class="param-symbol">SCED</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">納期制約。無理な圧縮はコスト増。通常は1.00が基準。</span></span>
+            </div>
+            <span class="param-value" id="val-sced"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-sced">
+        </div>
+
+        <div class="tab-summary" id="em-summary"></div>
+      </div>
+
+      <!-- タブ4: AI設定 -->
+      <div class="tab-panel" data-tab-group="params" id="tab-ai">
+
+        <!-- α -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              AI代替率
+              <span class="param-symbol">α</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIが代替する作業の割合。コーディング工程では最大70〜95%程度まで。0%がAI無し。</span></span>
+            </div>
+            <span class="param-value" id="val-alpha"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-alpha">
+        </div>
+
+        <!-- P_out -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              出力トークン単価
+              <span class="param-symbol">P_out</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIモデルの出力トークン単価（$/MTok）。Claude Sonnet 4系=15程度、GPT-4o=10程度。</span></span>
+            </div>
+            <span class="param-value" id="val-pout"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-pout">
+        </div>
+
+        <!-- P_in -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              入力トークン単価
+              <span class="param-symbol">P_in</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIモデルの入力トークン単価（$/MTok）。通常は出力の1/4程度。</span></span>
+            </div>
+            <span class="param-value" id="val-pin"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-pin">
+        </div>
+
+        <!-- γ -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              イテレーション係数
+              <span class="param-symbol">γ</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AI出力の修正・再生成の往復回数。高いほどトークン消費増。典型値は2〜3。</span></span>
+            </div>
+            <span class="param-value" id="val-gamma"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-gamma">
+        </div>
+
+        <!-- L_AI_m -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              AIライセンス費（¥/月）
+              <span class="param-symbol">L_AI_m</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIツールの月額ライセンス費。Claude Pro=¥3,000、Copilot=¥2,200、複数ツール併用で¥10,000以上も。</span></span>
+            </div>
+            <span class="param-value" id="val-lai_m"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-lai_m">
+        </div>
+
+        <!-- Months -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              プロジェクト期間
+              <span class="param-symbol">Months</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">ライセンス費の累計算出用。開発期間（月）を設定してください。</span></span>
+            </div>
+            <span class="param-value" id="val-months"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-months">
+        </div>
+
+        <!-- δ -->
+        <div class="param-row">
+          <div class="param-label-row">
+            <div class="param-name">
+              統合OH率
+              <span class="param-symbol">δ</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIとの協働によるレビュー・修正オーバーヘッド割合。AIを深く使うほど高くなる傾向。</span></span>
+            </div>
+            <span class="param-value" id="val-delta"></span>
+          </div>
+          <input type="range" class="param-slider" id="sl-delta">
+        </div>
+      </div>
+
+    </div><!-- /tabs-wrap -->
+  </div><!-- /input-col -->
+
+  <!-- 右カラム：結果パネル -->
+  <div class="result-panel">
+
+    <!-- メトリクスカード -->
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-header">
+        <span class="panel-icon">💰</span>
+        <span class="panel-title">推定コスト</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card" style="grid-column: 1 / -1;">
+          <div class="metric-label">TOTAL COST</div>
+          <div class="metric-value big" id="res-total">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">調整規模</div>
+          <div class="metric-value" style="font-size:14px;" id="res-size">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">基本工数</div>
+          <div class="metric-value" style="font-size:14px;" id="res-pm">—</div>
+        </div>
+        <div class="metric-card" style="grid-column: 1 / -1;">
+          <div class="metric-label">AI無し比 節約率</div>
+          <div class="metric-save" id="res-save">—</div>
+        </div>
+      </div>
+
+      <!-- 横棒グラフ -->
+      <div class="bar-section">
+        <div class="bar-title">コスト構成比</div>
+        <div class="bar-wrap">
+          <div class="bar-seg bar-human" id="bar-human" style="width:60%"></div>
+          <div class="bar-seg bar-ai"    id="bar-ai"    style="width:30%"></div>
+          <div class="bar-seg bar-integ" id="bar-integ" style="width:10%"></div>
+        </div>
+        <div class="bar-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-human)"></div><span id="leg-human">人的</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-ai)"></div><span id="leg-ai">AI</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--c-integ)"></div><span id="leg-integ">統合</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 計算過程（折りたたみ） -->
+    <div class="panel">
+      <div class="panel-header" data-toggle="calc-detail-wrap">
+        <span class="panel-icon">🔢</span>
+        <span class="panel-title">計算過程</span>
+        <span class="toggle-arrow">▾</span>
+      </div>
+      <div id="calc-detail-wrap">
+        <div class="calc-detail" id="calc-detail"></div>
+      </div>
+    </div>
+
+  </div><!-- /result-panel -->
+
+</div><!-- /main-wrap -->
+
+<!-- フッター -->
+<footer class="site-footer">
+  <p>© 1_s_o 2026 — <a href="/">chidouka-lab.com</a></p>
+  <p>本モデルはCOCOMO II（B. Boehm）を基盤に、生成AI時代向けに拡張したものです</p>
+  <p style="margin-top:10px;"><a href="/">← コミュニティTOPへ戻る</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
