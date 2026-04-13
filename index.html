@@ -157,6 +157,35 @@ img { display: block; max-width: 100%; }
 }
 
 /* ================================================================
+   Community of Communities（連携コミュニティ）
+   ================================================================ */
+.coc-section {
+  max-width: var(--max-w); margin: 0 auto; padding: 56px 24px 0;
+}
+.coc-lead {
+  font-size: 13px; color: var(--text-light); margin-top: -8px; margin-bottom: 20px;
+}
+.coc-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+}
+.coc-card {
+  display: flex; gap: 20px; align-items: flex-start;
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  padding: 24px 28px; text-decoration: none;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.coc-card:hover {
+  transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent);
+}
+.coc-card-logo { width: 56px; height: 56px; flex-shrink: 0; }
+.coc-card-logo svg { width: 100%; height: 100%; }
+.coc-card-name { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 3px; }
+.coc-card-url  { font-size: 10px; color: var(--accent); letter-spacing: .5px; margin-bottom: 10px; }
+.coc-card-desc { font-size: 12px; color: var(--text-sub); line-height: 1.85; margin-bottom: 12px; }
+.coc-card-cta  { font-size: 11px; font-weight: 700; color: var(--accent); }
+
+/* ================================================================
    コミュニティについて
    ================================================================ */
 .about-section {
@@ -383,6 +412,7 @@ img { display: block; max-width: 100%; }
       </div>
     </div>
     <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="#coc">連携コミュニティ</a>
       <a class="nav-link" href="#about">コミュニティについて</a>
       <a class="nav-link" href="#members">メンバーサイト</a>
       <a class="nav-link" href="#info">お知らせ</a>
@@ -397,6 +427,7 @@ img { display: block; max-width: 100%; }
 </header>
 
 <nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="#coc">連携コミュニティ</a>
   <a href="#about">コミュニティについて</a>
   <a href="#members">メンバーサイト</a>
   <a href="#info">お知らせ</a>
@@ -432,6 +463,54 @@ img { display: block; max-width: 100%; }
       <img class="hero-icon-img" src="assets/images/ParadigmIcon.png" alt="人働説から知働説へ">
       <span class="hero-icon-caption">人働説 → 知働説</span>
     </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     Community of Communities（連携コミュニティ）
+     ================================================================ -->
+<section id="coc" class="coc-section">
+  <div class="section-head fade-in">
+    <span class="section-label">Network</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">the Community of Communities</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="coc-lead fade-in">知働化コミュニティと問題意識・活動を共有する、連携コミュニティ・研究機関のご紹介。</p>
+  <div class="coc-grid">
+
+    <!-- メタウェア研究所 -->
+    <a href="https://www.metaware-lab.org/" target="_blank" rel="noopener" class="coc-card fade-in">
+      <div class="coc-card-logo" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="295 165 430 450" role="img" aria-label="メタウェア研究所ロゴ">
+          <!-- 外形（ヘキサゴン） -->
+          <path d="M 710.348,510.311 515.832,598.719 313.610,498.054 312.928,286.746 509.900,179.968 711.340,271.374 Z" fill="rgba(255,255,255,0.07)" />
+          <!-- 上面 -->
+          <path d="m 511.283,194.848 182.4,84.4 -189.373,106.829 -171.727,-94.629 z" fill="#4a4a8a" />
+          <!-- 左面 -->
+          <polygon points="325.1,301.9 563.1,432.6 326.9,484.9" fill="#3d3d78" />
+          <!-- 右（明） -->
+          <path d="m 699.490,290.310 0.911,210.920 -116.318,-61.708 z" fill="#a0a8b8" />
+          <!-- 琥珀 -->
+          <polygon points="570.1,443.3 335.6,495.3 512.6,583.3" fill="#e39c35" />
+          <!-- 右下（暗） -->
+          <path d="M 584.288,439.537 700.457,501.305 526.1,582.1 Z" fill="#2a2b5c" />
+        </svg>
+      </div>
+      <div>
+        <p class="coc-card-name">メタウェア研究所</p>
+        <p class="coc-card-url">metaware-lab.org ↗</p>
+        <p class="coc-card-desc">
+          人が持つ認識の前提の違いを社会システム再設計のツールとして活用する民間研究機関。
+          組織・法律・教育などの制度設計に認知的多様性の視点を持ち込む探究を続けている。
+          知働化コミュニティと深い問題意識を共有する連携機関。
+        </p>
+        <span class="coc-card-cta">サイトを開く →</span>
+      </div>
+    </a>
+
+    <!-- 今後の連携コミュニティはここに追加 -->
+
   </div>
 </section>
 
