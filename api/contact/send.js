@@ -111,7 +111,7 @@ module.exports = async function handler(req, res) {
   }
 
   console.log(`contact saved. mail_sent=${mailResult.sent}${mailResult.reason ? ' reason='+mailResult.reason : ''}`);
-  return res.status(200).json({ ok: true, mail_sent: mailResult.sent });
+  return res.status(200).json({ ok: true, mail_sent: mailResult.sent, debug_reason: mailResult.reason || null });
 };
 
 function esc(str) {
