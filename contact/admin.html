@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お問い合わせ管理 | 知働化コミュニティ</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans',sans-serif;background:#f4f7fb;color:#1a2740;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:40px 20px}
+h1{font-size:1.4rem;color:#1d2f5f;margin-bottom:24px}
+.login-box{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:36px;max-width:400px;margin:80px auto}
+.login-box h2{font-size:1.1rem;margin-bottom:16px;color:#1d2f5f}
+input[type=password]{width:100%;padding:.7rem 1rem;border:2px solid #c8d8ee;border-radius:8px;font-size:1rem;margin-bottom:12px;box-sizing:border-box}
+input:focus{outline:none;border-color:#2952a3}
+.btn{padding:.7rem 2rem;background:#2952a3;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer}
+.btn:hover{background:#1d3d8a}
+.err{color:#c0392b;font-size:.88rem;margin-top:8px}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 8px rgba(0,0,0,.08);padding:20px 24px;margin-bottom:16px;border-left:4px solid #2952a3}
+.card-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;font-size:.85rem;color:#5a7aa0}
+.card-meta strong{color:#1d2f5f;font-size:.95rem}
+.card-subject{font-weight:700;font-size:1rem;margin-bottom:8px;color:#1d2f5f}
+.card-msg{font-size:.93rem;line-height:1.75;white-space:pre-wrap;color:#2a3f5f;background:#f8fafd;padding:12px 14px;border-radius:6px}
+.badge{display:inline-block;background:#e8f0fb;color:#2952a3;font-size:.75rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;margin-left:6px}
+.header-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.count-label{font-size:.9rem;color:#5a7aa0}
+.logout-btn{background:none;border:1px solid #c8d8ee;border-radius:6px;padding:.3rem .8rem;font-size:.83rem;color:#5a7aa0;cursor:pointer}
+.logout-btn:hover{background:#f0f4fb}
+.empty{text-align:center;padding:60px;color:#8aa0bc;font-size:.95rem}
+</style>
+</head>
+<body>
+
+<!-- ログイン画面 -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>🔒 お問い合わせ管理</h2>
+    <input type="password" id="pw-input" placeholder="管理者パスワード" autocomplete="current-password">
+    <button class="btn" id="login-btn">ログイン</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- 一覧画面 -->
+<div id="list-screen" style="display:none">
+  <div class="wrap">
+    <div class="header-bar">
+      <h1>📬 お問い合わせ一覧</h1>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="count-label" id="count-label"></span>
+        <button class="logout-btn" id="logout-btn">ログアウト</button>
+      </div>
+    </div>
+    <div id="list-area"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var pw = '';
+  var loginScreen = document.getElementById('login-screen');
+  var listScreen  = document.getElementById('list-screen');
+  var pwInput     = document.getElementById('pw-input');
+  var loginBtn    = document.getElementById('login-btn');
+  var loginErr    = document.getElementById('login-err');
+  var listArea    = document.getElementById('list-area');
+  var countLabel  = document.getElementById('count-label');
+  var logoutBtn   = document.getElementById('logout-btn');
+
+  function doLogin(){
+    pw = pwInput.value;
+    if(!pw){ loginErr.textContent='パスワードを入力してください'; return; }
+    loginErr.textContent='確認中...';
+    fetch('/api/contact/list',{ headers:{'x-admin-password':pw} })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(!d.ok){ loginErr.textContent='パスワードが違います'; pw=''; return; }
+        loginScreen.style.display='none';
+        listScreen.style.display='';
+        renderList(d.items);
+      })
+      .catch(function(){ loginErr.textContent='接続エラー'; });
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  pwInput.addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+  logoutBtn.addEventListener('click', function(){
+    pw=''; pwInput.value='';
+    listScreen.style.display='none';
+    loginScreen.style.display='';
+    loginErr.textContent='';
+  });
+
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderList(items){
+    countLabel.textContent = items.length + '件';
+    if(!items.length){
+      listArea.innerHTML='<div class="empty">まだお問い合わせはありません。</div>';
+      return;
+    }
+    listArea.innerHTML = items.map(function(c){
+      var orgBadge = c.org ? '<span class="badge">'+esc(c.org)+'</span>' : '';
+      return '<div class="card">' +
+        '<div class="card-meta">' +
+          '<span><strong>'+esc(c.name)+'</strong>'+orgBadge+'</span>' +
+          '<span><a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></span>' +
+          '<span>'+esc(c.date)+'</span>' +
+        '</div>' +
+        '<div class="card-subject">'+esc(c.subject)+'</div>' +
+        '<div class="card-msg">'+esc(c.message)+'</div>' +
+        '</div>';
+    }).join('');
+  }
+})();
+</script>
+</body>
+</html>
