@@ -1,10 +1,8 @@
 // =============================================
 // api/contact/send.js — お問い合わせフォーム送信
 // 1) Upstash Redis に常に保存（バックアップ）
-// 2) nodemailer + Gmail SMTP でメール送信（GMAIL_APP_PASSWORD が設定済みの場合）
+// 2) Resend API でメール送信（RESEND_API_KEY が設定済みの場合）
 // =============================================
-
-const nodemailer = require('nodemailer');
 
 const TO_EMAIL  = 'otsuki.s.1corp@gmail.com';
 const SITE_NAME = '知働化コミュニティ';
@@ -21,7 +19,6 @@ async function saveToRedis(entry) {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
     });
-    // 最大500件保持
     await fetch(`${url}/ltrim/${REDIS_KEY}/0/499`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -31,17 +28,16 @@ async function saveToRedis(entry) {
   }
 }
 
-// ── メール送信 ────────────────────────────────────────────────
+// ── Resend でメール送信 ───────────────────────────────────────
 async function sendMail(entry) {
-  const gmailUser = process.env.GMAIL_USER;
-  const gmailPass = process.env.GMAIL_APP_PASSWORD;
-  if (!gmailUser || !gmailPass) {
-    console.warn('GMAIL_APP_PASSWORD not set — skipping email');
-    return { sent: false, reason: 'no_credentials' };
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY not set — skipping email');
+    return { sent: false, reason: 'no_api_key' };
   }
 
   const { name, email, org, subject, message, date } = entry;
-  const orgLine = org
+  const orgRow = org
     ? `<tr><td style="padding:10px 12px;background:#f0f4f8;font-weight:700;width:130px;border:1px solid #dde6f4;">会社名・所属</td><td style="padding:10px 12px;border:1px solid #dde6f4;">${esc(org)}</td></tr>`
     : '';
 
@@ -51,27 +47,33 @@ async function sendMail(entry) {
   <table style="width:100%;border-collapse:collapse;margin-top:20px;">
     <tr><td style="padding:10px 12px;background:#f0f4f8;font-weight:700;width:130px;border:1px solid #dde6f4;">お名前</td><td style="padding:10px 12px;border:1px solid #dde6f4;">${esc(name)}</td></tr>
     <tr><td style="padding:10px 12px;background:#f0f4f8;font-weight:700;border:1px solid #dde6f4;">返信先</td><td style="padding:10px 12px;border:1px solid #dde6f4;"><a href="mailto:${esc(email)}">${esc(email)}</a></td></tr>
-    ${orgLine}
+    ${orgRow}
     <tr><td style="padding:10px 12px;background:#f0f4f8;font-weight:700;border:1px solid #dde6f4;">件名</td><td style="padding:10px 12px;border:1px solid #dde6f4;">${esc(subject)}</td></tr>
     <tr><td style="padding:10px 12px;background:#f0f4f8;font-weight:700;border:1px solid #dde6f4;vertical-align:top;">メッセージ</td><td style="padding:10px 12px;border:1px solid #dde6f4;white-space:pre-wrap;">${esc(message)}</td></tr>
   </table>
   <p style="margin-top:24px;font-size:12px;color:#888;">受信日時: ${date}</p>
 </div>`;
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: gmailUser, pass: gmailPass },
+  const r = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from:     'onboarding@resend.dev',
+      to:       [TO_EMAIL],
+      reply_to: email,
+      subject:  `[${SITE_NAME}] ${subject}`,
+      html,
+      text: `お名前: ${name}\n返信先: ${email}\n${org ? `所属: ${org}\n` : ''}件名: ${subject}\n\n${message}\n\n受信: ${date}`,
+    }),
   });
 
-  await transporter.sendMail({
-    from:    `"${SITE_NAME}" <${gmailUser}>`,
-    to:      TO_EMAIL,
-    replyTo: email,
-    subject: `[${SITE_NAME}] ${subject}`,
-    html,
-    text: `お名前: ${name}\n返信先: ${email}\n${org ? `所属: ${org}\n` : ''}件名: ${subject}\n\n${message}\n\n受信: ${date}`,
-  });
-
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`Resend ${r.status}: ${txt}`);
+  }
   return { sent: true };
 }
 
@@ -98,10 +100,10 @@ module.exports = async function handler(req, res) {
     date: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
   };
 
-  // 1) Redis に保存（常に実行）
+  // 1) Redis に保存
   await saveToRedis(entry);
 
-  // 2) メール送信（失敗してもフォームはOKを返す）
+  // 2) メール送信
   let mailResult = { sent: false, reason: 'not_attempted' };
   try {
     mailResult = await sendMail(entry);
