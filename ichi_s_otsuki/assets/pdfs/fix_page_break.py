@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-NoteIdx.pdf の126番と127番が別ページになっているのを修正する。
-- 現行18ページのうち、ページ1〜16（カバー＋項目1〜125）を保持
-- 126番と127番を同一ページに配置した新ページを生成して追加
-- 計17ページのPDFとして出力
+NoteIdx.pdf の最終ページ（126番＋127番）をフォント修正版に差し替える。
+
+入力 17ページ構成:
+  index 0     = カバー
+  index 1〜15 = 項目1〜125
+  index 16    = 項目126＋127（CIDフォントで文字間隔が崩れている）
+
+出力 17ページ構成:
+  index 0     = カバー（変更なし）
+  index 1〜15 = 項目1〜125（変更なし）
+  index 16    = 項目126＋127（TrueTypeフォントで再生成）
 """
 
 import io, os
@@ -14,28 +21,31 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfbase.ttfonts import TTFont
 from pypdf import PdfReader, PdfWriter
 
-pdfmetrics.registerFont(UnicodeCIDFont('HeiseiKakuGo-W5'))
-pdfmetrics.registerFont(UnicodeCIDFont('HeiseiMin-W3'))
-G = 'HeiseiKakuGo-W5'
-M = 'HeiseiMin-W3'
+# ── フォント登録（TrueType / 既存ページに近い文字間隔） ─────────────────────
+GOTHIC_PATH = '/Library/Fonts/Microsoft/MS Gothic.ttf'
+MINCHO_PATH = '/Library/Fonts/Microsoft/MS Mincho.ttf'
+pdfmetrics.registerFont(TTFont('MSGothic', GOTHIC_PATH))
+pdfmetrics.registerFont(TTFont('MSMincho', MINCHO_PATH))
+
+G = 'MSGothic'   # ゴシック体（タイトル・メタ・URL・フッター）
+M = 'MSMincho'   # 明朝体（本文）
 
 PAGE_W, PAGE_H = A4
 MAR = 20 * mm
 
 
-def make_footer(page_offset: int):
-    """最終PDF内での正しいページ番号を表示するフッター関数を返す"""
+def make_footer(page_number: int):
+    """指定ページ番号を表示するフッター関数を返す"""
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont(G, 8)
         canvas.setFillColor(colors.HexColor('#8AAAC8'))
-        page_num = doc.page + page_offset
         canvas.drawCentredString(
             PAGE_W / 2, 12 * mm,
-            f'note 作品インデックス（作成日順）- {page_num} -'
+            f'note 作品インデックス（作成日順）- {page_number} -'
         )
         canvas.restoreState()
     return footer
@@ -68,7 +78,7 @@ def build_combined_last_page(page_number: int) -> bytes:
     )
 
     story = [
-        # ── 126番 ──────────────────────────────────────────────
+        # ── 126番 ──────────────────────────────────────────────────────────
         Paragraph('126. ティール思想とアスケル思想の対比', no_style),
         HRFlowable(width='100%', thickness=0.5, color=colors.HexColor('#1C3050')),
         Spacer(1, 1 * mm),
@@ -83,7 +93,7 @@ def build_combined_last_page(page_number: int) -> bytes:
         ),
         HRFlowable(width='100%', thickness=0.3, color=colors.HexColor('#1C3050')),
         Spacer(1, 4 * mm),
-        # ── 127番 ──────────────────────────────────────────────
+        # ── 127番 ──────────────────────────────────────────────────────────
         Paragraph(
             '127. AIトークンエコノミー'
             '　— 知働化サイトのコストモデル（AI-COCOMO）を事例として',
@@ -108,10 +118,7 @@ def build_combined_last_page(page_number: int) -> bytes:
         HRFlowable(width='100%', thickness=0.3, color=colors.HexColor('#1C3050')),
     ]
 
-    # page_number はこのサブドキュメントでの doc.page (=1) に対するオフセット
-    offset = page_number - 1
-    footer_fn = make_footer(offset)
-    doc.build(story, onFirstPage=footer_fn, onLaterPages=footer_fn)
+    doc.build(story, onFirstPage=make_footer(page_number), onLaterPages=make_footer(page_number))
     return buf.getvalue()
 
 
@@ -123,31 +130,22 @@ def main():
     total = len(reader.pages)
     print(f'現行ページ数: {total}')
 
-    # 現行PDF構成:
-    #   index 0        = カバー
-    #   index 1〜15    = 項目1〜125（15ページ）
-    #   index 16       = 項目126のみ（空白が多い）
-    #   index 17       = 項目127のみ（patch_noteidx.py で追加）
-    #
-    # 修正後:
-    #   index 0        = カバー
-    #   index 1〜15    = 項目1〜125
-    #   index 16       = 項目126＋127（新規生成）  ← ページ番号17
-
-    keep_until = total - 2  # 16ページ（index 0〜15）を保持
-    new_last_page_number = keep_until + 1  # 17
+    # ページ0〜(total-2) を保持し、最終ページを新規生成版に差し替える
+    keep_until = total - 1          # 16（最終ページ=index 16 を除く）
+    new_page_number = keep_until + 1  # 17
 
     writer = PdfWriter()
     for i in range(keep_until):
         writer.add_page(reader.pages[i])
 
-    combined = PdfReader(io.BytesIO(build_combined_last_page(new_last_page_number)))
+    combined = PdfReader(io.BytesIO(build_combined_last_page(new_page_number)))
     writer.add_page(combined.pages[0])
 
     with open(path, 'wb') as f:
         writer.write(f)
 
-    print(f'NoteIdx.pdf 更新完了: {total} ページ → {new_last_page_number} ページ')
+    print(f'NoteIdx.pdf 更新完了: 最終ページをTrueTypeフォントで再生成')
+    print(f'ページ数: {total} ページ（変更なし）')
     print(f'出力先: {path}')
 
 
