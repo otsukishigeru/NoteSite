@@ -1,2 +1,10 @@
 {
+  "headers": [
+    {
+      "source": "/ichi_s_otsuki/assets/pdfs/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
+    }
+  ]
 }
