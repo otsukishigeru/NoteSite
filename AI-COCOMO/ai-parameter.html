@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI-COCOMO AIパラメータ診断 — Q&A形式で組織のAI活用レベルを分析し、最適なパラメータ値を提案します">
+<title>AI-COCOMO AIパラメータ診断 — chidouka-lab.com</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ================================================================
+   AIパラメータ診断ウィザード — 固有スタイル
+   ================================================================ */
+
+/* ヒーロー */
+.diag-hero {
+  background: linear-gradient(135deg, #0E1E32 0%, #0B2040 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 36px 24px 28px;
+  text-align: center;
+}
+.diag-hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cocomo-accent);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.diag-hero h1 {
+  font-size: clamp(18px, 4vw, 24px);
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+.diag-hero p {
+  font-size: 13px;
+  color: var(--text-sub);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+.diag-hero .param-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.param-chip {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(91,164,207,.15);
+  color: var(--cocomo-accent);
+  border: 1px solid rgba(91,164,207,.3);
+  font-weight: 600;
+}
+
+/* メインラップ */
+.wizard-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 16px 72px;
+}
+
+/* ── プログレスバー ── */
+.progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 28px;
+  padding: 0 4px;
+}
+.prog-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.prog-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  color: var(--text-light);
+  background: var(--bg);
+  transition: all .3s;
+}
+.prog-circle.active {
+  border-color: var(--cocomo-accent);
+  color: var(--cocomo-accent);
+  background: rgba(91,164,207,.12);
+  box-shadow: 0 0 0 3px rgba(91,164,207,.15);
+}
+.prog-circle.done {
+  border-color: var(--cocomo-green);
+  color: var(--cocomo-green);
+  background: rgba(82,183,136,.12);
+}
+.prog-label {
+  font-size: 9px;
+  color: var(--text-light);
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.prog-label.active { color: var(--cocomo-accent); font-weight: 700; }
+.prog-label.done   { color: var(--cocomo-green); }
+.prog-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin-bottom: 14px;
+  transition: background .3s;
+  min-width: 16px;
+}
+.prog-line.done { background: var(--cocomo-green); }
+
+/* ── ウィザードセクション ── */
+.wizard-section {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.wizard-section.active { display: block; }
+
+.sec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.sec-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 10px;
+  background: rgba(91,164,207,.15);
+  color: var(--cocomo-accent);
+  border: 1px solid rgba(91,164,207,.25);
+  letter-spacing: .04em;
+}
+.sec-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 22px;
+  line-height: 1.65;
+  border-left: 3px solid rgba(91,164,207,.3);
+  padding-left: 10px;
+}
+.sec-desc strong { color: var(--cocomo-accent); }
+
+/* ── 質問ブロック ── */
+.q-block {
+  margin-bottom: 26px;
+}
+.q-block:last-child { margin-bottom: 0; }
+
+.q-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  line-height: 1.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.q-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  background: var(--cocomo-accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── 選択肢 ── */
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .18s, background .18s;
+  background: var(--bg);
+  user-select: none;
+}
+.opt:hover {
+  border-color: var(--cocomo-accent);
+  background: rgba(91,164,207,.05);
+}
+.opt.selected {
+  border-color: var(--cocomo-accent);
+  background: rgba(91,164,207,.10);
+}
+.opt-radio {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all .18s;
+  position: relative;
+}
+.opt.selected .opt-radio {
+  border-color: var(--cocomo-accent);
+  background: var(--cocomo-accent);
+}
+.opt.selected .opt-radio::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.opt-body {
+  font-size: 12.5px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+.opt.selected .opt-body { color: var(--text-main); }
+.opt-body strong { font-weight: 700; }
+.opt-note {
+  display: block;
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* ── ナビゲーション ── */
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0 0;
+}
+.btn-wiz {
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  font-family: inherit;
+}
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-sub);
+}
+.btn-back:hover { border-color: var(--text-sub); color: var(--text-main); }
+.btn-next {
+  background: var(--cocomo-accent);
+  color: #fff;
+  min-width: 120px;
+}
+.btn-next:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+.btn-next:disabled { opacity: .35; cursor: not-allowed; }
+.step-counter {
+  font-size: 11px;
+  color: var(--text-light);
+  letter-spacing: .04em;
+}
+
+/* ── 結果パネル ── */
+#result-panel { display: none; }
+#result-panel.show { display: block; }
+
+.result-head {
+  background: linear-gradient(135deg, #0E1E32, #0A2848);
+  border: 1px solid rgba(91,164,207,.3);
+  border-radius: var(--radius);
+  padding: 28px 24px 22px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.result-head-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+.result-head-level {
+  font-size: 13px;
+  color: var(--cocomo-accent);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.result-head-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.result-note {
+  background: rgba(91,164,207,.07);
+  border: 1px solid rgba(91,164,207,.2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.75;
+}
+.result-note strong { color: var(--cocomo-accent); }
+
+.result-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-light);
+  margin: 20px 0 10px;
+}
+
+.param-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+@media (max-width: 480px) { .param-grid { grid-template-columns: 1fr; } }
+
+.param-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 15px;
+  transition: border-color .2s;
+}
+.param-card:hover { border-color: rgba(91,164,207,.35); }
+.param-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.param-card-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.param-card-sym {
+  font-size: 10.5px;
+  color: var(--cocomo-accent);
+  font-weight: 700;
+}
+.param-card-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 3px 0 4px;
+  line-height: 1.1;
+}
+.param-card-desc {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+.lv-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.lv-good { background: rgba(82,183,136,.15); color: var(--cocomo-green); }
+.lv-mid  { background: rgba(233,196,106,.15); color: var(--cocomo-yellow); }
+.lv-bad  { background: rgba(231,111,81,.15); color: var(--cocomo-red); }
+
+.apply-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin-top: 20px;
+}
+.apply-box p {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 14px;
+  line-height: 1.65;
+}
+.btn-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 32px;
+  background: var(--cocomo-accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+}
+.btn-apply:hover { opacity: .88; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(91,164,207,.3); }
+.apply-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-light);
+}
+.btn-retry {
+  margin-top: 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-sub);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+}
+.btn-retry:hover { border-color: var(--text-sub); color: var(--text-main); }
+
+/* 通知バナー */
+.notice-bar {
+  background: rgba(82,183,136,.12);
+  border: 1px solid rgba(82,183,136,.25);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--cocomo-green);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">AI</div>
+      <div>
+        <div class="logo-text">AI-COCOMO</div>
+        <div class="logo-sub">chidouka-lab.com</div>
+      </div>
+    </div>
+    <a class="back-link" href="./">← シミュレータへ</a>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<div class="diag-hero">
+  <div class="diag-hero-eyebrow">AI-COCOMO / AIパラメータ診断</div>
+  <h1>🔍 AIパラメータ診断ツール</h1>
+  <p>Q&amp;A形式で組織・チームのAI活用状況を分析し、<br>AI-COCOMOシミュレータの推奨パラメータ値を自動算出します</p>
+  <div class="param-chips">
+    <span class="param-chip">人的担当率 1-α</span>
+    <span class="param-chip">AI習熟度 AILX</span>
+    <span class="param-chip">イテレーション係数 γ</span>
+    <span class="param-chip">統合OH率 δ</span>
+    <span class="param-chip">トークン単価 P_out/P_in</span>
+    <span class="param-chip">ライセンス費 L_AI</span>
+    <span class="param-chip">ツール成熟度 TOOL</span>
+  </div>
+</div>
+
+<!-- ウィザード本体 -->
+<div class="wizard-wrap">
+
+  <!-- プログレスバー -->
+  <div class="progress-bar-wrap" id="prog-bar"></div>
+
+  <!-- ── STEP 1: AI活用の現状 ── -->
+  <div class="wizard-section active" id="step-1">
+    <div class="sec-header">
+      <div class="sec-title">💼 AI活用の現状</div>
+      <span class="sec-badge">STEP 1 / 5</span>
+    </div>
+    <p class="sec-desc">現在の開発プロジェクトにおける AI の活用状況を教えてください。<br>
+      <strong>人的担当率（1-α）</strong> の推奨値を算出します。<br>
+      <em style="font-size:11px;color:var(--text-light);">人的担当率＝人間が担当する作業比率。高いほどAI活用が少なく人的コストが増大します。</em>
+    </p>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span>現在の開発でAIをどのように活用していますか？（最も近いものを選択）</div>
+      <div class="opts" data-q="q1">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>使用していない</strong> — AIツールは業務に使っていない（情報収集・Web検索のみ含む）</div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>補助的利用</strong> — チャット質問・ドキュメント参照など補助ツールとして軽く活用。コード生成はほぼしない</div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>部分的委任</strong> — コーディングの30〜50%をAIに委任。スニペット生成・テスト生成・定型処理などに活用</div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>積極的委任</strong> — コーディングの50〜80%をAIが担う。人間はレビュー・指示・設計判断が中心</div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>AI主導開発</strong> — AIエージェントを活用し開発の80%以上をAI主導で進める。人間は監督・承認役</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span>AI が生成したコード・成果物の品質（軽微な修正以内でそのまま使えた割合）はどのくらいですか？</div>
+      <div class="opts" data-q="q2">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>10%未満</strong> — ほとんど使い物にならず大幅な修正が必要。方向性の参考程度</div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>10〜40%</strong> — かなりの修正が必要。部分的に使えるコードが得られる</div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>40〜60%</strong> — 半分程度はそのまま、または軽微修正で使える</div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>60〜80%</strong> — 大半がそのまま使えるか軽微修正（変数名・コメント程度）で済む</div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>80%以上</strong> — ほぼそのまま使える高品質な出力が継続的に得られる</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: AI活用習熟度 ── -->
+  <div class="wizard-section" id="step-2">
+    <div class="sec-header">
+      <div class="sec-title">🧠 AI活用習熟度</div>
+      <span class="sec-badge">STEP 2 / 5</span>
+    </div>
+    <p class="sec-desc">プロンプト設計スキルと使用経験から習熟度を評価します。<br>
+      <strong>AILX（AI活用習熟度 EM）</strong> の推奨値を算出します。<br>
+      <em style="font-size:11px;color:var(--text-light);">AILX は EM（工数乗数）です。低いほど習熟度が高くコスト削減効果が大きくなります（0.50〜1.50）。</em>
+    </p>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">3</span>プロンプト設計・AIツール活用の技術レベルは？</div>
+      <div class="opts" data-q="q3">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>入門レベル</strong> — 基本的な質問・指示のみ。試行錯誤が多く、AIの回答をほぼそのまま受け取る
+            <span class="opt-note">目安 AILX ≈ 1.30</span>
+          </div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>初級レベル</strong> — コードや仕様をコンテキストとして与えて質問できる。役割・制約の明示は不十分
+            <span class="opt-note">目安 AILX ≈ 1.10</span>
+          </div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>中級レベル</strong> — 役割・目的・制約を明示した構造化プロンプトを設計できる。アウトプット形式も制御可能
+            <span class="opt-note">目安 AILX ≈ 0.90</span>
+          </div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>上級レベル</strong> — Chain-of-Thought・Few-shot・システムプロンプト設計・タスク分解など高度なテクニックを使いこなす
+            <span class="opt-note">目安 AILX ≈ 0.75</span>
+          </div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>専門家レベル</strong> — AIエージェントの設計・オーケストレーション・カスタムツール統合・評価フレームワーク構築ができる
+            <span class="opt-note">目安 AILX ≈ 0.60</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">4</span>Claude・GPT・Copilot等のAI開発ツールを業務で使用してきた期間は？</div>
+      <div class="opts" data-q="q4">
+        <div class="opt" data-val="0"><div class="opt-radio"></div><div class="opt-body"><strong>3ヶ月未満</strong> — 使い始めたばかり</div></div>
+        <div class="opt" data-val="1"><div class="opt-radio"></div><div class="opt-body"><strong>3〜6ヶ月</strong> — 基本的な使い方に慣れてきた</div></div>
+        <div class="opt" data-val="2"><div class="opt-radio"></div><div class="opt-body"><strong>6ヶ月〜1年</strong> — 日常的に活用している</div></div>
+        <div class="opt" data-val="3"><div class="opt-radio"></div><div class="opt-body"><strong>1〜2年</strong> — 実務での経験が豊富</div></div>
+        <div class="opt" data-val="4"><div class="opt-radio"></div><div class="opt-body"><strong>2年以上</strong> — AIツール活用のベテラン</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: 作業効率 ── -->
+  <div class="wizard-section" id="step-3">
+    <div class="sec-header">
+      <div class="sec-title">⚙️ AI作業効率</div>
+      <span class="sec-badge">STEP 3 / 5</span>
+    </div>
+    <p class="sec-desc">AIとのインタラクション効率と協働オーバーヘッドを評価します。<br>
+      <strong>イテレーション係数（γ）</strong> と <strong>統合OH率（δ）</strong> を算出します。
+    </p>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">5</span>1機能・1タスクあたり、「プロンプト → AI出力 → 確認・修正 → 再プロンプト」のサイクルを平均何回繰り返しますか？</div>
+      <div class="opts" data-q="q5">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>1〜2回</strong> — AIが一発でほぼ完成形を出すことが多い。プロンプトが高精度
+            <span class="opt-note">γ = 1.0</span>
+          </div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>3〜4回</strong> — 数回の修正で完成する。概ね効率的
+            <span class="opt-note">γ = 2.0</span>
+          </div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>5〜6回</strong> — かなりのやり取りが必要。指示の調整に時間がかかる
+            <span class="opt-note">γ = 3.0</span>
+          </div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>7〜10回</strong> — 試行錯誤が多い。期待する出力を得るのに苦労する
+            <span class="opt-note">γ = 4.0</span>
+          </div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>10回以上</strong> — 大量の試行錯誤が日常的に発生する
+            <span class="opt-note">γ = 5.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">6</span>AI生成コードのレビュー・統合・テスト・修正に費やす工数は、全開発工数のどのくらいですか？</div>
+      <div class="opts" data-q="q6">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>5%未満</strong> — 自動テスト・CI/CDが充実しており確認工数が最小化できている
+            <span class="opt-note">δ = 5%</span>
+          </div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>5〜10%</strong> — 軽微なレビューで済む。AI生成物の品質が安定している
+            <span class="opt-note">δ = 8%</span>
+          </div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>10〜20%</strong> — 明らかに確認・修正工数が増えている。レビューがボトルネックになることもある
+            <span class="opt-note">δ = 15%</span>
+          </div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>20〜30%</strong> — かなりの工数をAI成果物の確認・修正に費やしている
+            <span class="opt-note">δ = 22%</span>
+          </div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>30%以上</strong> — AI協働オーバーヘッドが非常に大きい。AI化のROIが低下している可能性あり
+            <span class="opt-note">δ = 28%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: AIコスト ── -->
+  <div class="wizard-section" id="step-4">
+    <div class="sec-header">
+      <div class="sec-title">💰 AIコスト設定</div>
+      <span class="sec-badge">STEP 4 / 5</span>
+    </div>
+    <p class="sec-desc">使用するAIモデルとライセンスコストを設定します。<br>
+      <strong>トークン単価（P_out/P_in）</strong> と <strong>月額ライセンス費（L_AI_m）</strong> を算出します。
+    </p>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">7</span>主に使用するAIモデル（またはサービス）は？</div>
+      <div class="opts" data-q="q7">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>Claude Sonnet 系</strong> — Claude 3.5 Sonnet / Claude Sonnet 4 など（中位・高コスパモデル）
+            <span class="opt-note">P_out = $15/MTok ・ P_in = $3.75/MTok</span>
+          </div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>Claude Opus 系</strong> — Claude 3 Opus / Claude Opus 4（最高性能・高コストモデル）
+            <span class="opt-note">P_out = $75/MTok ・ P_in = $15/MTok</span>
+          </div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>GPT-4o / Gemini 1.5 Pro</strong> — OpenAI・Google 中上位モデル
+            <span class="opt-note">P_out = $10/MTok ・ P_in = $2.5/MTok</span>
+          </div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>GPT-4o mini / Gemini Flash 系</strong> — 軽量・低コストモデル
+            <span class="opt-note">P_out = $0.6/MTok ・ P_in = $0.15/MTok</span>
+          </div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>ローカルLLM / 無料モデル</strong> — API課金なし（Ollama・無料枠のみ等）
+            <span class="opt-note">P_out = $0 ・ P_in = $0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">8</span>プロジェクトで利用するAI開発ツールの月額ライセンス費（概算）は？</div>
+      <div class="opts" data-q="q8">
+        <div class="opt" data-val="0"><div class="opt-radio"></div><div class="opt-body"><strong>¥0</strong> — 無料プランのみ使用</div></div>
+        <div class="opt" data-val="1"><div class="opt-radio"></div><div class="opt-body"><strong>〜¥5,000</strong> — 個人プラン1〜2ツール（Claude Pro ¥3,000、GitHub Copilot ¥1,300 等）</div></div>
+        <div class="opt" data-val="2"><div class="opt-radio"></div><div class="opt-body"><strong>¥5,000〜¥15,000</strong> — 複数ツール利用・一部チームプラン</div></div>
+        <div class="opt" data-val="3"><div class="opt-radio"></div><div class="opt-body"><strong>¥15,000〜¥50,000</strong> — チーム・プロプラン（Claude Team等）</div></div>
+        <div class="opt" data-val="4"><div class="opt-radio"></div><div class="opt-body"><strong>¥50,000以上</strong> — エンタープライズプラン・大規模ライセンス</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: 開発環境・期間 ── -->
+  <div class="wizard-section" id="step-5">
+    <div class="sec-header">
+      <div class="sec-title">🛠️ 開発環境・プロジェクト期間</div>
+      <span class="sec-badge">STEP 5 / 5</span>
+    </div>
+    <p class="sec-desc">ツール整備度とプロジェクト期間を設定します。<br>
+      <strong>TOOL（ツール成熟度 EM）</strong> と <strong>プロジェクト期間（Months）</strong> を算出します。
+    </p>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">9</span>CI/CD・AI統合開発環境・テスト自動化の整備状況は？</div>
+      <div class="opts" data-q="q9">
+        <div class="opt" data-val="0">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>ほぼ未整備</strong> — 手動デプロイ中心、テスト自動化なし、AIツール統合なし
+            <span class="opt-note">TOOL ≈ 1.25（高EM→コスト増）</span>
+          </div>
+        </div>
+        <div class="opt" data-val="1">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>基本整備済み</strong> — 基本的なCI/CD、コード補完ツール（Copilot等）は導入済み
+            <span class="opt-note">TOOL ≈ 1.10</span>
+          </div>
+        </div>
+        <div class="opt" data-val="2">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>標準整備</strong> — CI/CD完備、AI支援コードレビュー・テスト生成も活用
+            <span class="opt-note">TOOL ≈ 0.90</span>
+          </div>
+        </div>
+        <div class="opt" data-val="3">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>高度整備</strong> — AI統合の自動化パイプライン、セキュリティスキャン、AIテストカバレッジ管理
+            <span class="opt-note">TOOL ≈ 0.75</span>
+          </div>
+        </div>
+        <div class="opt" data-val="4">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><strong>AI-first環境</strong> — フルAI駆動DevOps、AIエージェントによる自律的コード管理
+            <span class="opt-note">TOOL ≈ 0.60</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">10</span>対象プロジェクトの開発期間は？（AIライセンス費の累計算出に使用）</div>
+      <div class="opts" data-q="q10">
+        <div class="opt" data-val="0"><div class="opt-radio"></div><div class="opt-body"><strong>1〜2ヶ月</strong> — 短期スプリント・PoC</div></div>
+        <div class="opt" data-val="1"><div class="opt-radio"></div><div class="opt-body"><strong>3〜4ヶ月</strong> — 小〜中規模プロジェクト</div></div>
+        <div class="opt" data-val="2"><div class="opt-radio"></div><div class="opt-body"><strong>5〜6ヶ月</strong> — 中規模プロジェクト</div></div>
+        <div class="opt" data-val="3"><div class="opt-radio"></div><div class="opt-body"><strong>7〜12ヶ月</strong> — 大規模プロジェクト</div></div>
+        <div class="opt" data-val="4"><div class="opt-radio"></div><div class="opt-body"><strong>12ヶ月以上</strong> — 大規模・長期プロジェクト</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ナビゲーション -->
+  <div class="wizard-nav" id="wizard-nav">
+    <button class="btn-wiz btn-back" id="btn-back" style="visibility:hidden">← 戻る</button>
+    <span class="step-counter" id="step-counter">1 / 5</span>
+    <button class="btn-wiz btn-next" id="btn-next" disabled>次へ →</button>
+  </div>
+
+  <!-- ── 結果パネル ── -->
+  <div id="result-panel">
+
+    <div class="result-head">
+      <div class="result-head-title">🎯 AIパラメータ診断結果</div>
+      <div class="result-head-level" id="res-level">—</div>
+      <div class="result-head-sub" id="res-sub">—</div>
+    </div>
+
+    <div class="result-note" id="res-note"></div>
+
+    <div class="result-section-title">🤖 AI固有パラメータ</div>
+    <div class="param-grid" id="grid-ai"></div>
+
+    <div class="result-section-title">🛠️ 補完パラメータ（コストドライバ連携）</div>
+    <div class="param-grid" id="grid-other"></div>
+
+    <div class="apply-box">
+      <p>これらの推奨値をシミュレータに一括適用します。<br>
+         スケールファクタ・人員能力など非AI系パラメータは現在の設定値を維持します。</p>
+      <button class="btn-apply" id="btn-apply">🚀 シミュレータに適用する</button>
+      <div class="apply-note">適用後、シミュレータ画面でパラメータを個別に調整できます</div>
+      <br>
+      <button class="btn-retry" id="btn-retry">↩ 診断をやり直す</button>
+    </div>
+
+  </div><!-- /result-panel -->
+
+</div><!-- /wizard-wrap -->
+
+<footer class="site-footer">
+  <p>© 1_s_o 2026 — <a href="/">chidouka-lab.com</a></p>
+  <p>AI-COCOMO AIパラメータ診断ツール</p>
+  <p style="margin-top:10px;"><a href="./">← シミュレータへ戻る</a></p>
+</footer>
+
+<script>
+'use strict';
+
+/* ================================================================
+   スコアリングテーブル
+   ================================================================ */
+const SC = {
+  // hrate = base[q1] + adj[q2], clamp(10,100), round to 5
+  q1_hrate:  [100, 85,  65,  40,  20],
+  q2_hadj:   [+12, +6,   0,  -6, -12],
+
+  // AILX = base[q3] + adj[q4], clamp(0.50,1.50), round to 0.05
+  q3_ailx:   [1.30, 1.10, 0.90, 0.75, 0.60],
+  q4_aadj:   [+0.10, +0.05, 0, -0.05, -0.10],
+
+  q5_gamma:  [1.0, 2.0, 3.0, 4.0, 5.0],
+  q6_delta:  [5,   8,  15,  22,  28],
+
+  q7_pout:   [15,  75, 10,  0.6, 0],
+  q7_pin:    [3.75, 15, 2.5, 0.15, 0],
+
+  q8_lai_m:  [0, 3000, 10000, 25000, 50000],
+
+  q9_tool:   [1.25, 1.10, 0.90, 0.75, 0.60],
+  q10_months:[2, 4, 6, 9, 15],
+};
+
+/* ================================================================
+   状態
+   ================================================================ */
+const STEPS = [
+  { id:1, label:'AI活用',  qs:['q1','q2'] },
+  { id:2, label:'習熟度',  qs:['q3','q4'] },
+  { id:3, label:'効率',    qs:['q5','q6'] },
+  { id:4, label:'コスト',  qs:['q7','q8'] },
+  { id:5, label:'環境',    qs:['q9','q10'] },
+];
+let cur = 1;
+const ans = {};
+
+/* ================================================================
+   プログレスバー
+   ================================================================ */
+function buildProg() {
+  const bar = document.getElementById('prog-bar');
+  bar.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    if (i > 0) {
+      const ln = document.createElement('div');
+      ln.className = 'prog-line' + (i < cur ? ' done' : '');
+      bar.appendChild(ln);
+    }
+    const node = document.createElement('div');
+    node.className = 'prog-node';
+    const done = s.id < cur, active = s.id === cur;
+    node.innerHTML = `
+      <div class="prog-circle ${done?'done':active?'active':''}">${done?'✓':s.id}</div>
+      <div class="prog-label  ${done?'done':active?'active':''}">${s.label}</div>
+    `;
+    bar.appendChild(node);
+  });
+}
+
+/* ================================================================
+   選択肢イベント
+   ================================================================ */
+document.querySelectorAll('.opts').forEach(list => {
+  list.querySelectorAll('.opt').forEach(item => {
+    item.addEventListener('click', () => {
+      list.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+      item.classList.add('selected');
+      ans[list.dataset.q] = parseInt(item.dataset.val);
+      checkReady();
+    });
+  });
+});
+
+function checkReady() {
+  const qs = STEPS[cur - 1].qs;
+  document.getElementById('btn-next').disabled = !qs.every(q => q in ans);
+}
+
+/* ================================================================
+   ナビゲーション
+   ================================================================ */
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (cur < STEPS.length) { cur++; updateView(); }
+  else showResult();
+});
+document.getElementById('btn-back').addEventListener('click', () => {
+  if (cur > 1) { cur--; updateView(); }
+});
+
+function updateView() {
+  document.querySelectorAll('.wizard-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step-${cur}`)?.classList.add('active');
+  const back = document.getElementById('btn-back');
+  const next = document.getElementById('btn-next');
+  back.style.visibility = cur === 1 ? 'hidden' : 'visible';
+  document.getElementById('step-counter').textContent = `${cur} / ${STEPS.length}`;
+  next.textContent = cur === STEPS.length ? '診断する ✓' : '次へ →';
+  checkReady();
+  buildProg();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ================================================================
+   スコア計算
+   ================================================================ */
+function calcParams() {
+  const hrRaw  = SC.q1_hrate[ans.q1] + SC.q2_hadj[ans.q2];
+  const hrate  = Math.round(Math.max(10, Math.min(100, hrRaw)) / 5) * 5;
+
+  const axRaw  = SC.q3_ailx[ans.q3] + SC.q4_aadj[ans.q4];
+  const ailx   = Math.round(Math.max(0.50, Math.min(1.50, axRaw)) / 0.05) * 0.05;
+
+  const gamma  = SC.q5_gamma[ans.q5];
+  const delta  = SC.q6_delta[ans.q6];
+  const pout   = SC.q7_pout[ans.q7];
+  const pin    = SC.q7_pin[ans.q7];
+  const lai_m  = SC.q8_lai_m[ans.q8];
+  const tool   = SC.q9_tool[ans.q9];
+  const months = SC.q10_months[ans.q10];
+
+  // AI無し（q1=0）の場合はγ・δを最小化
+  return { hrate, ailx, gamma, delta, pout, pin, lai_m, tool, months };
+}
+
+/* ================================================================
+   バッジヘルパー
+   ================================================================ */
+function lvBadge(cls, text) {
+  return `<span class="lv-badge lv-${cls}">${text}</span>`;
+}
+
+/* ================================================================
+   結果表示
+   ================================================================ */
+function showResult() {
+  const p = calcParams();
+  const alpha = 100 - p.hrate;
+
+  // レベル判定
+  const level = alpha >= 70 ? 'AI主導型開発'
+              : alpha >= 40 ? 'AI協調型開発'
+              : alpha >= 10 ? 'AI補助型開発'
+              :               'AI未活用（従来型開発）';
+  const levelNote = alpha >= 70 ? '人間は監督・承認が中心。AIエージェント活用を想定'
+                  : alpha >= 40 ? 'AIとの協働が主体。コスト削減効果が高いフェーズ'
+                  : alpha >= 10 ? 'AIを補助的に活用。さらなる活用拡大で大きな改善余地あり'
+                  :               'AI活用なし。AI導入により大幅なコスト削減が期待できます';
+
+  // パネル切替
+  document.getElementById('wizard-nav').style.display = 'none';
+  document.querySelectorAll('.wizard-section').forEach(s => s.style.display = 'none');
+  document.getElementById('prog-bar').style.display = 'none';
+  document.getElementById('result-panel').classList.add('show');
+
+  // ヘッダー
+  document.getElementById('res-level').textContent = `${level}（AI代替率 約${alpha}%）`;
+  document.getElementById('res-sub').textContent  = levelNote;
+
+  // サマリーノート
+  document.getElementById('res-note').innerHTML = `
+    <strong>📋 診断サマリー：</strong>
+    人的担当率 <strong>${p.hrate}%</strong>（AI代替率 ${alpha}%）、
+    AI習熟度EM（AILX）= <strong>${p.ailx.toFixed(2)}</strong>、
+    イテレーション係数 γ = <strong>${p.gamma.toFixed(1)}</strong>、
+    統合OH率 δ = <strong>${p.delta}%</strong>。<br>
+    ツール成熟度 TOOL = <strong>${p.tool.toFixed(2)}</strong>、
+    プロジェクト期間 = <strong>${p.months}ヶ月</strong>。<br>
+    <span style="color:var(--text-light)">スケールファクタ（PREC/FLEX/RESL/TEAM/PMAT）・人員能力（PCAP/PEXP）・その他EMは現在のシミュレータ設定値を維持します。</span>
+  `;
+
+  // AI固有パラメータカード
+  const cardsAI = [
+    {
+      name:'人的担当率', sym:'1-α',
+      val: p.hrate + '%',
+      desc:`AI代替率 = ${alpha}%。${alpha >= 60 ? 'AIが主体的に開発を担います' : alpha >= 30 ? 'AIと人間が協調して開発' : '人間が主体の開発'}。`,
+      badge: p.hrate <= 40 ? lvBadge('good','AI活用高') : p.hrate <= 70 ? lvBadge('mid','中程度') : lvBadge('bad','AI未活用'),
+    },
+    {
+      name:'AI活用習熟度EM', sym:'AILX',
+      val: p.ailx.toFixed(2),
+      desc:`低いほど習熟度が高くコスト減。${p.ailx <= 0.75 ? '上級〜専門家レベル' : p.ailx <= 1.00 ? '中級レベル' : '入門〜初級レベル'}。`,
+      badge: p.ailx <= 0.80 ? lvBadge('good','上級') : p.ailx <= 1.10 ? lvBadge('mid','中級') : lvBadge('bad','初級'),
+    },
+    {
+      name:'イテレーション係数', sym:'γ',
+      val: p.gamma.toFixed(1) + '×',
+      desc:`AI出力の修正・再生成往復係数。高いほどトークン消費が増加。`,
+      badge: p.gamma <= 2 ? lvBadge('good','効率的') : p.gamma <= 3.5 ? lvBadge('mid','標準') : lvBadge('bad','非効率'),
+    },
+    {
+      name:'統合OH率', sym:'δ',
+      val: p.delta + '%',
+      desc:`AI-人間協働のレビュー・修正オーバーヘッド率。`,
+      badge: p.delta <= 8 ? lvBadge('good','低OH') : p.delta <= 18 ? lvBadge('mid','中OH') : lvBadge('bad','高OH'),
+    },
+    {
+      name:'出力トークン単価', sym:'P_out',
+      val: '$' + p.pout + '/MTok',
+      desc:`選択モデルの出力トークン単価。AI費用計算に使用。`,
+      badge:'',
+    },
+    {
+      name:'入力トークン単価', sym:'P_in',
+      val: '$' + p.pin + '/MTok',
+      desc:`選択モデルの入力トークン単価。通常は出力の1/4程度。`,
+      badge:'',
+    },
+    {
+      name:'AIライセンス費', sym:'L_AI_m',
+      val: '¥' + p.lai_m.toLocaleString('ja-JP') + '/月',
+      desc:`AI開発ツールの月額ライセンス費用。`,
+      badge:'',
+    },
+  ];
+
+  const cardsOther = [
+    {
+      name:'ツール成熟度EM', sym:'TOOL',
+      val: p.tool.toFixed(2),
+      desc:`CI/CD・AI統合開発環境の整備度。低いほど整備されコスト減。`,
+      badge: p.tool <= 0.80 ? lvBadge('good','高整備') : p.tool <= 1.10 ? lvBadge('mid','標準') : lvBadge('bad','未整備'),
+    },
+    {
+      name:'プロジェクト期間', sym:'Months',
+      val: p.months + '月',
+      desc:`AIライセンス費の累計算出に使用。`,
+      badge:'',
+    },
+  ];
+
+  function renderCards(cards, gridId) {
+    document.getElementById(gridId).innerHTML = cards.map(c => `
+      <div class="param-card">
+        <div class="param-card-head">
+          <span class="param-card-name">${c.name}</span>
+          <span class="param-card-sym">${c.sym}</span>
+        </div>
+        <div class="param-card-val">${c.val}${c.badge}</div>
+        <div class="param-card-desc">${c.desc}</div>
+      </div>
+    `).join('');
+  }
+  renderCards(cardsAI,    'grid-ai');
+  renderCards(cardsOther, 'grid-other');
+
+  // 適用ボタン
+  document.getElementById('btn-apply').onclick = () => {
+    localStorage.setItem('aicocomo_ai_params', JSON.stringify({
+      hrate:  p.hrate,
+      ailx:   p.ailx,
+      gamma:  p.gamma,
+      delta:  p.delta,
+      pout:   p.pout,
+      pin:    p.pin,
+      lai_m:  p.lai_m,
+      tool:   p.tool,
+      months: p.months,
+    }));
+    window.location.href = './';
+  };
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ================================================================
+   やり直し
+   ================================================================ */
+document.getElementById('btn-retry').addEventListener('click', () => {
+  Object.keys(ans).forEach(k => delete ans[k]);
+  cur = 1;
+  document.getElementById('result-panel').classList.remove('show');
+  document.getElementById('wizard-nav').style.display = '';
+  document.querySelectorAll('.wizard-section').forEach(s => s.style.display = '');
+  document.getElementById('prog-bar').style.display = '';
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  updateView();
+});
+
+/* ================================================================
+   初期化
+   ================================================================ */
+buildProg();
+checkReady();
+</script>
+</body>
+</html>

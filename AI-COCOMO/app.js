@@ -18,11 +18,11 @@ const SF_LABELS = ['Very High','High','Nominal+','Nominal','Low','Very Low'];
 
 // ── パラメータ定義 ────────────────────────────────────────────
 const DEFAULT = {
-  fp: 300, cf: 53, rreuse: 20, labor: 6250, fx: 150,
+  fp: 300, cf: 53, rnew: 80, labor: 6250, fx: 150,
   prec: 3, flex: 3, resl: 3, team: 2, pmat: 3,
   rely: 1.00, data: 1.00, cplx: 1.10, ruse: 1.00, plat: 1.00,
   pcap: 1.00, pexp: 1.00, ailx: 0.90, tool: 0.90, sced: 1.00,
-  alpha: 30, pout: 15, pin: 3.75, gamma: 2.0, lai_m: 3000, months: 3, delta: 10,
+  hrate: 70, pout: 15, pin: 3.75, gamma: 2.0, lai_m: 3000, months: 3, delta: 10,
 };
 
 let P = Object.assign({}, DEFAULT);
@@ -33,33 +33,33 @@ const PRESETS = {
     label: '知働化サイト（現状AI支援）',
     desc: 'FP=36, α=60%, Claude Sonnet相当',
     v: {
-      fp:36, cf:53, rreuse:55, labor:6250, fx:150,
+      fp:36, cf:53, rnew:45, labor:6250, fx:150,
       prec:1, flex:1, resl:2, team:1, pmat:3,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.05, pexp:0.90, ailx:0.80, tool:0.80, sced:1.00,
-      alpha:60, pout:15, pin:3.75, gamma:2.0, lai_m:3000, months:2, delta:10,
+      hrate:40, pout:15, pin:3.75, gamma:2.0, lai_m:3000, months:2, delta:10,
     }
   },
   maxai: {
     label: '知働化サイト（AI最大委任）',
     desc: 'FP=36, α=85%, 高頻度AI活用',
     v: {
-      fp:36, cf:53, rreuse:65, labor:6250, fx:150,
+      fp:36, cf:53, rnew:35, labor:6250, fx:150,
       prec:1, flex:1, resl:1, team:1, pmat:2,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.15, pexp:0.90, ailx:0.65, tool:0.65, sced:1.00,
-      alpha:85, pout:15, pin:3.75, gamma:3.0, lai_m:7500, months:2, delta:15,
+      hrate:15, pout:15, pin:3.75, gamma:3.0, lai_m:7500, months:2, delta:15,
     }
   },
   noai: {
     label: '従来型開発（AI無し）',
     desc: 'FP=36, α=0%, ウォーターフォール相当',
     v: {
-      fp:36, cf:53, rreuse:20, labor:6250, fx:150,
+      fp:36, cf:53, rnew:80, labor:6250, fx:150,
       prec:3, flex:3, resl:3, team:3, pmat:3,
       rely:1.00, data:1.00, cplx:1.00, ruse:1.00, plat:1.00,
       pcap:1.00, pexp:1.00, ailx:1.00, tool:1.00, sced:1.00,
-      alpha:0, pout:0, pin:0, gamma:0, lai_m:0, months:0, delta:0,
+      hrate:100, pout:0, pin:0, gamma:0, lai_m:0, months:0, delta:0,
     }
   },
 };
@@ -68,7 +68,7 @@ const PRESETS = {
 function calc() {
   const fp      = P.fp;
   const cf      = P.cf;
-  const rreuse  = P.rreuse / 100;
+  const rreuse  = (100 - P.rnew) / 100;   // 再利用率 = 1 − 新規開発比率
   const labor   = P.labor;
   const fx      = P.fx;
 
@@ -80,7 +80,7 @@ function calc() {
   const tool = P.tool, sced = P.sced;
   const piEM = rely * data * cplx * ruse * plat * pcap * pexp * ailx * tool * sced;
 
-  const alpha  = P.alpha / 100;
+  const alpha  = (100 - P.hrate) / 100;   // AI代替率 = 1 − 人的担当率
   const pout   = P.pout;
   const pin    = P.pin;
   const gamma  = P.gamma;
@@ -113,8 +113,8 @@ function calc() {
   const save_pct = c_noai > 0 ? (1 - c_total / c_noai) * 100 : 0;
 
   return {
-    fp, cf, rreuse, labor, fx, sumSF, E, piEM,
-    alpha, pout, pin, gamma, lai_m, months, delta,
+    fp, cf, rreuse, rnew: P.rnew, labor, fx, sumSF, E, piEM,
+    alpha, hrate: P.hrate, pout, pin, gamma, lai_m, months, delta,
     size, pm_base, c_human, t_out, t_in, tok_usd, lic_jpy, c_ai,
     ailx_norm, c_integ, c_total, c_noai, save_pct,
   };
@@ -141,7 +141,7 @@ function render() {
   const d = r;
   const lines = [
     { section: '規模', lines: [
-      `Size = ${d.fp} × ${d.cf} × (1 − ${(d.rreuse*100).toFixed(0)}%) / 1000`,
+      `Size = ${d.fp} × ${d.cf} × R_new(${d.rnew.toFixed(0)}%) / 1000`,
       `     = <cv>${fmtN(d.size,3)} KLOC</cv>`,
     ]},
     { section: 'スケール指数', lines: [
@@ -153,7 +153,7 @@ function render() {
       `        = <cv>${fmtN(d.pm_base,3)} PM</cv>`,
     ]},
     { section: '人的コスト', lines: [
-      `C_human = ${fmtN(d.pm_base,3)} × (1−${(d.alpha*100).toFixed(0)}%) × ${d.labor} × 160`,
+      `C_human = ${fmtN(d.pm_base,3)} × 人的担当率(${d.hrate.toFixed(0)}%) × ${d.labor} × 160`,
       `        = <cv>${fmt(d.c_human)}</cv>`,
       `  人的工数 = <cy>${fmtN(d.pm_base*(1-d.alpha)*160,1)} h</cy>`,
     ]},
@@ -252,6 +252,21 @@ function updateSfLabel(key) {
 // ── 初期化 ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ── AI診断ページからのパラメータ適用 ──────────────────────────
+  const _aiDiag = localStorage.getItem('aicocomo_ai_params');
+  if (_aiDiag) {
+    try {
+      const _ap = JSON.parse(_aiDiag);
+      ['hrate','ailx','gamma','delta','pout','pin','lai_m','tool','months'].forEach(k => {
+        if (_ap[k] !== undefined) P[k] = _ap[k];
+      });
+      localStorage.removeItem('aicocomo_ai_params');
+      // 適用通知バナーを表示
+      const banner = document.getElementById('diag-applied-banner');
+      if (banner) { banner.style.display = 'flex'; setTimeout(() => banner.remove(), 6000); }
+    } catch(e) { /* ignore */ }
+  }
+
   // 言語セレクト
   const langSel = document.getElementById('sel-lang');
   LANG_OPTIONS.forEach((opt, i) => {
@@ -267,10 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 基本パラメータ スライダー
-  makeSlider('fp',     'fp',     10,   3000, 10,   v => v + ' FP');
-  makeSlider('rreuse', 'rreuse', 0,    80,   5,    v => v + '%');
-  makeSlider('labor',  'labor',  3000, 20000,250,  v => '¥' + v.toLocaleString('ja-JP'));
-  makeSlider('fx',     'fx',     100,  200,  1,    v => v + ' ¥/$');
+  makeSlider('fp',    'fp',    10,   3000, 10,  v => v + ' FP');
+  makeSlider('rnew',  'rnew',  20,   100,  5,   v => v + '%');
+  makeSlider('labor', 'labor', 3000, 20000,250, v => '¥' + v.toLocaleString('ja-JP'));
+  makeSlider('fx',    'fx',    100,  200,  1,   v => v + ' ¥/$');
 
   // SF スライダー
   ['prec','flex','resl','team','pmat'].forEach(key => {
@@ -284,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // AI設定スライダー
-  makeSlider('alpha',  'alpha',  0,   90,   5,    v => v + '%');
+  makeSlider('hrate',  'hrate',  10,  100,  5,    v => v + '%');
   makeSlider('pout',   'pout',   1,   80,   1,    v => '$' + v + '/MTok');
   makeSlider('pin',    'pin',    0.25,20,   0.25, v => '$' + parseFloat(v).toFixed(2) + '/MTok');
   makeSlider('gamma',  'gamma',  1.0, 5.0,  0.1,  v => parseFloat(v).toFixed(1) + '×');
@@ -341,10 +356,10 @@ function applyAllInputs() {
   const langSel = document.getElementById('sel-lang');
   langSel.value = P.cf;
 
-  setSlider('fp',     'fp',     v => v + ' FP');
-  setSlider('rreuse', 'rreuse', v => v + '%');
-  setSlider('labor',  'labor',  v => '¥' + v.toLocaleString('ja-JP'));
-  setSlider('fx',     'fx',     v => v + ' ¥/$');
+  setSlider('fp',    'fp',    v => v + ' FP');
+  setSlider('rnew',  'rnew',  v => v + '%');
+  setSlider('labor', 'labor', v => '¥' + v.toLocaleString('ja-JP'));
+  setSlider('fx',    'fx',    v => v + ' ¥/$');
 
   ['prec','flex','resl','team','pmat'].forEach(key => {
     setSlider(key, key, v => v);
@@ -353,7 +368,7 @@ function applyAllInputs() {
   ['rely','data','cplx','ruse','plat','pcap','pexp','ailx','tool','sced'].forEach(key => {
     setSlider(key, key, v => parseFloat(v).toFixed(2));
   });
-  setSlider('alpha',  'alpha',  v => v + '%');
+  setSlider('hrate',  'hrate',  v => v + '%');
   setSlider('pout',   'pout',   v => '$' + v + '/MTok');
   setSlider('pin',    'pin',    v => '$' + parseFloat(v).toFixed(2) + '/MTok');
   setSlider('gamma',  'gamma',  v => parseFloat(v).toFixed(1) + '×');

@@ -66,6 +66,31 @@
       </div>
     </div>
 
+    <!-- AI診断適用バナー（診断ページから戻った時のみ表示） -->
+    <div id="diag-applied-banner" style="display:none; align-items:center; gap:10px;
+         background:rgba(82,183,136,.12); border:1px solid rgba(82,183,136,.3);
+         border-radius:10px; padding:10px 16px; margin-bottom:12px;
+         font-size:12px; color:#52B788; animation: fadeIn .4s ease;">
+      <span>✅</span>
+      <span><strong>AIパラメータ診断の結果が適用されました。</strong> 各タブで値を確認・調整できます。</span>
+    </div>
+
+    <!-- AIパラメータ診断リンク -->
+    <div class="panel" style="margin-bottom:12px;">
+      <a href="./ai-parameter.html"
+         style="display:flex; align-items:center; justify-content:space-between;
+                padding:14px 18px; text-decoration:none; cursor:pointer; border-radius:var(--radius);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:18px;">🔍</span>
+          <div>
+            <div style="font-size:13px; font-weight:700; color:var(--text-main);">AIパラメータ診断</div>
+            <div style="font-size:11px; color:var(--text-sub); margin-top:2px;">Q&amp;A形式でAI活用状況を分析し、パラメータを自動設定</div>
+          </div>
+        </div>
+        <span style="font-size:13px; color:var(--cocomo-accent); font-weight:700; white-space:nowrap;">診断する →</span>
+      </a>
+    </div>
+
     <!-- プリセット -->
     <div class="panel preset-section">
       <div class="panel-header" data-toggle="preset-body">
@@ -133,20 +158,20 @@
           <select class="param-select" id="sel-lang"></select>
         </div>
 
-        <!-- 再利用率 -->
+        <!-- 新規開発比率 -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
-              再利用率
-              <span class="param-symbol">R_reuse</span>
+              新規開発比率
+              <span class="param-symbol">R_new</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">OSS・AI生成テンプレート・既存コードの再利用割合。高いほど実質的な開発規模が小さくなりコスト減。</span>
+                <span class="tooltip-box">新規に開発するコードの割合（= 1 − 再利用率）。OSS・AI生成テンプレート・既存コードを再利用すると低下しコスト減。右に動かすほど新規開発が増えコスト増。</span>
               </span>
             </div>
-            <span class="param-value" id="val-rreuse"></span>
+            <span class="param-value" id="val-rnew"></span>
           </div>
-          <input type="range" class="param-slider" id="sl-rreuse">
+          <input type="range" class="param-slider" id="sl-rnew">
         </div>
 
         <!-- 人件費単価 -->
@@ -409,17 +434,17 @@
       <!-- タブ4: AI設定 -->
       <div class="tab-panel" data-tab-group="params" id="tab-ai">
 
-        <!-- α -->
+        <!-- 人的担当率 -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
-              AI代替率
-              <span class="param-symbol">α</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AIが代替する作業の割合。コーディング工程では最大70〜95%程度まで。0%がAI無し。</span></span>
+              人的担当率
+              <span class="param-symbol">1-α</span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">人間が担当する作業の割合（= 1 − AI代替率α）。100%がAI無しの純人的開発。低いほどAI活用が高くコスト削減。右に動かすほど人的作業が増えコスト増。</span></span>
             </div>
-            <span class="param-value" id="val-alpha"></span>
+            <span class="param-value" id="val-hrate"></span>
           </div>
-          <input type="range" class="param-slider" id="sl-alpha">
+          <input type="range" class="param-slider" id="sl-hrate">
         </div>
 
         <!-- P_out -->
