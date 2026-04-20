@@ -22,7 +22,7 @@ const DEFAULT = {
   prec: 3, flex: 3, resl: 3, team: 2, pmat: 3,
   rely: 1.00, data: 1.00, cplx: 1.10, ruse: 1.00, plat: 1.00,
   pcap: 1.00, pexp: 1.00, ailx: 0.90, tool: 0.90, sced: 1.00,
-  hrate: 70, pout: 15, pin: 3.75, gamma: 2.0, lai_m: 3000, months: 3, delta: 10,
+  hrate: 70, pout: 15, pin: 3.75, gamma: 2.0, lai_m: 3000, members: 1, months: 3, delta: 10,
 };
 
 let P = Object.assign({}, DEFAULT);
@@ -37,7 +37,7 @@ const PRESETS = {
       prec:1, flex:1, resl:2, team:1, pmat:3,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.05, pexp:0.90, ailx:0.80, tool:0.80, sced:1.00,
-      hrate:40, pout:15, pin:3.75, gamma:2.0, lai_m:3000, months:2, delta:10,
+      hrate:40, pout:15, pin:3.75, gamma:2.0, lai_m:3000, members:1, months:2, delta:10,
     }
   },
   maxai: {
@@ -48,7 +48,7 @@ const PRESETS = {
       prec:1, flex:1, resl:1, team:1, pmat:2,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.15, pexp:0.90, ailx:0.65, tool:0.65, sced:1.00,
-      hrate:15, pout:15, pin:3.75, gamma:3.0, lai_m:7500, months:2, delta:15,
+      hrate:15, pout:15, pin:3.75, gamma:3.0, lai_m:7500, members:1, months:2, delta:15,
     }
   },
   noai: {
@@ -59,7 +59,7 @@ const PRESETS = {
       prec:3, flex:3, resl:3, team:3, pmat:3,
       rely:1.00, data:1.00, cplx:1.00, ruse:1.00, plat:1.00,
       pcap:1.00, pexp:1.00, ailx:1.00, tool:1.00, sced:1.00,
-      hrate:100, pout:0, pin:0, gamma:0, lai_m:0, months:0, delta:0,
+      hrate:100, pout:0, pin:0, gamma:0, lai_m:0, members:1, months:0, delta:0,
     }
   },
 };
@@ -99,7 +99,7 @@ function calc() {
   const t_out  = size * 1000 * alpha * gamma * 1.5;        // Kトークン
   const t_in   = t_out * 0.3;
   const tok_usd = (t_out * pout + t_in * pin) / 1000;      // $
-  const lic_jpy = lai_m * months;
+  const lic_jpy = lai_m * P.members * months;  // 人数課金: 単価×人数×月数
   const c_ai    = tok_usd * fx + lic_jpy;
 
   // 統合コスト
@@ -114,7 +114,7 @@ function calc() {
 
   return {
     fp, cf, rreuse, rnew: P.rnew, labor, fx, sumSF, E, piEM,
-    alpha, hrate: P.hrate, pout, pin, gamma, lai_m, months, delta,
+    alpha, hrate: P.hrate, pout, pin, gamma, lai_m, members: P.members, months, delta,
     size, pm_base, c_human, t_out, t_in, tok_usd, lic_jpy, c_ai,
     ailx_norm, c_integ, c_total, c_noai, save_pct,
   };
@@ -162,7 +162,7 @@ function render() {
       `      = <cy>${fmtK(d.t_out)}</cy>トークン`,
       `T_in  = T_out × 0.3 = <cy>${fmtK(d.t_in)}</cy>`,
       `トークン費 = $<cy>${fmtN(d.tok_usd,2)}</cy>`,
-      `ライセンス費 = ${fmt(d.lic_jpy)}`,
+      `ライセンス費 = ${fmt(d.lai_m)}/月 × ${d.members}人 × ${d.months}月 = <cv>${fmt(d.lic_jpy)}</cv>`,
       `C_AI  = <cv>${fmt(d.c_ai)}</cv>`,
     ]},
     { section: '統合コスト', lines: [
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (_aiDiag) {
     try {
       const _ap = JSON.parse(_aiDiag);
-      ['hrate','ailx','gamma','delta','pout','pin','lai_m','tool','months'].forEach(k => {
+      ['hrate','ailx','gamma','delta','pout','pin','lai_m','members','tool','months'].forEach(k => {
         if (_ap[k] !== undefined) P[k] = _ap[k];
       });
       localStorage.removeItem('aicocomo_ai_params');
@@ -303,8 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
   makeSlider('pout',   'pout',   1,   80,   1,    v => '$' + v + '/MTok');
   makeSlider('pin',    'pin',    0.25,20,   0.25, v => '$' + parseFloat(v).toFixed(2) + '/MTok');
   makeSlider('gamma',  'gamma',  1.0, 5.0,  0.1,  v => parseFloat(v).toFixed(1) + '×');
-  makeSlider('lai_m',  'lai_m',  0,   30000,500,  v => '¥' + v.toLocaleString('ja-JP'));
-  makeSlider('months', 'months', 1,   36,   1,    v => v + '月');
+  makeSlider('lai_m',   'lai_m',   0,  30000, 500, v => '¥' + v.toLocaleString('ja-JP'));
+  makeSlider('members', 'members', 1,  20,    1,   v => v + '人');
+  makeSlider('months',  'months',  1,  36,    1,   v => v + '月');
   makeSlider('delta',  'delta',  0,   30,   1,    v => v + '%');
 
   // 折りたたみパネル
@@ -372,7 +373,8 @@ function applyAllInputs() {
   setSlider('pout',   'pout',   v => '$' + v + '/MTok');
   setSlider('pin',    'pin',    v => '$' + parseFloat(v).toFixed(2) + '/MTok');
   setSlider('gamma',  'gamma',  v => parseFloat(v).toFixed(1) + '×');
-  setSlider('lai_m',  'lai_m',  v => '¥' + v.toLocaleString('ja-JP'));
-  setSlider('months', 'months', v => v + '月');
+  setSlider('lai_m',   'lai_m',   v => '¥' + v.toLocaleString('ja-JP'));
+  setSlider('members', 'members', v => v + '人');
+  setSlider('months',  'months',  v => v + '月');
   setSlider('delta',  'delta',  v => v + '%');
 }

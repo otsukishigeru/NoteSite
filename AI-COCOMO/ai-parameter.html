@@ -455,6 +455,74 @@
 }
 .btn-retry:hover { border-color: var(--text-sub); color: var(--text-main); }
 
+/* メンバー数調整ボックス */
+.members-box {
+  background: var(--white);
+  border: 1px solid rgba(91,164,207,.3);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.members-box-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.members-box-note {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.members-box-note code {
+  background: rgba(91,164,207,.12);
+  color: var(--cocomo-accent);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 10.5px;
+}
+.members-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.members-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+.members-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cocomo-accent);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(91,164,207,.2);
+}
+.members-val-display {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  min-width: 48px;
+  text-align: right;
+}
+.members-lic-preview {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
 /* 通知バナー */
 .notice-bar {
   background: rgba(82,183,136,.12);
@@ -854,6 +922,25 @@
     <div class="result-section-title">🛠️ 補完パラメータ（コストドライバ連携）</div>
     <div class="param-grid" id="grid-other"></div>
 
+    <!-- メンバー数調整 -->
+    <div class="result-section-title">👥 ライセンス人数設定</div>
+    <div class="members-box">
+      <div class="members-box-title">⚙️ AIツール利用メンバー数 <span style="color:var(--cocomo-accent);font-size:13px;">M</span></div>
+      <div class="members-box-note">
+        <strong>人数課金プラン</strong>（Claude Pro・GitHub Copilot 等）は実際の利用人数を設定してください。<br>
+        <strong>企業包括契約・Enterprise API</strong> の場合は <code>M = 1</code> のまま、
+        <code>L_AI_m</code> に月額総費用（または配賦額）を入力してください。<br>
+        ライセンス費は <code>L_AI_m × M × Months</code> で計算されます。
+      </div>
+      <div class="members-control">
+        <input type="range" class="members-slider" id="adj-members" min="1" max="20" step="1" value="1">
+        <div class="members-val-display"><span id="adj-members-val">1</span>人</div>
+      </div>
+      <div class="members-lic-preview" id="members-lic-preview">
+        ライセンス費合計（概算）: —
+      </div>
+    </div>
+
     <div class="apply-box">
       <p>これらの推奨値をシミュレータに一括適用します。<br>
          スケールファクタ・人員能力など非AI系パラメータは現在の設定値を維持します。</p>
@@ -1123,18 +1210,34 @@ function showResult() {
   renderCards(cardsAI,    'grid-ai');
   renderCards(cardsOther, 'grid-other');
 
+  // メンバー数スライダー
+  const adjSlider = document.getElementById('adj-members');
+  const adjVal    = document.getElementById('adj-members-val');
+  const licPreview = document.getElementById('members-lic-preview');
+
+  function updateMembersPreview() {
+    const m = parseInt(adjSlider.value);
+    adjVal.textContent = m;
+    const total = p.lai_m * m * p.months;
+    const fmt = n => '¥' + Math.round(n).toLocaleString('ja-JP');
+    licPreview.innerHTML = `ライセンス費合計（概算）: ${fmt(p.lai_m)}/月 × ${m}人 × ${p.months}ヶ月 = <strong style="color:var(--text-main)">${fmt(total)}</strong>`;
+  }
+  adjSlider.addEventListener('input', updateMembersPreview);
+  updateMembersPreview();
+
   // 適用ボタン
   document.getElementById('btn-apply').onclick = () => {
     localStorage.setItem('aicocomo_ai_params', JSON.stringify({
-      hrate:  p.hrate,
-      ailx:   p.ailx,
-      gamma:  p.gamma,
-      delta:  p.delta,
-      pout:   p.pout,
-      pin:    p.pin,
-      lai_m:  p.lai_m,
-      tool:   p.tool,
-      months: p.months,
+      hrate:   p.hrate,
+      ailx:    p.ailx,
+      gamma:   p.gamma,
+      delta:   p.delta,
+      pout:    p.pout,
+      pin:     p.pin,
+      lai_m:   p.lai_m,
+      members: parseInt(document.getElementById('adj-members').value),
+      tool:    p.tool,
+      months:  p.months,
     }));
     window.location.href = './';
   };
