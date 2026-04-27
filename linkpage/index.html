@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リンク構成マップ — chidouka-lab.com</title>
+<style>
+  :root {
+    --bg:        #0d1117;
+    --bg2:       #161b22;
+    --bg3:       #1e2530;
+    --border:    rgba(255,255,255,.08);
+    --text:      #e6edf3;
+    --muted:     #8b949e;
+    --accent:    #58a6ff;
+
+    --c-top:     #58a6ff;   /* トップ */
+    --c-iso:     #4d7cc9;   /* 1_s_o  */
+    --c-carl:    #3a8f5e;   /* t0rapa */
+    --c-hg:      #c07a52;   /* Hg     */
+    --c-st:      #9060b8;   /* St     */
+    --c-util:    #6e7681;   /* 共通ページ */
+    --c-tool:    #b08030;   /* ツール   */
+    --c-ext:     #444c56;   /* 外部    */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── ヘッダー ── */
+  .page-header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+  }
+  .page-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: .04em;
+  }
+  .page-header p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: .04em;
+  }
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── メインレイアウト ── */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── 凡例 ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .legend-title {
+    width: 100%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 4px;
+  }
+
+  /* ── ツリー全体 ── */
+  .site-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* ── ページノード ── */
+  .node {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .node-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .node-color { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+  .node-url {
+    font-family: 'SFMono-Regular', 'Consolas', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .node-url:hover { text-decoration: underline; }
+  .node-title {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .node-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  /* ── リンクグリッド ── */
+  .node-body {
+    padding: 16px 20px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .link-group {
+    flex: 1;
+    min-width: 220px;
+  }
+  .link-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .link-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .link-arrow {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+  .link-inner {
+    font-family: 'SFMono-Regular', 'Consolas', monospace;
+    font-size: 11px;
+    color: #79c0ff;
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .link-inner:hover { text-decoration: underline; }
+  .link-anchor {
+    font-family: 'SFMono-Regular', 'Consolas', monospace;
+    font-size: 11px;
+    color: #a5d6ff;
+    text-decoration: none;
+  }
+  .link-anchor:hover { text-decoration: underline; }
+  .link-ext {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .link-ext:hover { color: var(--text); text-decoration: underline; }
+  .link-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+  .ext-icon { font-size: 9px; }
+
+  /* ── サブノード（子ページ） ── */
+  .children {
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: -8px;
+    position: relative;
+  }
+  .children::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 16px;
+    width: 1px;
+    background: var(--border);
+  }
+  .children .node {
+    position: relative;
+  }
+  .children .node::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: 22px;
+    width: 16px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ツール行 ── */
+  .tool-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: -8px;
+    padding-left: 32px;
+    position: relative;
+  }
+  .tool-row::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 16px;
+    width: 1px;
+    background: var(--border);
+  }
+  .tool-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    min-width: 200px;
+    position: relative;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: 18px;
+    width: 16px;
+    height: 1px;
+    background: var(--border);
+  }
+  .tool-card-url {
+    font-family: 'SFMono-Regular', 'Consolas', monospace;
+    font-size: 12px;
+    color: #e3b341;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .tool-card-url:hover { text-decoration: underline; }
+  .tool-card-title {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .tool-card-links {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ── API セクション ── */
+  .api-section {
+    margin-top: 8px;
+  }
+  .api-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+    padding: 12px 20px 8px;
+    border-top: 1px solid var(--border);
+  }
+  .api-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 20px 16px;
+  }
+  .api-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'SFMono-Regular', 'Consolas', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: #d2a679;
+  }
+  .api-method {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(209,154,102,.2);
+    color: #d2a679;
+    letter-spacing: .04em;
+  }
+
+  /* ── フッター ── */
+  .page-footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .node-body { flex-direction: column; }
+    .children, .tool-row { padding-left: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="page-header">
+  <h1>🗺 chidouka-lab.com — リンク構成マップ</h1>
+  <p>サイト全体のページ構成・内部リンク・外部リンクの一覧（仮ページ）</p>
+  <div class="header-meta">
+    <span class="badge" style="color:#58a6ff;border-color:#58a6ff40">
+      <span class="badge-dot" style="background:#58a6ff"></span>トップ
+    </span>
+    <span class="badge" style="color:#4d7cc9;border-color:#4d7cc940">
+      <span class="badge-dot" style="background:#4d7cc9"></span>1_s_o
+    </span>
+    <span class="badge" style="color:#3a8f5e;border-color:#3a8f5e40">
+      <span class="badge-dot" style="background:#3a8f5e"></span>t0rapa
+    </span>
+    <span class="badge" style="color:#c07a52;border-color:#c07a5240">
+      <span class="badge-dot" style="background:#c07a52"></span>Hg
+    </span>
+    <span class="badge" style="color:#9060b8;border-color:#9060b840">
+      <span class="badge-dot" style="background:#9060b8"></span>St
+    </span>
+    <span class="badge" style="color:#6e7681;border-color:#6e768140">
+      <span class="badge-dot" style="background:#6e7681"></span>共通
+    </span>
+    <span class="badge" style="color:#e3b341;border-color:#e3b34140">
+      <span class="badge-dot" style="background:#e3b341"></span>ツール
+    </span>
+  </div>
+</header>
+
+<main class="main">
+<div class="site-tree">
+
+  <!-- ══════════════════════════════════════
+       トップページ
+  ══════════════════════════════════════ -->
+  <div class="node">
+    <div class="node-head">
+      <div class="node-color" style="background:var(--c-top)"></div>
+      <a class="node-url" href="https://chidouka-lab.com/" target="_blank">/</a>
+      <span class="node-title">知働化コミュニティ — chidouka-lab.com</span>
+      <span class="node-tag" style="background:#58a6ff20;color:#58a6ff">TOP</span>
+    </div>
+    <div class="node-body">
+
+      <div class="link-group">
+        <div class="link-group-title">セクションアンカー</div>
+        <ul class="link-list">
+          <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/#about">#about</a><span class="link-label">コミュニティについて</span></li>
+          <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/#members">#members</a><span class="link-label">メンバーサイト</span></li>
+          <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/#coc">#coc</a><span class="link-label">連携コミュニティ</span></li>
+          <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/#info">#info</a><span class="link-label">お知らせ</span></li>
+        </ul>
+      </div>
+
+      <div class="link-group">
+        <div class="link-group-title">内部リンク（ページ）</div>
+        <ul class="link-list">
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/ichi_s_otsuki/">/ichi_s_otsuki/</a><span class="link-label">1_s_o</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/carl/">/carl/</a><span class="link-label">t0rapa</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/Hg/">/Hg/</a><span class="link-label">Hg</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/St/">/St/</a><span class="link-label">St</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/members.html">/members.html</a><span class="link-label">交流メンバページ</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/AI-COCOMO/">/AI-COCOMO/</a><span class="link-label">AI-COCOMO シミュレータ</span></li>
+          <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/contact/">/contact/</a><span class="link-label">お問い合わせ</span></li>
+        </ul>
+      </div>
+
+      <div class="link-group">
+        <div class="link-group-title">外部リンク（連携コミュニティ）</div>
+        <ul class="link-list">
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://www.metaware-lab.org/" target="_blank">metaware-lab.org</a><span class="link-label">メタウェア研究所</span></li>
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://www.ns.kogakuin.ac.jp/relab/" target="_blank">ns.kogakuin.ac.jp/relab/</a><span class="link-label">高信頼ソフトウェア研究室</span></li>
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://1corp.biz/primary2026/" target="_blank">1corp.biz/primary2026/</a><span class="link-label">株式会社一（いち）</span></li>
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://www.azzurri.co.jp/" target="_blank">azzurri.co.jp</a><span class="link-label">株式会社アッズーリ</span></li>
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://www.metabolics.co.jp" target="_blank">metabolics.co.jp</a><span class="link-label">有限会社メタボリックス</span></li>
+          <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://www.kogakuin.ac.jp/faculty/lab/info_lab145.html" target="_blank">kogakuin.ac.jp …lab145</a><span class="link-label">工学院大学 位野木研究室</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div><!-- /top node -->
+
+  <!-- ══════════════════════════════════════
+       メンバーサイト（子）
+  ══════════════════════════════════════ -->
+  <div class="children">
+
+    <!-- 1_s_o -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-iso)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/ichi_s_otsuki/" target="_blank">/ichi_s_otsuki/</a>
+        <span class="node-title">1_s_oのページ — 知働化経営・思考の技法</span>
+        <span class="node-tag" style="background:#4d7cc920;color:#4d7cc9">1_s_o</span>
+      </div>
+      <div class="node-body">
+
+        <div class="link-group">
+          <div class="link-group-title">セクションアンカー</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#purpose">#purpose</a><span class="link-label">目的・作品の紹介</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#index">#index</a><span class="link-label">記事一覧（全129本）</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#principles">#principles</a><span class="link-label">格言・21の原則</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#design">#design</a><span class="link-label">資料・デザイン</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#ai-chat">#ai-chat</a><span class="link-label">AIに質問</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/ichi_s_otsuki/#contact">#contact</a><span class="link-label">メンバ諸元</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップへ</span></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/members.html">/members.html</a><span class="link-label">交流</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">外部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://note.com/ichi_s_otsuki" target="_blank">note.com/ichi_s_otsuki</a><span class="link-label">note記事（129本）</span></li>
+            <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="http://www.1corp.co.jp" target="_blank">1corp.co.jp</a><span class="link-label">株式会社一（いち）</span></li>
+            <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://1corp.biz/primary2026/" target="_blank">1corp.biz/primary2026/</a><span class="link-label">primary2026</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">ダウンロード（PDF）</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-ext" href="https://chidouka-lab.com/ichi_s_otsuki/assets/pdfs/noteidx.pdf" target="_blank">noteidx.pdf</a><span class="link-label">記事インデックス全129件</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-ext" href="https://chidouka-lab.com/ichi_s_otsuki/assets/pdfs/Principle.pdf" target="_blank">Principle.pdf</a><span class="link-label">21の格言・原則</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-ext" href="https://chidouka-lab.com/ichi_s_otsuki/assets/pdfs/知働化経営の哲学.pdf" target="_blank">知働化経営の哲学.pdf</a><span class="link-label">知働化経営の哲学</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div><!-- /1_s_o -->
+
+    <!-- t0rapa -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-carl)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/carl/" target="_blank">/carl/</a>
+        <span class="node-title">t0rapaのページ — 知働化の思想</span>
+        <span class="node-tag" style="background:#3a8f5e20;color:#3a8f5e">t0rapa</span>
+      </div>
+      <div class="node-body">
+
+        <div class="link-group">
+          <div class="link-group-title">セクションアンカー</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#purpose">#purpose</a><span class="link-label">目的・作品の紹介</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#index">#index</a><span class="link-label">記事一覧（14本）</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#principles">#principles</a><span class="link-label">格言・10の原則</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#design">#design</a><span class="link-label">資料・デザイン</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#ai-chat">#ai-chat</a><span class="link-label">AIに質問</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/carl/#contact">#contact</a><span class="link-label">メンバ諸元</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップへ</span></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/members.html">/members.html</a><span class="link-label">交流</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">外部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow ext-icon">↗</span><a class="link-ext" href="https://note.com/carl" target="_blank">note.com/carl</a><span class="link-label">note記事（14本）</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">ダウンロード（PDF）</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><span class="link-label" style="color:#5a6270">（調査中）</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div><!-- /t0rapa -->
+
+    <!-- Hg -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-hg)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/Hg/" target="_blank">/Hg/</a>
+        <span class="node-title">Hgのページ — 知働化のアーキテクト</span>
+        <span class="node-tag" style="background:#c07a5220;color:#c07a52">Hg</span>
+      </div>
+      <div class="node-body">
+
+        <div class="link-group">
+          <div class="link-group-title">セクションアンカー</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/Hg/#purpose">#purpose</a><span class="link-label">目的</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/Hg/#principles">#principles</a><span class="link-label">格言・15の教え</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/Hg/#ai-chat">#ai-chat</a><span class="link-label">AIに質問</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/Hg/#contact">#contact</a><span class="link-label">メンバ諸元</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップへ</span></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/members.html">/members.html</a><span class="link-label">交流</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">ダウンロード（PDF）</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-ext" href="https://chidouka-lab.com/PrincipleHg.pdf" target="_blank">PrincipleHg.pdf</a><span class="link-label">格言・原則（Hg）</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div><!-- /Hg -->
+
+    <!-- St -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-st)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/St/" target="_blank">/St/</a>
+        <span class="node-title">Stのページ — 知働化の道の心構え</span>
+        <span class="node-tag" style="background:#9060b820;color:#9060b8">St</span>
+      </div>
+      <div class="node-body">
+
+        <div class="link-group">
+          <div class="link-group-title">セクションアンカー</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/St/#purpose">#purpose</a><span class="link-label">目的</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/St/#principles">#principles</a><span class="link-label">格言・12の教え</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/St/#ai-chat">#ai-chat</a><span class="link-label">AIに質問</span></li>
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-anchor" href="https://chidouka-lab.com/St/#contact">#contact</a><span class="link-label">メンバ諸元</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップへ</span></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/members.html">/members.html</a><span class="link-label">交流</span></li>
+          </ul>
+        </div>
+
+        <div class="link-group">
+          <div class="link-group-title">ダウンロード（PDF）</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">↓</span><a class="link-ext" href="https://chidouka-lab.com/PrincipleSt.pdf" target="_blank">PrincipleSt.pdf</a><span class="link-label">格言・原則（St）</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div><!-- /St -->
+
+  </div><!-- /children（メンバー） -->
+
+  <!-- ══════════════════════════════════════
+       共通ページ
+  ══════════════════════════════════════ -->
+  <div class="children">
+
+    <!-- members.html -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-util)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/members.html" target="_blank">/members.html</a>
+        <span class="node-title">交流メンバページ | 知働化コミュニティ</span>
+        <span class="node-tag" style="background:#6e768120;color:#6e7681">共通</span>
+      </div>
+      <div class="node-body">
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップ</span></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/ichi_s_otsuki/">/ichi_s_otsuki/</a></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/carl/">/carl/</a></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/Hg/">/Hg/</a></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/St/">/St/</a></li>
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/contact/">/contact/</a><span class="link-label">お問い合わせ</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- contact -->
+    <div class="node">
+      <div class="node-head">
+        <div class="node-color" style="background:var(--c-util)"></div>
+        <a class="node-url" href="https://chidouka-lab.com/contact/" target="_blank">/contact/</a>
+        <span class="node-title">お問い合わせ | 知働化コミュニティ</span>
+        <span class="node-tag" style="background:#6e768120;color:#6e7681">共通</span>
+      </div>
+      <div class="node-body">
+        <div class="link-group">
+          <div class="link-group-title">内部リンク</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">→</span><a class="link-inner" href="https://chidouka-lab.com/">/</a><span class="link-label">コミュニティトップへ</span></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <div class="link-group-title">API（フォーム送信）</div>
+          <ul class="link-list">
+            <li class="link-item"><span class="link-arrow">⇒</span><span class="link-label" style="font-family:monospace">/api/contact/send</span><span class="link-label">POST</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /children（共通） -->
+
+  <!-- ══════════════════════════════════════
+       ツール群
+  ══════════════════════════════════════ -->
+  <div class="tool-row">
+
+    <!-- AI-COCOMO -->
+    <div class="tool-card">
+      <a class="tool-card-url" href="https://chidouka-lab.com/AI-COCOMO/" target="_blank">/AI-COCOMO/</a>
+      <div class="tool-card-title">AI-COCOMO コストモデル シミュレータ</div>
+      <div class="tool-card-links">
+        <div style="font-size:10px;color:#6e7681;text-transform:uppercase;letter-spacing:.06em;margin-top:4px">子ページ</div>
+        <div style="margin-top:4px">
+          <a class="tool-card-url" style="font-size:11px" href="https://chidouka-lab.com/AI-COCOMO/ai-parameter.html" target="_blank">ai-parameter.html</a>
+          <span style="font-size:11px;color:#6e7681"> — AIパラメータ診断</span>
+        </div>
+        <div style="font-size:10px;color:#6e7681;text-transform:uppercase;letter-spacing:.06em;margin-top:8px">参照note記事</div>
+        <div style="margin-top:4px">
+          <a class="link-ext" href="https://note.com/ichi_s_otsuki/n/ne4028c50cfe9" target="_blank" style="font-size:11px">note #127 AI-COCOMO ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tool-row -->
+
+  <!-- ══════════════════════════════════════
+       API エンドポイント
+  ══════════════════════════════════════ -->
+  <div class="node" style="margin-top:8px">
+    <div class="node-head">
+      <div class="node-color" style="background:#d2a679"></div>
+      <span class="node-url" style="cursor:default">/api/</span>
+      <span class="node-title">Vercel サーバーレス関数</span>
+      <span class="node-tag" style="background:#d2a67920;color:#d2a679">API</span>
+    </div>
+    <div class="api-section-title">エンドポイント一覧</div>
+    <div class="api-grid">
+      <div class="api-chip"><span class="api-method">POST</span>/api/chat</div>
+      <div class="api-chip"><span class="api-method">POST</span>/api/carl/chat</div>
+      <div class="api-chip"><span class="api-method">POST</span>/api/hg/chat</div>
+      <div class="api-chip"><span class="api-method">POST</span>/api/st/chat</div>
+      <div class="api-chip"><span class="api-method">POST</span>/api/contact/send</div>
+      <div class="api-chip"><span class="api-method">GET</span>/api/contact/list</div>
+      <div class="api-chip"><span class="api-method">GET</span>/api/comments</div>
+      <div class="api-chip"><span class="api-method">GET/POST</span>/api/admin</div>
+      <div class="api-chip"><span class="api-method">GET</span>/api/members</div>
+    </div>
+  </div>
+
+</div><!-- /site-tree -->
+</main>
+
+<footer class="page-footer">
+  chidouka-lab.com リンク構成マップ（仮） — 生成日：2026-04-27 — notesite/linkpage/index.html
+</footer>
+
+</body>
+</html>
