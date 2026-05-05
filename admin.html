@@ -82,6 +82,41 @@
   transition: background .2s;
 }
 .btn-remove:hover { background: #fdf0f0; }
+.btn-edit {
+  background: none; border: 1px solid #b0c4e0; border-radius: 6px;
+  padding: .3rem .8rem; font-size: .82rem; color: var(--navy-main); cursor: pointer;
+  transition: background .2s; margin-right: .4rem;
+}
+.btn-edit:hover { background: var(--navy-pale); }
+
+/* ファイル編集フォーム（インライン） */
+.file-edit-form {
+  background: var(--navy-bg); border-radius: var(--radius);
+  padding: 1rem 1.25rem; margin-top: .5rem;
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.file-edit-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+.file-edit-row input {
+  flex: 1; min-width: 140px; padding: .5rem .75rem;
+  border: 2px solid var(--navy-pale); border-radius: 7px;
+  font-size: .88rem; box-sizing: border-box;
+}
+.file-edit-row input:focus { outline: none; border-color: var(--navy-main); }
+.file-edit-actions { display: flex; gap: .5rem; align-items: center; }
+.btn-save {
+  background: var(--navy-main); color: var(--white); border: none;
+  border-radius: 7px; padding: .45rem 1.1rem; font-size: .88rem;
+  font-weight: 700; cursor: pointer; transition: background .2s;
+}
+.btn-save:hover { background: var(--navy-dark); }
+.btn-cancel {
+  background: none; border: 1px solid var(--border); border-radius: 7px;
+  padding: .45rem .9rem; font-size: .88rem; color: var(--text-sub); cursor: pointer;
+}
+.btn-cancel:hover { background: var(--navy-pale); }
+.edit-msg { font-size: .82rem; }
+.edit-msg.ok  { color: #2d6a2d; }
+.edit-msg.err { color: #c0392b; }
 
 /* 対話ログ */
 .log-list { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -596,23 +631,94 @@
         return;
       }
       files.forEach(function (f) {
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:.6rem;overflow:hidden;';
+
+        // ── 表示行 ──
         var row = document.createElement('div');
         row.className = 'member-row';
+        row.style.boxShadow = 'none';
         row.innerHTML =
           '<div>' +
-          '<div class="member-email">No.' + escapeHtml(f.no) + ' 　' + escapeHtml(f.title) +
+          '<div class="member-email">No.' + escapeHtml(f.no) + '　' + escapeHtml(f.title) +
             (f.isPaid ? '　<span style="color:#b8601a;font-size:.8rem;">【有料】</span>' : '　<span style="color:#2d6a2d;font-size:.8rem;">【無料】</span>') + '</div>' +
           '<div class="member-nick">' + escapeHtml(f.filename) + '　' + escapeHtml(f.fileSize || '') + '　' + escapeHtml(f.uploadDate || '') + '</div>' +
           '</div>' +
-          '<button class="btn-remove" data-no="' + escapeHtml(f.no) + '">削除</button>';
-        list.appendChild(row);
-      });
-      list.querySelectorAll('.btn-remove').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          if (!confirm('No.' + btn.dataset.no + ' を削除しますか？')) return;
-          libraryApi({ action: 'removeFile', no: btn.dataset.no }, function (d) {
+          '<div style="display:flex;gap:.4rem;flex-shrink:0;">' +
+          '<button class="btn-edit">編集</button>' +
+          '<button class="btn-remove">削除</button>' +
+          '</div>';
+        wrap.appendChild(row);
+
+        // ── インライン編集フォーム（初期非表示） ──
+        var editForm = document.createElement('div');
+        editForm.className = 'file-edit-form';
+        editForm.style.display = 'none';
+        editForm.innerHTML =
+          '<div class="file-edit-row">' +
+          '  <input data-field="no"         value="' + escapeHtml(f.no)          + '" placeholder="項目番号" style="flex:0 0 100px;">' +
+          '  <input data-field="title"      value="' + escapeHtml(f.title)       + '" placeholder="タイトル">' +
+          '  <input data-field="filename"   value="' + escapeHtml(f.filename)    + '" placeholder="ファイル名">' +
+          '</div>' +
+          '<div class="file-edit-row">' +
+          '  <input data-field="description" value="' + escapeHtml(f.description || '') + '" placeholder="説明">' +
+          '  <input data-field="creator"    value="' + escapeHtml(f.creator     || '') + '" placeholder="製作者" style="flex:0 0 140px;">' +
+          '</div>' +
+          '<div class="file-edit-row">' +
+          '  <input data-field="uploadDate" value="' + escapeHtml(f.uploadDate  || '') + '" placeholder="アップロード日" style="flex:0 0 160px;">' +
+          '  <input data-field="fileSize"   value="' + escapeHtml(f.fileSize    || '') + '" placeholder="ファイル容量" style="flex:0 0 130px;">' +
+          '  <input data-field="notes"      value="' + escapeHtml(f.notes       || '') + '" placeholder="備考">' +
+          '</div>' +
+          '<div class="file-edit-actions">' +
+          '  <label style="font-size:.88rem;display:flex;align-items:center;gap:.3rem;">' +
+          '    <input type="checkbox" data-field="isPaid"' + (f.isPaid ? ' checked' : '') + '> 有料' +
+          '  </label>' +
+          '  <button class="btn-save">保存</button>' +
+          '  <button class="btn-cancel">キャンセル</button>' +
+          '  <span class="edit-msg"></span>' +
+          '</div>';
+        wrap.appendChild(editForm);
+        list.appendChild(wrap);
+
+        // 編集ボタン
+        row.querySelector('.btn-edit').addEventListener('click', function () {
+          var open = editForm.style.display !== 'none';
+          editForm.style.display = open ? 'none' : '';
+        });
+
+        // 削除ボタン
+        row.querySelector('.btn-remove').addEventListener('click', function () {
+          if (!confirm('No.' + f.no + ' を削除しますか？')) return;
+          libraryApi({ action: 'removeFile', no: f.no }, function (d) {
             if (d.ok) loadLibFiles();
             else alert('削除失敗: ' + (d.error || ''));
+          });
+        });
+
+        // キャンセルボタン
+        editForm.querySelector('.btn-cancel').addEventListener('click', function () {
+          editForm.style.display = 'none';
+        });
+
+        // 保存ボタン
+        editForm.querySelector('.btn-save').addEventListener('click', function () {
+          var msg = editForm.querySelector('.edit-msg');
+          var inputs = editForm.querySelectorAll('input[data-field]');
+          var updated = {};
+          inputs.forEach(function (inp) {
+            if (inp.type === 'checkbox') updated[inp.dataset.field] = inp.checked;
+            else updated[inp.dataset.field] = inp.value.trim();
+          });
+          if (!updated.no || !updated.title || !updated.filename) {
+            msg.className = 'edit-msg err'; msg.textContent = '項目番号・タイトル・ファイル名は必須です。'; return;
+          }
+          msg.className = 'edit-msg'; msg.textContent = '保存中...';
+          libraryApi({ action: 'updateFile', file: updated }, function (d) {
+            if (d.ok) {
+              loadLibFiles();
+            } else {
+              msg.className = 'edit-msg err'; msg.textContent = d.error || '保存に失敗しました。';
+            }
           });
         });
       });
