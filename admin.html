@@ -160,6 +160,8 @@
       <button class="tab-btn" data-tab="passphrase">合言葉変更</button>
       <button class="tab-btn" data-tab="logs">対話履歴</button>
       <button class="tab-btn" data-tab="comments">コメント管理</button>
+      <button class="tab-btn" data-tab="libmembers">ライブラリメンバ</button>
+      <button class="tab-btn" data-tab="libfiles">ライブラリファイル</button>
     </div>
 
     <!-- タブ：交流メンバ管理 -->
@@ -208,6 +210,69 @@
       <div id="comments-list" class="member-list"></div>
     </div>
 
+    <!-- タブ：ライブラリメンバ管理 -->
+    <div id="tab-libmembers" class="tab-panel">
+      <div class="member-form">
+        <h2>➕ ライブラリメンバを追加</h2>
+        <p style="font-size:.88rem;color:var(--text-sub);margin-bottom:1rem;">
+          1つのIDに複数のサブIDを設定できます。
+        </p>
+        <div class="form-row">
+          <input id="lib-add-id"    type="text" placeholder="ID">
+          <input id="lib-add-subid" type="text" placeholder="サブID">
+          <button id="lib-add-btn" class="btn-fill" style="cursor:pointer;">追加</button>
+        </div>
+        <div id="lib-add-msg" class="form-msg"></div>
+      </div>
+      <div class="member-form">
+        <h2>👥 ライブラリメンバ一覧</h2>
+        <div id="lib-member-status" class="admin-status" style="padding:1rem 0;">読み込み中...</div>
+        <div id="lib-member-list" class="member-list"></div>
+      </div>
+    </div>
+
+    <!-- タブ：ライブラリファイル管理 -->
+    <div id="tab-libfiles" class="tab-panel">
+      <div class="member-form">
+        <h2>➕ ファイルを登録</h2>
+        <p style="font-size:.88rem;color:var(--text-sub);margin-bottom:1rem;">
+          PDFファイルは <code>library/assets/pdfs/</code> に配置した上で登録してください。
+        </p>
+        <div class="form-row" style="flex-wrap:wrap;">
+          <input id="lf-no"       type="text"  placeholder="項目番号（例：001）" style="min-width:140px;flex:0 0 140px;">
+          <input id="lf-title"    type="text"  placeholder="ファイルタイトル" style="flex:2;min-width:200px;">
+          <input id="lf-filename" type="text"  placeholder="ファイル名（例：ArtOfThought2_Draft.pdf）" style="flex:2;min-width:240px;">
+        </div>
+        <div class="form-row" style="margin-top:.6rem;flex-wrap:wrap;">
+          <input id="lf-desc"     type="text"  placeholder="説明" style="flex:2;min-width:200px;">
+          <input id="lf-creator"  type="text"  placeholder="製作者" style="min-width:120px;flex:0 0 140px;">
+          <input id="lf-date"     type="text"  placeholder="アップロード日（例：2026.5.5）" style="min-width:160px;flex:0 0 180px;">
+        </div>
+        <div class="form-row" style="margin-top:.6rem;flex-wrap:wrap;">
+          <input id="lf-size"     type="text"  placeholder="ファイル容量（例：10.8MB）" style="min-width:140px;flex:0 0 160px;">
+          <input id="lf-notes"    type="text"  placeholder="備考（特記事項）" style="flex:2;min-width:200px;">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.9rem;min-width:80px;">
+            <input id="lf-paid" type="checkbox"> 有料
+          </label>
+          <button id="lf-add-btn" class="btn-fill" style="cursor:pointer;">登録</button>
+        </div>
+        <div id="lf-add-msg" class="form-msg"></div>
+      </div>
+      <div class="member-form">
+        <h2>📄 登録ファイル一覧</h2>
+        <div id="lf-status" class="admin-status" style="padding:1rem 0;">読み込み中...</div>
+        <div id="lf-list" class="member-list"></div>
+      </div>
+      <div class="member-form" style="border:1px solid var(--navy-pale);">
+        <h2>⚙️ 初期データ投入</h2>
+        <p style="font-size:.88rem;color:var(--text-sub);margin-bottom:1rem;">
+          ファイル一覧が空の場合のみ、思考の技法2.0ドラフトの初期データを投入します。
+        </p>
+        <button id="lf-seed-btn" class="btn-outline" style="cursor:pointer;">初期データ投入</button>
+        <div id="lf-seed-msg" class="form-msg"></div>
+      </div>
+    </div>
+
     <!-- タブ：対話履歴 -->
     <div id="tab-logs" class="tab-panel">
       <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.75rem;align-items:center;">
@@ -246,6 +311,8 @@
       if (btn.dataset.tab === 'logs') loadLogs();
       if (btn.dataset.tab === 'comments') loadAdminComments();
       if (btn.dataset.tab === 'members') loadMembers();
+      if (btn.dataset.tab === 'libmembers') loadLibMembers();
+      if (btn.dataset.tab === 'libfiles') loadLibFiles();
     });
   });
 
@@ -443,8 +510,158 @@
     });
   }
   document.getElementById('comments-reload-btn').addEventListener('click', loadAdminComments);
-
   document.getElementById('reload-btn').addEventListener('click', loadLogs);
+
+  // ── ライブラリ API 呼び出し ─────────────────────────────────
+  function libraryApi(body, cb) {
+    body.adminPassword = savedPassword;
+    fetch('/api/library', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(function (r) { return r.json(); })
+    .then(cb)
+    .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  // ── ライブラリメンバ管理 ────────────────────────────────────
+  function loadLibMembers() {
+    var status = document.getElementById('lib-member-status');
+    var list   = document.getElementById('lib-member-list');
+    status.style.display = ''; status.textContent = '読み込み中...';
+    list.innerHTML = '';
+    libraryApi({ action: 'listLibraryMembers' }, function (d) {
+      status.style.display = 'none';
+      if (!d.ok) { status.style.display = ''; status.textContent = 'エラー: ' + (d.error || '取得失敗'); return; }
+      var members = d.members || [];
+      if (members.length === 0) {
+        status.style.display = ''; status.textContent = 'ライブラリメンバがまだ登録されていません。';
+        return;
+      }
+      members.forEach(function (m) {
+        var row = document.createElement('div');
+        row.className = 'member-row';
+        row.innerHTML =
+          '<div>' +
+          '<div class="member-email">ID：' + escapeHtml(m.id) + ' ／ サブID：' + escapeHtml(m.subId) + '</div>' +
+          '<div class="member-nick">登録日：' + escapeHtml(m.registeredAt || '—') +
+            '　アクセス回数：' + escapeHtml(String(m.accessCount || 1)) + '回</div>' +
+          '</div>' +
+          '<button class="btn-remove" data-id="' + escapeHtml(m.id) + '" data-subid="' + escapeHtml(m.subId) + '">削除</button>';
+        list.appendChild(row);
+      });
+      list.querySelectorAll('.btn-remove').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!confirm('ID: ' + btn.dataset.id + ' ／ サブID: ' + btn.dataset.subid + ' を削除しますか？')) return;
+          libraryApi({ action: 'removeLibraryMember', id: btn.dataset.id, subId: btn.dataset.subid }, function (d) {
+            if (d.ok) loadLibMembers();
+            else alert('削除失敗: ' + (d.error || ''));
+          });
+        });
+      });
+    });
+  }
+
+  document.getElementById('lib-add-btn').addEventListener('click', function () {
+    var id    = document.getElementById('lib-add-id').value.trim();
+    var subId = document.getElementById('lib-add-subid').value.trim();
+    var msg   = document.getElementById('lib-add-msg');
+    if (!id || !subId) { msg.className = 'form-msg err'; msg.textContent = 'ID・サブIDを入力してください。'; return; }
+    msg.className = 'form-msg'; msg.textContent = '処理中...';
+    libraryApi({ action: 'addLibraryMember', id: id, subId: subId }, function (d) {
+      if (d.ok) {
+        msg.className = 'form-msg ok'; msg.textContent = d.message || '登録しました。';
+        document.getElementById('lib-add-id').value = '';
+        document.getElementById('lib-add-subid').value = '';
+        loadLibMembers();
+      } else {
+        msg.className = 'form-msg err'; msg.textContent = d.error || '登録に失敗しました。';
+      }
+    });
+  });
+
+  // ── ライブラリファイル管理 ──────────────────────────────────
+  function loadLibFiles() {
+    var status = document.getElementById('lf-status');
+    var list   = document.getElementById('lf-list');
+    status.style.display = ''; status.textContent = '読み込み中...';
+    list.innerHTML = '';
+    libraryApi({ action: 'listFiles' }, function (d) {
+      status.style.display = 'none';
+      if (!d.ok) { status.style.display = ''; status.textContent = 'エラー: ' + (d.error || '取得失敗'); return; }
+      var files = d.files || [];
+      if (files.length === 0) {
+        status.style.display = ''; status.textContent = '登録ファイルがありません。';
+        return;
+      }
+      files.forEach(function (f) {
+        var row = document.createElement('div');
+        row.className = 'member-row';
+        row.innerHTML =
+          '<div>' +
+          '<div class="member-email">No.' + escapeHtml(f.no) + ' 　' + escapeHtml(f.title) +
+            (f.isPaid ? '　<span style="color:#b8601a;font-size:.8rem;">【有料】</span>' : '　<span style="color:#2d6a2d;font-size:.8rem;">【無料】</span>') + '</div>' +
+          '<div class="member-nick">' + escapeHtml(f.filename) + '　' + escapeHtml(f.fileSize || '') + '　' + escapeHtml(f.uploadDate || '') + '</div>' +
+          '</div>' +
+          '<button class="btn-remove" data-no="' + escapeHtml(f.no) + '">削除</button>';
+        list.appendChild(row);
+      });
+      list.querySelectorAll('.btn-remove').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!confirm('No.' + btn.dataset.no + ' を削除しますか？')) return;
+          libraryApi({ action: 'removeFile', no: btn.dataset.no }, function (d) {
+            if (d.ok) loadLibFiles();
+            else alert('削除失敗: ' + (d.error || ''));
+          });
+        });
+      });
+    });
+  }
+
+  document.getElementById('lf-add-btn').addEventListener('click', function () {
+    var file = {
+      no:         document.getElementById('lf-no').value.trim(),
+      title:      document.getElementById('lf-title').value.trim(),
+      filename:   document.getElementById('lf-filename').value.trim(),
+      description:document.getElementById('lf-desc').value.trim(),
+      creator:    document.getElementById('lf-creator').value.trim(),
+      uploadDate: document.getElementById('lf-date').value.trim(),
+      fileSize:   document.getElementById('lf-size').value.trim(),
+      notes:      document.getElementById('lf-notes').value.trim(),
+      isPaid:     document.getElementById('lf-paid').checked
+    };
+    var msg = document.getElementById('lf-add-msg');
+    if (!file.no || !file.title || !file.filename) {
+      msg.className = 'form-msg err'; msg.textContent = '項目番号・タイトル・ファイル名は必須です。'; return;
+    }
+    msg.className = 'form-msg'; msg.textContent = '処理中...';
+    libraryApi({ action: 'addFile', file: file }, function (d) {
+      if (d.ok) {
+        msg.className = 'form-msg ok'; msg.textContent = '登録しました。';
+        ['lf-no','lf-title','lf-filename','lf-desc','lf-creator','lf-date','lf-size','lf-notes'].forEach(function(id){
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('lf-paid').checked = false;
+        loadLibFiles();
+      } else {
+        msg.className = 'form-msg err'; msg.textContent = d.error || '登録に失敗しました。';
+      }
+    });
+  });
+
+  document.getElementById('lf-seed-btn').addEventListener('click', function () {
+    var msg = document.getElementById('lf-seed-msg');
+    msg.className = 'form-msg'; msg.textContent = '処理中...';
+    libraryApi({ action: 'seedFiles' }, function (d) {
+      if (d.ok) {
+        msg.className = 'form-msg ok'; msg.textContent = d.message || '初期データを投入しました。';
+        loadLibFiles();
+      } else {
+        msg.className = 'form-msg err'; msg.textContent = d.error || '失敗しました。';
+      }
+    });
+  });
 
   // ── ユーティリティ ────────────────────────────────────────
   function escapeHtml(str) {

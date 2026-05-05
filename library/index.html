@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ライブラリ | 知働化コミュニティ</title>
+<link rel="stylesheet" href="/ichi_s_otsuki/css/style.css">
+<style>
+.lib-wrap {
+  max-width: 860px;
+  margin: 48px auto 80px;
+  padding: 0 20px;
+}
+
+/* ── ログインカード ── */
+.login-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 48px 40px;
+  max-width: 440px;
+  margin: 80px auto 0;
+  text-align: center;
+}
+.login-card h1 { font-size: 1.2rem; color: var(--navy-main); margin-bottom: .4rem; }
+.login-card p  { color: var(--text-sub); font-size: .9rem; margin-bottom: 1.75rem; line-height: 1.7; }
+.login-input {
+  width: 100%; padding: .75rem 1rem;
+  border: 2px solid var(--navy-pale); border-radius: 8px;
+  font-size: 1rem; margin-bottom: .85rem; box-sizing: border-box;
+  transition: border-color .2s;
+}
+.login-input:focus { outline: none; border-color: var(--navy-main); }
+.login-error { color: #c0392b; font-size: .85rem; margin-bottom: .75rem; min-height: 1.2em; }
+
+/* ── ライブラリヘッダー ── */
+.lib-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.lib-header h1 { font-size: 1.4rem; color: var(--navy-main); }
+.lib-member-info { font-size: .85rem; color: var(--text-sub); }
+
+/* ── ファイルカード ── */
+.file-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.file-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1.75rem;
+  border-left: 5px solid var(--navy-main);
+}
+.file-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+}
+.file-no {
+  font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+  color: var(--navy-light); background: var(--navy-pale);
+  padding: .2em .7em; border-radius: 4px; display: inline-block; margin-bottom: .5rem;
+}
+.file-title { font-size: 1.1rem; font-weight: 700; color: var(--navy-dark); }
+.file-badge-paid {
+  font-size: .72rem; font-weight: 700; padding: .25em .7em; border-radius: 12px;
+  background: #fff0e0; color: #b8601a; border: 1px solid #f0c080; white-space: nowrap;
+}
+.file-badge-free {
+  font-size: .72rem; font-weight: 700; padding: .25em .7em; border-radius: 12px;
+  background: #e8f4e8; color: #2d6a2d; border: 1px solid #a8d8a8; white-space: nowrap;
+}
+.file-meta {
+  display: grid; grid-template-columns: 7em 1fr; gap: .35rem 1rem;
+  font-size: .88rem; margin-bottom: 1.1rem;
+}
+.file-meta dt { color: var(--text-sub); }
+.file-meta dd { color: var(--text-main); margin: 0; }
+.file-notes {
+  font-size: .85rem; color: var(--text-sub); margin-bottom: 1.25rem;
+  background: var(--navy-bg); border-radius: 6px; padding: .6rem 1rem;
+}
+.btn-download {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--navy-main); color: var(--white);
+  border: none; border-radius: 8px; padding: .65rem 1.4rem;
+  font-size: .95rem; font-weight: 700; cursor: pointer;
+  text-decoration: none; transition: background .2s;
+}
+.btn-download:hover { background: var(--navy-dark); }
+.btn-disabled {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: #e8e8e8; color: #999; border: none; border-radius: 8px;
+  padding: .65rem 1.4rem; font-size: .95rem; cursor: not-allowed;
+}
+
+.lib-status { text-align: center; padding: 3rem 0; color: var(--text-light); font-size: .95rem; }
+
+.btn-logout {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: .4rem .9rem; font-size: .85rem; color: var(--text-sub); cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.btn-logout:hover { background: var(--navy-pale); border-color: var(--navy-light); }
+
+@media (max-width: 600px) {
+  .login-card { padding: 36px 24px; }
+  .file-card  { padding: 1.25rem 1.25rem; }
+  .file-meta  { grid-template-columns: 6em 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-icon">知</div>
+      <div class="logo-text">
+        <span class="logo-main">知働化コミュニティ</span>
+        <span class="logo-sub">ライブラリ</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a class="nav-link" href="/">← トップへ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="lib-wrap">
+
+  <!-- ① ログイン画面（ライブラリメンバ認証） -->
+  <div id="login-section">
+    <div class="login-card">
+      <h1>🔒 ライブラリへのアクセス</h1>
+      <p>ライブラリメンバのID・サブIDを入力してください。<br>
+        知働化コミュニティメンバの方は、交流ページからアクセスしてください。</p>
+      <input id="lib-id"    class="login-input" type="text" placeholder="ID" autocomplete="username">
+      <input id="lib-subid" class="login-input" type="text" placeholder="サブID" autocomplete="off">
+      <div id="login-error" class="login-error"></div>
+      <button id="login-btn" class="btn-fill" style="width:100%;cursor:pointer;">アクセス</button>
+    </div>
+  </div>
+
+  <!-- ② ライブラリ本体 -->
+  <div id="library-section" style="display:none;">
+
+    <div class="lib-header">
+      <div>
+        <h1>📚 ライブラリ</h1>
+        <div class="lib-member-info" id="member-info-text"></div>
+      </div>
+      <button id="logout-btn" class="btn-logout">ログアウト</button>
+    </div>
+
+    <div id="lib-status" class="lib-status">読み込み中...</div>
+    <div id="file-list" class="file-list"></div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>© 知働化コミュニティ / 株式会社一（いち）</p>
+</footer>
+
+<script>
+(function () {
+  var SESSION_KEY_COMMUNITY = 'community_logged_in';
+  var SESSION_KEY_LIBRARY   = 'lib_member';
+
+  var loginSection   = document.getElementById('login-section');
+  var librarySection = document.getElementById('library-section');
+  var memberInfoText = document.getElementById('member-info-text');
+  var libStatus      = document.getElementById('lib-status');
+  var fileListEl     = document.getElementById('file-list');
+
+  // アクセスモード: 'community' | 'library' | null
+  var accessMode = null;
+  var libMemberId = '';
+
+  // ── 起動時：セッション確認 ──────────────────────────────────
+  (function checkSession() {
+    // コミュニティメンバとしてログイン済みか
+    if (sessionStorage.getItem(SESSION_KEY_COMMUNITY) === '1') {
+      accessMode = 'community';
+      enterLibrary('コミュニティメンバ');
+      return;
+    }
+    // ライブラリメンバとしてログイン済みか
+    var saved = sessionStorage.getItem(SESSION_KEY_LIBRARY);
+    if (saved) {
+      try {
+        var m = JSON.parse(saved);
+        if (m.id && m.subId) {
+          accessMode = 'library';
+          libMemberId = m.id;
+          enterLibrary('ライブラリメンバ：' + m.id + ' / ' + m.subId);
+          return;
+        }
+      } catch (e) {}
+    }
+    // どちらでもなければログイン画面を表示
+  })();
+
+  // ── ログイン（ライブラリメンバ）───────────────────────────────
+  var loginBtn    = document.getElementById('login-btn');
+  var loginError  = document.getElementById('login-error');
+  var libIdInput  = document.getElementById('lib-id');
+  var libSubInput = document.getElementById('lib-subid');
+
+  function doLogin() {
+    var id    = libIdInput.value.trim();
+    var subId = libSubInput.value.trim();
+    if (!id || !subId) {
+      loginError.textContent = 'ID・サブIDを入力してください。';
+      return;
+    }
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = '確認中...';
+
+    libraryApi({ action: 'verifyLibraryMember', id: id, subId: subId }, function (d) {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'アクセス';
+      if (d.ok) {
+        sessionStorage.setItem(SESSION_KEY_LIBRARY, JSON.stringify({ id: id, subId: subId }));
+        accessMode = 'library';
+        libMemberId = id;
+        enterLibrary('ライブラリメンバ：' + id + ' / ' + subId);
+      } else {
+        loginError.textContent = d.error || '認証に失敗しました。';
+      }
+    });
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  libSubInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+
+  // ── ログアウト ────────────────────────────────────────────────
+  document.getElementById('logout-btn').addEventListener('click', function () {
+    sessionStorage.removeItem(SESSION_KEY_LIBRARY);
+    accessMode = null;
+    librarySection.style.display = 'none';
+    loginSection.style.display   = '';
+    libIdInput.value  = '';
+    libSubInput.value = '';
+    loginError.textContent = '';
+    fileListEl.innerHTML = '';
+  });
+
+  // ── ライブラリ表示 ────────────────────────────────────────────
+  function enterLibrary(memberLabel) {
+    loginSection.style.display   = 'none';
+    librarySection.style.display = '';
+    memberInfoText.textContent   = memberLabel;
+    loadFiles();
+  }
+
+  function loadFiles() {
+    libStatus.style.display = '';
+    libStatus.textContent   = '読み込み中...';
+    fileListEl.innerHTML    = '';
+
+    libraryApi({ action: 'listFiles' }, function (d) {
+      libStatus.style.display = 'none';
+      if (!d.ok) {
+        libStatus.style.display = '';
+        libStatus.textContent = 'ファイル情報の取得に失敗しました。';
+        return;
+      }
+      var files = d.files || [];
+      if (files.length === 0) {
+        libStatus.style.display = '';
+        libStatus.textContent = 'ダウンロードファイルはまだありません。';
+        return;
+      }
+      files.forEach(function (f) {
+        var card = document.createElement('div');
+        card.className = 'file-card';
+
+        var badge = f.isPaid
+          ? '<span class="file-badge-paid">有料</span>'
+          : '<span class="file-badge-free">無料</span>';
+
+        // ダウンロードボタンの判定
+        var dlBtn;
+        if (!f.isPaid) {
+          // 無料ファイルは全員ダウンロード可
+          dlBtn = '<a class="btn-download" href="/library/assets/pdfs/' +
+            escapeHtml(f.filename) + '" download="' + escapeHtml(f.filename) + '">' +
+            '⬇ ダウンロード</a>';
+        } else if (accessMode === 'library') {
+          // 有料ファイルはライブラリメンバのみ
+          dlBtn = '<a class="btn-download" href="/library/assets/pdfs/' +
+            escapeHtml(f.filename) + '" download="' + escapeHtml(f.filename) + '">' +
+            '⬇ ダウンロード</a>';
+        } else {
+          dlBtn = '<span class="btn-disabled">🔒 ダウンロード不可</span>';
+        }
+
+        card.innerHTML =
+          '<div class="file-card-header">' +
+          '  <div>' +
+          '    <div class="file-no">No. ' + escapeHtml(f.no) + '</div>' +
+          '    <div class="file-title">' + escapeHtml(f.title) + '</div>' +
+          '  </div>' +
+          '  ' + badge +
+          '</div>' +
+          '<dl class="file-meta">' +
+          '  <dt>説明</dt><dd>' + escapeHtml(f.description || '—') + '</dd>' +
+          '  <dt>製作者</dt><dd>' + escapeHtml(f.creator || '—') + '</dd>' +
+          '  <dt>ファイル名</dt><dd>' + escapeHtml(f.filename) + '</dd>' +
+          '  <dt>アップロード日</dt><dd>' + escapeHtml(f.uploadDate || '—') + '</dd>' +
+          '  <dt>ファイル容量</dt><dd>' + escapeHtml(f.fileSize || '—') + '</dd>' +
+          '</dl>' +
+          (f.notes ? '<div class="file-notes">📝 ' + escapeHtml(f.notes) + '</div>' : '') +
+          dlBtn;
+
+        fileListEl.appendChild(card);
+      });
+    });
+  }
+
+  // ── API呼び出し ───────────────────────────────────────────────
+  function libraryApi(body, cb) {
+    fetch('/api/library', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(function (r) { return r.json(); })
+    .then(cb)
+    .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  function escapeHtml(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+})();
+</script>
+</body>
+</html>

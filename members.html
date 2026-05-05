@@ -228,6 +228,7 @@
       session.email      = email;
       session.passphrase = passphrase;
       session.nickname   = d.nickname || '';
+      sessionStorage.setItem('community_logged_in', '1');
       loginSection.style.display  = 'none';
       memberSection.style.display = '';
       memberInfo.textContent = email;
@@ -242,6 +243,7 @@
   // ── ログアウト ────────────────────────────────────────────
   logoutBtn.addEventListener('click', function () {
     session = { email: '', passphrase: '', nickname: '' };
+    sessionStorage.removeItem('community_logged_in');
     emailInput.value = '';
     passphraseInput.value = '';
     loginError.textContent = '';
