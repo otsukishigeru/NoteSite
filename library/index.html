@@ -178,6 +178,25 @@
 
   // ── 起動時：セッション確認 ──────────────────────────────────
   (function checkSession() {
+    // URLパラメータに id・subid があれば自動認証
+    var params = new URLSearchParams(window.location.search);
+    var urlId    = params.get('id');
+    var urlSubId = params.get('subid');
+    if (urlId && urlSubId) {
+      libraryApi({ action: 'verifyLibraryMember', id: urlId, subId: urlSubId }, function (d) {
+        if (d.ok) {
+          sessionStorage.setItem(SESSION_KEY_LIBRARY, JSON.stringify({ id: urlId, subId: urlSubId }));
+          accessMode  = 'library';
+          libMemberId = urlId;
+          // URLからパラメータを除去（再読み込みで二重認証しないように）
+          history.replaceState(null, '', '/library/');
+          enterLibrary('ライブラリメンバ：' + urlId + ' / ' + urlSubId);
+        } else {
+          document.getElementById('login-error').textContent = 'URLのID・サブIDが正しくありません。';
+        }
+      });
+      return;
+    }
     // コミュニティメンバとしてログイン済みか
     if (sessionStorage.getItem(SESSION_KEY_COMMUNITY) === '1') {
       accessMode = 'community';
@@ -190,7 +209,7 @@
       try {
         var m = JSON.parse(saved);
         if (m.id && m.subId) {
-          accessMode = 'library';
+          accessMode  = 'library';
           libMemberId = m.id;
           enterLibrary('ライブラリメンバ：' + m.id + ' / ' + m.subId);
           return;
