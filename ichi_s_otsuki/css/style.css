@@ -139,18 +139,23 @@ img { display: block; max-width: 100%; }
 }
 .btn-hero-secondary:hover { background: rgba(255,255,255,.1); }
 
-/* ヒーロー右カラム：記事カードプレビュー */
-.hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.hero-card {
-  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
-  border-radius: var(--radius); padding: 14px;
-  backdrop-filter: blur(4px);
+/* ヒーロー右カラム：表紙画像 */
+.hero-cover {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
 }
-.hero-card-label {
-  font-size: 9px; color: var(--navy-light); letter-spacing: 1px;
-  text-transform: uppercase; margin-bottom: 6px;
+.hero-cover-img {
+  width: 100%; max-width: 480px; border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+  display: block;
 }
-.hero-card-title { font-size: 12px; color: var(--white); font-weight: 600; line-height: 1.4; }
+.btn-sample {
+  display: inline-flex; align-items: center; gap: .45rem;
+  background: var(--white); color: var(--navy-dark);
+  padding: 11px 22px; border-radius: 6px; font-size: 13px; font-weight: 700;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25); text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-sample:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,.3); }
 
 /* ================================================================
    メインレイアウト
@@ -478,7 +483,7 @@ section { margin-bottom: 56px; }
   .mobile-nav a.cta { color: var(--navy-light); font-weight: 700; }
 
   .hero-inner { grid-template-columns: 1fr; }
-  .hero-cards { display: none; }
+  .hero-cover { display: none; }
   .hero { padding: 40px 20px; }
 
   .purpose-band { grid-template-columns: 1fr; }
