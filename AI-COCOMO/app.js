@@ -31,9 +31,9 @@ let P = Object.assign({}, DEFAULT);
 const PRESETS = {
   current: {
     label: '知働化サイト（現状AI支援）',
-    desc: 'FP=36, α=60%, Claude Sonnet相当',
+    desc: 'FP=1500, α=60%, Claude Sonnet相当',
     v: {
-      fp:36, cf:53, rnew:45, labor:6250, fx:150,
+      fp:1500, cf:53, rnew:45, labor:6250, fx:150,
       prec:1, flex:1, resl:2, team:1, pmat:3,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.05, pexp:0.90, ailx:0.80, tool:0.80, sced:1.00,
@@ -42,9 +42,9 @@ const PRESETS = {
   },
   maxai: {
     label: '知働化サイト（AI最大委任）',
-    desc: 'FP=36, α=85%, 高頻度AI活用',
+    desc: 'FP=1500, α=85%, 高頻度AI活用',
     v: {
-      fp:36, cf:53, rnew:35, labor:6250, fx:150,
+      fp:1500, cf:53, rnew:35, labor:6250, fx:150,
       prec:1, flex:1, resl:1, team:1, pmat:2,
       rely:0.90, data:0.85, cplx:0.95, ruse:0.85, plat:0.90,
       pcap:1.15, pexp:0.90, ailx:0.65, tool:0.65, sced:1.00,
@@ -53,9 +53,9 @@ const PRESETS = {
   },
   noai: {
     label: '従来型開発（AI無し）',
-    desc: 'FP=36, α=0%, ウォーターフォール相当',
+    desc: 'FP=1500, α=0%, ウォーターフォール相当',
     v: {
-      fp:36, cf:53, rnew:80, labor:6250, fx:150,
+      fp:1500, cf:53, rnew:80, labor:6250, fx:150,
       prec:3, flex:3, resl:3, team:3, pmat:3,
       rely:1.00, data:1.00, cplx:1.00, ruse:1.00, plat:1.00,
       pcap:1.00, pexp:1.00, ailx:1.00, tool:1.00, sced:1.00,
