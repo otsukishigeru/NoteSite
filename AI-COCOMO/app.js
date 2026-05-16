@@ -18,7 +18,7 @@ const SF_LABELS = ['Very High','High','Nominal+','Nominal','Low','Very Low'];
 
 // ── パラメータ定義 ────────────────────────────────────────────
 const DEFAULT = {
-  fp: 300, cf: 53, rnew: 80, labor: 6250, fx: 150,
+  fp: 1500, cf: 53, rnew: 80, labor: 6250, fx: 150,
   prec: 3, flex: 3, resl: 3, team: 2, pmat: 3,
   rely: 1.00, data: 1.00, cplx: 1.10, ruse: 1.00, plat: 1.00,
   pcap: 1.00, pexp: 1.00, ailx: 0.90, tool: 0.90, sced: 1.00,

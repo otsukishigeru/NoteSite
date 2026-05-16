@@ -209,7 +209,7 @@
 
       <!-- タブ2: スケールファクタ -->
       <div class="tab-panel" data-tab-group="params" id="tab-sf">
-        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">値が小さいほど良い（コスト削減）。0=Very High ～ 5=Very Low</p>
+        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">値が小さいほど良い（コスト削減）。0=Very High ～ 5=Very Low。▸ 評価基準をクリックで原典（SEC journal No.12）の評価基準を展開。</p>
 
         <!-- PREC -->
         <div class="param-row">
@@ -219,12 +219,24 @@
               <span class="param-symbol">PREC</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">類似プロジェクトの経験。経験豊富なほどコスト減。0=非常に高い経験, 5=全く未経験</span>
+                <span class="tooltip-box">開発組織が、対象システムと同様のシステムを開発した経験と知識の量。前例が豊富なほどコミュニケーションのオーバーヘッドが減り、工数が下がる。</span>
               </span>
             </div>
             <span class="param-value sf-label" id="sf-label-prec"></span>
           </div>
           <input type="range" class="param-slider" id="sl-prec">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定（スライダー値）</th><th>SF値</th><th>評価基準</th></tr>
+              <tr><td>極めて高い (0)</td><td>0.00</td><td>完全に馴染みあり</td></tr>
+              <tr><td>非常に高い (1)</td><td>1.24</td><td>大方馴染みあり</td></tr>
+              <tr><td>高い (2)</td><td>2.48</td><td>だいたい馴染みあり</td></tr>
+              <tr><td>中位 (3)</td><td>3.72</td><td>いくらか先例あり</td></tr>
+              <tr><td>低い (4)</td><td>4.96</td><td>ほとんど先例無し</td></tr>
+              <tr><td>非常に低い (5)</td><td>6.20</td><td>全く先例無し</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- FLEX -->
@@ -235,28 +247,52 @@
               <span class="param-symbol">FLEX</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">要求仕様の柔軟さ。柔軟なほどコスト減。0=非常に柔軟, 5=厳格に固定</span>
+                <span class="tooltip-box">ソフトウェアの要件や外部インタフェース仕様に対する制約からの自由度。厳格な仕様準拠が求められるほどコストが増加し、ゴール指向で柔軟なほど下がる。</span>
               </span>
             </div>
             <span class="param-value sf-label" id="sf-label-flex"></span>
           </div>
           <input type="range" class="param-slider" id="sl-flex">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定（スライダー値）</th><th>SF値</th><th>評価基準</th></tr>
+              <tr><td>極めて高い (0)</td><td>0.00</td><td>一般的な目標</td></tr>
+              <tr><td>非常に高い (1)</td><td>1.01</td><td>いくらか準拠</td></tr>
+              <tr><td>高い (2)</td><td>2.03</td><td>一般的な準拠</td></tr>
+              <tr><td>中位 (3)</td><td>3.04</td><td>いくらか緩和</td></tr>
+              <tr><td>低い (4)</td><td>4.05</td><td>場合により緩和</td></tr>
+              <tr><td>非常に低い (5)</td><td>5.07</td><td>厳格に準拠</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- RESL -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
-              リスク解消
+              リスク管理度
               <span class="param-symbol">RESL</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">技術リスクの事前解消度合い。0=完全解消, 5=未解消のリスク多数</span>
+                <span class="tooltip-box">リスク管理活動（プロトタイピング、技術検証、トレードオフ分析等）の実施度合い。アーキテクチャ上のリスクが事前に解消されているほど、工数が下がる。</span>
               </span>
             </div>
             <span class="param-value sf-label" id="sf-label-resl"></span>
           </div>
           <input type="range" class="param-slider" id="sl-resl">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定（スライダー値）</th><th>SF値</th><th>評価基準</th></tr>
+              <tr><td>極めて高い (0)</td><td>0.00</td><td>完全に行われている（100%）</td></tr>
+              <tr><td>非常に高い (1)</td><td>1.41</td><td>ほとんど行われている（90%）</td></tr>
+              <tr><td>高い (2)</td><td>2.83</td><td>だいたい行われている（75%）</td></tr>
+              <tr><td>中位 (3)</td><td>4.24</td><td>しばしば行われている（60%）</td></tr>
+              <tr><td>低い (4)</td><td>5.65</td><td>いくらか行われている（40%）</td></tr>
+              <tr><td>非常に低い (5)</td><td>7.07</td><td>ほとんど行われていない（20%）</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- TEAM -->
@@ -267,12 +303,24 @@
               <span class="param-symbol">TEAM</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">チームの連携・コミュニケーション品質。0=非常に高い結束, 5=バラバラで低摩擦</span>
+                <span class="tooltip-box">ユーザ・開発者・発注者・保守担当者など利害関係者間の協力と開発ビジョン共有の程度。結束度が高いほど工数が下がる。</span>
               </span>
             </div>
             <span class="param-value sf-label" id="sf-label-team"></span>
           </div>
           <input type="range" class="param-slider" id="sl-team">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定（スライダー値）</th><th>SF値</th><th>評価基準</th></tr>
+              <tr><td>極めて高い (0)</td><td>0.00</td><td>シームレスな相互作用</td></tr>
+              <tr><td>非常に高い (1)</td><td>1.10</td><td>非常に協力的</td></tr>
+              <tr><td>高い (2)</td><td>2.19</td><td>大方協力的</td></tr>
+              <tr><td>中位 (3)</td><td>3.29</td><td>基本的に協力的な相互作用</td></tr>
+              <tr><td>低い (4)</td><td>4.38</td><td>いくらか困難な相互作用</td></tr>
+              <tr><td>非常に低い (5)</td><td>5.48</td><td>非常に困難な相互作用</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- PMAT -->
@@ -283,12 +331,24 @@
               <span class="param-symbol">PMAT</span>
               <span class="tooltip-wrap">
                 <button class="tooltip-btn" tabindex="0">?</button>
-                <span class="tooltip-box">開発プロセスの成熟度（テスト自動化・CI/CD等）。0=非常に成熟, 5=未整備</span>
+                <span class="tooltip-box">組織のソフトウェア開発プロセスの成熟度。SEI CMMのレベルに対応。AI支援開発では、CI/CD整備・テスト自動化・AI生成コードの品質保証プロセスの有無として解釈する。</span>
               </span>
             </div>
             <span class="param-value sf-label" id="sf-label-pmat"></span>
           </div>
           <input type="range" class="param-slider" id="sl-pmat">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定（スライダー値）</th><th>SF値</th><th>評価基準（SEI CMM）</th></tr>
+              <tr><td>極めて高い (0)</td><td>0.00</td><td>レベル5（最適化）</td></tr>
+              <tr><td>非常に高い (1)</td><td>1.56</td><td>レベル4（定量的管理）</td></tr>
+              <tr><td>高い (2)</td><td>3.12</td><td>レベル3（定義済み）</td></tr>
+              <tr><td>中位 (3)</td><td>4.68</td><td>レベル2（管理）</td></tr>
+              <tr><td>低い (4)</td><td>6.24</td><td>レベル1 上位</td></tr>
+              <tr><td>非常に低い (5)</td><td>7.80</td><td>レベル1 下位</td></tr>
+            </table>
+          </details>
         </div>
 
         <div class="tab-summary" id="sf-summary"></div>
@@ -296,7 +356,7 @@
 
       <!-- タブ3: コストドライバ（EM） -->
       <div class="tab-panel" data-tab-group="params" id="tab-em">
-        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">0.50〜1.50。1.0が基準。高い能力系EMは1.0未満にするとコスト減。</p>
+        <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">0.50〜1.50。1.0が基準。能力系EMは低い値ほどコスト減。▸ 評価基準をクリックで原典の数値を展開。</p>
 
         <!-- RELY -->
         <div class="param-row">
@@ -304,11 +364,22 @@
             <div class="param-name">
               要求される信頼性
               <span class="param-symbol">RELY</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">障害時の影響度。ミッションクリティカルほど高くなりコスト増。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">意図した機能を実行し続けることへの要求と、障害発生時の影響の大きさ。信頼性要求が高いほど、テスト・検証工数が増加する。</span></span>
             </div>
             <span class="param-value" id="val-rely"></span>
           </div>
           <input type="range" class="param-slider" id="sl-rely">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準</th></tr>
+              <tr><td>非常に低い (VL)</td><td>0.82</td><td>若干の不便</td></tr>
+              <tr><td>低い (L)</td><td>0.92</td><td>簡単に回復可能な損失</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>回復可能な中くらいの損失</td></tr>
+              <tr><td>高い (H)</td><td>1.10</td><td>財政上の大きな損失</td></tr>
+              <tr><td>非常に高い (VH)</td><td>1.26</td><td>人命に影響を及ぼす</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- DATA -->
@@ -317,11 +388,21 @@
             <div class="param-name">
               データ複雑度
               <span class="param-symbol">DATA</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">データ構造の複雑さ。RDB設計や大量データは高め。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">テスト用データベースのサイズとプログラムサイズの比率（D/P比）。大規模なテストデータの準備・管理が必要なほど工数が増加する。</span></span>
             </div>
             <span class="param-value" id="val-data"></span>
           </div>
           <input type="range" class="param-slider" id="sl-data">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>D/P比（テストDB÷SLOC）</th></tr>
+              <tr><td>低い (L)</td><td>0.90</td><td>D/P &lt; 10</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>10 ≦ D/P &lt; 100</td></tr>
+              <tr><td>高い (H)</td><td>1.14</td><td>100 ≦ D/P &lt; 1000</td></tr>
+              <tr><td>非常に高い (VH)</td><td>1.28</td><td>D/P ≧ 1000</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- CPLX -->
@@ -330,11 +411,23 @@
             <div class="param-name">
               製品複雑度
               <span class="param-symbol">CPLX</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">処理ロジックの複雑さ。アルゴリズム・分岐・再帰が多いほど高い。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">制御フロー、数値計算、デバイス依存処理、データ管理、ユーザインタフェースの5側面から見たソフトウェアの複雑さの総合評価。</span></span>
             </div>
             <span class="param-value" id="val-cplx"></span>
           </div>
           <input type="range" class="param-slider" id="sl-cplx">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準</th></tr>
+              <tr><td>非常に低い (VL)</td><td>0.73</td><td>単純</td></tr>
+              <tr><td>低い (L)</td><td>0.87</td><td>いくらか複雑</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>適度に複雑</td></tr>
+              <tr><td>高い (H)</td><td>1.17</td><td>複雑</td></tr>
+              <tr><td>非常に高い (VH)</td><td>1.34</td><td>かなり複雑</td></tr>
+              <tr><td>極めて高い (XH)</td><td>1.74</td><td>極めて複雑</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- RUSE -->
@@ -343,11 +436,22 @@
             <div class="param-name">
               要求される再利用性
               <span class="param-symbol">RUSE</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">他プロジェクトでの再利用要求度。汎用ライブラリ化が必要な場合は高め。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">開発するソフトウェアを将来のプロジェクトで再利用するために追加で必要な工数。再利用の範囲が広いほど、汎用性確保のためのコストが上がる。</span></span>
             </div>
             <span class="param-value" id="val-ruse"></span>
           </div>
           <input type="range" class="param-slider" id="sl-ruse">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準</th></tr>
+              <tr><td>低い (L)</td><td>0.95</td><td>再利用を意図しない</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>プロジェクト内で再利用</td></tr>
+              <tr><td>高い (H)</td><td>1.07</td><td>複数プロジェクト間で再利用</td></tr>
+              <tr><td>非常に高い (VH)</td><td>1.15</td><td>プロダクトラインで再利用</td></tr>
+              <tr><td>極めて高い (XH)</td><td>1.24</td><td>複数プロダクトライン間で再利用</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- PLAT -->
@@ -356,7 +460,7 @@
             <div class="param-name">
               プラットフォーム制約
               <span class="param-symbol">PLAT</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">メモリ・性能などの実行環境制約。組み込み系は高い。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">メモリ・性能などの実行環境制約。クラウド・サーバーレス環境では低め。組み込みや高性能リアルタイム要件がある場合は高め。</span></span>
             </div>
             <span class="param-value" id="val-plat"></span>
           </div>
@@ -367,39 +471,72 @@
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
-              人員能力
+              人員能力（分析・設計）
               <span class="param-symbol">PCAP</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">開発者の能力レベル。高能力（0.70〜0.80）はコスト大幅減。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">開発者の分析・設計・実装能力、コミュニケーション能力、協調性。同職種の一般的な人材母集団に対するパーセンタイルで評価。能力が高いほどEM値が小さくなりコスト減。</span></span>
             </div>
             <span class="param-value" id="val-pcap"></span>
           </div>
           <input type="range" class="param-slider" id="sl-pcap">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準（パーセンタイル）</th></tr>
+              <tr><td>非常に低い (VL)</td><td>1.34</td><td>下位より15%</td></tr>
+              <tr><td>低い (L)</td><td>1.15</td><td>下位より35%</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>下位より55%</td></tr>
+              <tr><td>高い (H)</td><td>0.88</td><td>下位より75%</td></tr>
+              <tr><td>非常に高い (VH)</td><td>0.76</td><td>下位より90%</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- PEXP -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
-              人員経験
+              人員経験（アプリ分野）
               <span class="param-symbol">PEXP</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">ドメイン知識・業務経験の深さ。豊富な経験でコスト減。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">チームの、開発対象と類似のアプリケーション分野での経験年数。豊富な経験でコスト減。</span></span>
             </div>
             <span class="param-value" id="val-pexp"></span>
           </div>
           <input type="range" class="param-slider" id="sl-pexp">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>経験年数</th></tr>
+              <tr><td>非常に低い (VL)</td><td>1.22</td><td>2ヵ月以下</td></tr>
+              <tr><td>低い (L)</td><td>1.10</td><td>6ヵ月以下</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>1年</td></tr>
+              <tr><td>高い (H)</td><td>0.88</td><td>3年</td></tr>
+              <tr><td>非常に高い (VH)</td><td>0.81</td><td>6年</td></tr>
+            </table>
+          </details>
         </div>
 
-        <!-- AILX（新規） -->
+        <!-- AILX（AI-COCOMO拡張） -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
               AI活用習熟度 ✨
               <span class="param-symbol">AILX</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">【AI-COCOMO拡張】プロンプト設計・AIツール運用力。高習熟（低EM値）でコスト削減。また統合コストの算出にも使用。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">【AI-COCOMO拡張】プロンプト設計・AIツール運用力。高習熟（低EM値）でコスト削減。また統合コストの算出にも使用。原典のLTEX（言語・ツール経験）に相当するAI時代の新設パラメータ。</span></span>
             </div>
             <span class="param-value" id="val-ailx"></span>
           </div>
           <input type="range" class="param-slider" id="sl-ailx">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準</th></tr>
+              <tr><td>非常に低い (VL)</td><td>1.20</td><td>AIツール初使用。プロンプト設計の知識なし</td></tr>
+              <tr><td>低い (L)</td><td>1.09</td><td>基本的なChat利用のみ（6ヵ月未満）</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>コード生成・デバッグに日常的に活用（1年程度）</td></tr>
+              <tr><td>高い (H)</td><td>0.91</td><td>プロンプトエンジニアリング熟練。RAG・エージェント経験あり（3年程度）</td></tr>
+              <tr><td>非常に高い (VH)</td><td>0.84</td><td>AIワークフロー設計・最適化の専門家（6年以上相当）</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- TOOL -->
@@ -421,20 +558,46 @@
             <div class="param-name">
               スケジュール圧縮
               <span class="param-symbol">SCED</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">納期制約。無理な圧縮はコスト増。通常は1.00が基準。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">COCOMOが算出する最適開発期間に対する、要求される開発期間の割合。スケジュールを短縮するほど工数が増加する。ただし延長しても工数は減らない（パーキンソンの法則）。</span></span>
             </div>
             <span class="param-value" id="val-sced"></span>
           </div>
           <input type="range" class="param-slider" id="sl-sced">
+          <details class="detail-panel">
+            <summary>▸ 評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>評定</th><th>EM値</th><th>評価基準（最適期間比）</th></tr>
+              <tr><td>非常に低い (VL)</td><td>1.43</td><td>標準の75%（大幅短縮）</td></tr>
+              <tr><td>低い (L)</td><td>1.14</td><td>標準の85%</td></tr>
+              <tr><td>中位 (N)</td><td>1.00</td><td>標準の100%</td></tr>
+              <tr><td>高い (H)</td><td>1.00</td><td>標準の130%（延長しても減らない）</td></tr>
+              <tr><td>非常に高い (VH)</td><td>1.00</td><td>標準の160%（同上）</td></tr>
+            </table>
+          </details>
         </div>
 
         <div class="tab-summary" id="em-summary"></div>
+
+        <!-- 廃止パラメータ説明 -->
+        <div class="deprecated-box">
+          <div class="deprecated-box-title">COCOMO II → AI-COCOMO パラメータ対比</div>
+          <table class="deprecated-table">
+            <tr><th>COCOMO IIパラメータ</th><th>AI-COCOMOでの扱い</th><th>理由</th></tr>
+            <tr><td>TIME（実行時間制約）</td><td><span class="tag-removed">廃止</span></td><td>クラウド・サーバーレス化により実務上の制約でなくなった</td></tr>
+            <tr><td>STOR（メモリ制約）</td><td><span class="tag-removed">廃止</span></td><td>同上</td></tr>
+            <tr><td>PVOL（プラットフォーム安定性）</td><td><span class="tag-removed">廃止</span></td><td>クラウド環境では基盤が抽象化されている</td></tr>
+            <tr><td>LTEX（言語・ツール経験）</td><td><span class="tag-removed">廃止</span> → AILX ✨</td><td>AI支援により学習曲線が平坦化。AILX（AI活用習熟度）に置換</td></tr>
+            <tr><td>SITE（複数拠点）</td><td><span class="tag-removed">廃止</span></td><td>リモートワーク標準化により補正の必要性低下</td></tr>
+            <tr><td>—</td><td><span class="tag-added">新設：α（AI代替率）</span></td><td>人間工数のうちAIで代替される割合（AI設定タブ）</td></tr>
+            <tr><td>—</td><td><span class="tag-added">新設：γ（イテレーション係数）</span></td><td>FP当たりのAIトークン消費乗数（AI設定タブ）</td></tr>
+          </table>
+        </div>
       </div>
 
       <!-- タブ4: AI設定 -->
       <div class="tab-panel" data-tab-group="params" id="tab-ai">
 
-        <!-- 人的担当率 -->
+        <!-- 人的担当率（= 1-α） -->
         <div class="param-row">
           <div class="param-label-row">
             <div class="param-name">
@@ -445,6 +608,18 @@
             <span class="param-value" id="val-hrate"></span>
           </div>
           <input type="range" class="param-slider" id="sl-hrate">
+          <details class="detail-panel">
+            <summary>▸ α（AI代替率）の評価基準（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>AI代替率 α</th><th>人的担当率</th><th>評価基準</th></tr>
+              <tr><td>0.10〜0.20</td><td>80〜90%</td><td>AIはコード補完のみ。設計・実装は人間が担当</td></tr>
+              <tr><td>0.20〜0.40</td><td>60〜80%</td><td>AIが部分的にコード生成。人間が大部分を担当</td></tr>
+              <tr><td>0.40〜0.60</td><td>40〜60%</td><td>AIが設計相談・コード生成・テスト生成を担当。人間の判断が多く残る</td></tr>
+              <tr><td>0.60〜0.80</td><td>20〜40%</td><td>AIがコード生成・デバッグ・テストの大部分を担当。人間は方針決定と最終レビュー</td></tr>
+              <tr><td>0.80〜0.95</td><td>5〜20%</td><td>AIがほぼ全工程を担当。人間は要件定義とAI出力のレビューのみ（α≈0.82: chidouka-lab実績）</td></tr>
+            </table>
+            <p style="font-size:10px;color:var(--text-light);margin-top:6px;">※ α=1.0（完全代替）は非現実的。要件解釈・ビジネス判断・AI出力の品質保証は常に人間の仕事として残る。</p>
+          </details>
         </div>
 
         <!-- P_out -->
@@ -479,11 +654,21 @@
             <div class="param-name">
               イテレーション係数
               <span class="param-symbol">γ</span>
-              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AI出力の修正・再生成の往復回数。高いほどトークン消費増。典型値は2〜3。</span></span>
+              <span class="tooltip-wrap"><button class="tooltip-btn" tabindex="0">?</button><span class="tooltip-box">AI出力の修正・再生成の往復回数（TI：トークン強度に相当）。高いほどトークン消費増。典型値は2〜3。</span></span>
             </div>
             <span class="param-value" id="val-gamma"></span>
           </div>
           <input type="range" class="param-slider" id="sl-gamma">
+          <details class="detail-panel">
+            <summary>▸ TI（トークン強度）との対応（クリックで展開）</summary>
+            <table class="criteria-table">
+              <tr><th>γ値</th><th>評価基準</th><th>典型的なタスク</th></tr>
+              <tr><td>1.0〜1.5</td><td>低い往復回数</td><td>定型的なCRUD画面、単純なフォーム処理</td></tr>
+              <tr><td>2.0〜3.0</td><td>標準的な往復回数</td><td>API統合、中程度のビジネスロジック（推奨初期値）</td></tr>
+              <tr><td>3.0〜4.0</td><td>高い往復回数</td><td>複雑なアルゴリズム、対話的デバッグが頻繁な機能</td></tr>
+              <tr><td>4.0〜5.0</td><td>非常に高い往復回数</td><td>AI連携機能、大量コンテキスト参照、長大なシステムプロンプト</td></tr>
+            </table>
+          </details>
         </div>
 
         <!-- L_AI_m -->

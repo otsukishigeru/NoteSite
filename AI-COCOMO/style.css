@@ -332,6 +332,76 @@ a { color: inherit; text-decoration: none; }
 .preset-btn small { display: block; font-weight: 400; font-size: 11px; color: var(--text-light); margin-top: 2px; }
 
 /* ================================================================
+   評価基準詳細パネル（<details> 要素）
+   ================================================================ */
+.detail-panel {
+  margin-top: 6px;
+}
+.detail-panel summary {
+  font-size: 11px; color: var(--text-light);
+  cursor: pointer; user-select: none;
+  padding: 3px 2px; list-style: none;
+  transition: color .2s;
+}
+.detail-panel summary::-webkit-details-marker { display: none; }
+.detail-panel[open] summary { color: var(--cocomo-accent); }
+
+.criteria-table {
+  width: 100%; margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 11px; color: var(--text-sub);
+}
+.criteria-table th, .criteria-table td {
+  padding: 4px 8px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.criteria-table th {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-light); letter-spacing: 0.5px;
+  background: var(--dark);
+}
+.criteria-table tr:last-child td { border-bottom: none; }
+.criteria-table td:nth-child(2) {
+  font-family: 'Courier New', monospace;
+  color: var(--cocomo-accent); white-space: nowrap;
+}
+
+/* 廃止パラメータ説明ボックス */
+.deprecated-box {
+  margin-top: 20px; padding: 14px 16px;
+  background: rgba(233,196,106,.06);
+  border: 1px solid rgba(233,196,106,.2);
+  border-radius: var(--radius); font-size: 12px;
+}
+.deprecated-box-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  color: var(--cocomo-yellow); margin-bottom: 10px;
+}
+.deprecated-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 11px; color: var(--text-sub);
+}
+.deprecated-table th, .deprecated-table td {
+  padding: 4px 8px; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.deprecated-table th {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-light);
+}
+.deprecated-table tr:last-child td { border-bottom: none; }
+.deprecated-table .tag-removed {
+  font-size: 10px; color: var(--cocomo-red);
+  background: rgba(231,111,81,.12);
+  border-radius: 3px; padding: 1px 5px;
+}
+.deprecated-table .tag-added {
+  font-size: 10px; color: var(--cocomo-green);
+  background: rgba(82,183,136,.12);
+  border-radius: 3px; padding: 1px 5px;
+}
+
+/* ================================================================
    フッター
    ================================================================ */
 .site-footer {
