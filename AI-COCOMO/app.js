@@ -214,6 +214,131 @@ function render() {
   const piEM = P.rely*P.data*P.cplx*P.ruse*P.plat*P.pcap*P.pexp*P.ailx*P.tool*P.sced;
   document.getElementById('em-summary').innerHTML =
     `ΠEM = <span class="val">${fmtN(piEM,4)}</span>`;
+
+  renderChart();
+}
+
+// ── FP感度グラフ ──────────────────────────────────────────────
+function renderChart() {
+  const canvas = document.getElementById('fp-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const dpr = window.devicePixelRatio || 1;
+  const wrap = canvas.parentElement;
+  const cssW = wrap.clientWidth - 28;
+  const cssH = 150;
+  if (cssW <= 0) return;
+  canvas.width  = cssW * dpr;
+  canvas.height = cssH * dpr;
+  canvas.style.width  = cssW + 'px';
+  canvas.style.height = cssH + 'px';
+  ctx.scale(dpr, dpr);
+
+  const W = cssW, H = cssH;
+  const pad = { left: 54, right: 10, top: 10, bottom: 26 };
+  const plotW = W - pad.left - pad.right;
+  const plotH = H - pad.top  - pad.bottom;
+
+  const fpMin = 10, fpMax = 3000, N = 80;
+
+  // FPを順番に変えてコストをサンプリング（P.fpを一時的に書き換え）
+  const origFP = P.fp;
+  const pts = [];
+  for (let i = 0; i <= N; i++) {
+    P.fp = fpMin + (fpMax - fpMin) * i / N;
+    pts.push({ fp: P.fp, cost: calc().c_total });
+  }
+  P.fp = origFP;
+
+  const maxCost = Math.max(...pts.map(p => p.cost)) * 1.08;
+  const xOf = fp   => pad.left + (fp - fpMin) / (fpMax - fpMin) * plotW;
+  const yOf = cost => pad.top  + plotH * (1 - cost / maxCost);
+
+  // 背景
+  ctx.fillStyle = '#0B1628';
+  ctx.fillRect(0, 0, W, H);
+
+  // グリッド
+  ctx.strokeStyle = 'rgba(28,48,80,0.9)';
+  ctx.lineWidth = 0.5;
+  for (let i = 1; i <= 4; i++) {
+    const y = pad.top + plotH * (1 - i / 4);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + plotW, y); ctx.stroke();
+  }
+  [500, 1000, 1500, 2000, 2500].forEach(fp => {
+    const x = xOf(fp);
+    ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top + plotH); ctx.stroke();
+  });
+
+  // 曲線の塗り
+  ctx.beginPath();
+  pts.forEach((p, i) => { i === 0 ? ctx.moveTo(xOf(p.fp), yOf(p.cost)) : ctx.lineTo(xOf(p.fp), yOf(p.cost)); });
+  ctx.lineTo(xOf(fpMax), pad.top + plotH);
+  ctx.lineTo(xOf(fpMin), pad.top + plotH);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(91,164,207,0.10)';
+  ctx.fill();
+
+  // 曲線
+  ctx.beginPath();
+  pts.forEach((p, i) => { i === 0 ? ctx.moveTo(xOf(p.fp), yOf(p.cost)) : ctx.lineTo(xOf(p.fp), yOf(p.cost)); });
+  ctx.strokeStyle = '#5BA4CF';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // 現在FPの縦線（破線）
+  const curX = xOf(P.fp);
+  const curY = yOf(calc().c_total);
+  ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = 'rgba(233,196,106,0.7)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(curX, pad.top); ctx.lineTo(curX, pad.top + plotH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 現在値ドット
+  ctx.beginPath();
+  ctx.arc(curX, curY, 3.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#E9C46A';
+  ctx.fill();
+
+  // 軸
+  ctx.strokeStyle = 'rgba(78,106,136,0.9)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top);
+  ctx.lineTo(pad.left, pad.top + plotH);
+  ctx.lineTo(pad.left + plotW, pad.top + plotH);
+  ctx.stroke();
+
+  // Y軸ラベル
+  ctx.fillStyle = '#4E6A88';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i <= 4; i++) {
+    const cost = maxCost * i / 4;
+    const y = pad.top + plotH * (1 - i / 4);
+    const lbl = cost >= 1e8 ? (cost / 1e8).toFixed(1) + '億'
+              : cost >= 1e6 ? (cost / 1e6).toFixed(0) + 'M'
+              : (cost / 1000).toFixed(0) + 'K';
+    ctx.fillText('¥' + lbl, pad.left - 4, y);
+  }
+
+  // X軸ラベル
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  [500, 1000, 1500, 2000, 2500, 3000].forEach(fp => {
+    ctx.fillText(fp, xOf(fp), pad.top + plotH + 4);
+  });
+
+  // 現在FPラベル
+  ctx.fillStyle = '#E9C46A';
+  ctx.font = 'bold 9px sans-serif';
+  const labelRight = curX > W * 0.65;
+  ctx.textAlign = labelRight ? 'right' : 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(Math.round(P.fp) + ' FP', labelRight ? curX - 6 : curX + 6, curY - 2);
 }
 
 // ── DOM ヘルパー ──────────────────────────────────────────────

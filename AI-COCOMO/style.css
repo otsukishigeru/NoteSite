@@ -366,6 +366,13 @@ a { color: inherit; text-decoration: none; }
   color: var(--cocomo-accent); white-space: nowrap;
 }
 
+/* ================================================================
+   FP感度グラフ
+   ================================================================ */
+.fp-chart-wrap { padding: 10px 14px 8px; }
+.fp-chart-wrap canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+.fp-chart-note { font-size: 10px; color: var(--text-light); text-align: center; margin-top: 6px; }
+
 /* 廃止パラメータ説明ボックス */
 .deprecated-box {
   margin-top: 20px; padding: 14px 16px;
