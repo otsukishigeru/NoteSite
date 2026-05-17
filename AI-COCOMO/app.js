@@ -346,16 +346,16 @@ function $(id) { return document.getElementById(id); }
 
 function makeSlider(id, key, min, max, step, fmt_fn) {
   const slider = document.getElementById('sl-' + id);
-  const disp   = document.getElementById('val-' + id);
-  if (!slider || !disp) return;
+  if (!slider) return;
+  const disp = document.getElementById('val-' + id); // SF系はnullでも可
   slider.min   = min;
   slider.max   = max;
   slider.step  = step;
   slider.value = P[key];
-  disp.textContent = fmt_fn(P[key]);
+  if (disp) disp.textContent = fmt_fn(P[key]);
   slider.addEventListener('input', () => {
     P[key] = parseFloat(slider.value);
-    disp.textContent = fmt_fn(P[key]);
+    if (disp) disp.textContent = fmt_fn(P[key]);
     if (key in SF_SIDE_EFFECT) SF_SIDE_EFFECT[key]();
     render();
   });
