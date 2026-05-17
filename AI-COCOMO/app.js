@@ -312,7 +312,7 @@ function renderChart() {
   ctx.stroke();
 
   // Y軸ラベル
-  ctx.fillStyle = '#4E6A88';
+  ctx.fillStyle = '#DDE6F4';
   ctx.font = '9px sans-serif';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
