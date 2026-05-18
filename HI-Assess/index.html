@@ -436,6 +436,70 @@
       line-height: 1.7;
     }
 
+    /* ステップバー 人口比率 */
+    .step-pct {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+    .stage-step.active .step-pct { color: rgba(255,255,255,0.6); }
+
+    /* 結果本文内の統計テキスト */
+    .result-stat {
+      display: block;
+      margin-top: 0.8rem;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      padding: 0.5rem 0.8rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      border-left: 2px solid var(--border);
+    }
+
+    /* 職種マップカード */
+    .role-map-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .role-map-card h3 {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.9rem;
+      text-transform: uppercase;
+    }
+    .role-category {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+    .role-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* セルフアセスメントの限界注記 */
+    .limit-note {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+    .limit-note strong { color: var(--text); }
+
     /* ===== フッター ===== */
     footer {
       text-align: center;
@@ -503,7 +567,7 @@
     <div class="stage-card s4">
       <div class="s-num">STAGE 4</div>
       <h3>自己主導型</h3>
-      <p>自らの確固たる内なる軸を確立し、ルールそのものを設計・組み換えられる。守破離の「離」。</p>
+      <p>自らの確固たる内なる軸を確立し、ルールそのものを設計・組み換えられる。守破離の「破」。</p>
     </div>
     <div class="stage-card s5">
       <div class="s-num">STAGE 5</div>
@@ -549,16 +613,24 @@
       <!-- ステップバー -->
       <div class="stage-bar">
         <div class="stage-step s2" id="bar-s2">
-          <span class="step-num">2</span>利己的
+          <span class="step-num">2</span>
+          利己的
+          <span class="step-pct">1〜5%</span>
         </div>
         <div class="stage-step s3" id="bar-s3">
-          <span class="step-num">3</span>環境順応型
+          <span class="step-num">3</span>
+          環境順応型
+          <span class="step-pct">〜47%</span>
         </div>
         <div class="stage-step s4" id="bar-s4">
-          <span class="step-num">4</span>自己主導型
+          <span class="step-num">4</span>
+          自己主導型
+          <span class="step-pct">34〜35%</span>
         </div>
         <div class="stage-step s5" id="bar-s5">
-          <span class="step-num">5</span>自己変容型
+          <span class="step-num">5</span>
+          自己変容型
+          <span class="step-pct">1%未満</span>
         </div>
       </div>
 
@@ -569,6 +641,17 @@
     <div class="advice-card" id="advice-card">
       <h3>🌱 次の成長へのヒント</h3>
       <p id="advice-text"></p>
+    </div>
+
+    <div class="role-map-card" id="role-map-card">
+      <h3>対応する職種カテゴリ</h3>
+      <div class="role-category" id="role-category"></div>
+      <div class="role-desc" id="role-desc"></div>
+    </div>
+
+    <div class="limit-note">
+      <strong>⚠ セルフアセスメントの限界について：</strong><br>
+      発達理論の重要な特性として、「ある段階に達している人は、それより下位の段階の人のことは判るが、上位のことは見えない」という性質があります。このため、本アセスメントの結果はあくまで現時点での傾向を示すものです。高い段階が出ても謙虚に、低い段階が出ても必要以上に落ち込まず、成長の<strong>羅針盤</strong>としてお使いください。また「普段の自分」を念頭に置いてご回答ください。
     </div>
 
     <div class="result-actions">
@@ -587,7 +670,7 @@
     <a href="https://chidouka-lab.com/Hg/">Hg</a> ｜
     <a href="https://chidouka-lab.com/St/">St</a>
   </div>
-  <div>本アセスメントは『思考の技法2.0』（1_s_o 著）をもとに作成しています。</div>
+  <div>本アセスメントは『思考の技法2.0』（1_s_o 著）および『成人発達段階の実践的評価法』（株式会社一・大槻繁, 2023）をもとに作成しています。</div>
   <div style="margin-top:0.4rem;">
     <a href="https://chidouka-lab.com/">© 知働化コミュニティ — chidouka-lab.com</a>
   </div>
@@ -675,9 +758,12 @@ const results = {
     tagClass: "s2",
     label: "利己的段階",
     sub: "あなたの現在地は「第2段階（利己的段階）」の傾向があります",
-    body: `あなたの行動や判断の根拠は、自らの「好き・嫌い」や感情にあります。認識する他者の世界が「自分の世界」に留まっており、組織の価値創造と連動する機会がまだ少ない状態かもしれません。<br><br>
-    これは決してネガティブなことではありません。<strong>成人発達理論における現在地を正確に知ること</strong>が、次のステップへの第一歩です。`,
+    body: `あなたの行動や判断の根拠は、自らの「好き・嫌い」や感情にあります。認識する他者の世界が「自分の世界」に留まっており、「守破離」でいえば<strong>自己流</strong>の段階に相当します。<br><br>
+    まずは自分の感情から一歩引いて、チームや組織の目的を意識する習慣を育てていくことが次のステップです。
+    <span class="result-stat">参考：世界人口の約1〜5%が属するとされる段階です。</span>`,
     advice: "まずは自分の感情から一歩引いて、チームや組織の目的を意識する習慣を育てていきましょう。「なぜこのルールがあるのか？」と問い直す小さな習慣が、段階3への扉を開きます。",
+    roleCategory: "技能的カテゴリ（ワーカ）",
+    roleDesc: "経験と技で解決する。自分の得意分野・好き嫌いを軸に動く段階。",
     barId: "bar-s2"
   },
   stage3: {
@@ -685,9 +771,12 @@ const results = {
     tagClass: "s3",
     label: "環境順応型段階",
     sub: "あなたの現在地は「第3段階（環境順応型）」の傾向があります",
-    body: `近代社会の多くの大人が属する段階です。あなたは決められたルールの中で邁進する「がんばる人」「勝ち負けにこだわる人」であり、官僚的な強さを持っています。<br><br>
-    関心は「チームや会社の世界」に広がっていますが、ルールや枠組みそのものを疑う<strong>「守破離の破・離」へ踏み出すこと</strong>が、次の成長のテーマです。`,
+    body: `近代社会の多くの大人が属する段階です。決められたルールの中で邁進する「がんばる人」「勝ち負けにこだわる人」であり、官僚的な強さを持っています。「守破離」でいえば<strong>守</strong>の段階。<br><br>
+    関心はチームや会社の世界に広がっていますが、ルールや枠組みそのものを疑う「破・離」へ踏み出すことが次の成長テーマです。
+    <span class="result-stat">参考：世界人口の約8〜14%（移行期の段階3.5を含めると最大47%）が属するとされる段階です。</span>`,
     advice: "「このルールは本当に正しいか？」「このやり方を変えるとしたら？」という問いを、日々の業務の中で意識してみてください。他流（他のやり方・他の組織）を積極的に学ぶ「破」の姿勢が、段階4への道を開きます。",
+    roleCategory: "エンジニア・マネージャ（ワーカ）",
+    roleDesc: "ルール・解き方を与えられたら実行する。指示に忠実に動き、組織の歯車として機能する段階。",
     barId: "bar-s3"
   },
   stage4: {
@@ -695,9 +784,12 @@ const results = {
     tagClass: "s4",
     label: "自己主導型段階",
     sub: "あなたの現在地は「第4段階（自己主導型）」の傾向があります",
-    body: `AI時代に組織の中核として求められる<strong>「自分で考える人」</strong>です。自らの確固たる内なる軸（価値観・ルール）を確立し、既存の枠組みにとらわれず自律的に判断できる状態です。<br><br>
-    「守破離の離」の境地に達しており、ルールそのものを設計・組み換える力を持っています。AIエージェントを統べる「コンダクター」としての素質が備わっています。`,
+    body: `AI時代に組織の中核として求められる<strong>「自分で考える人」</strong>です。「守破離」でいえば<strong>破</strong>の境地。自らの確固たる内なる軸（価値観・ルール）を確立し、既存の枠組みにとらわれず自律的に判断できます。<br><br>
+    職種的には<strong>アーキテクト（エグゼクティブ）</strong>に相当し、問題が与えられれば解き方を自ら考え実装していくことができます。
+    <span class="result-stat">参考：世界人口の約34〜35%が属するとされる段階です（日本国内はこれより少ない傾向）。</span>`,
     advice: "さらなる成長のために、「自分が正しいと確信していること」を時に疑い、他者との深い対話の中で自らの前提を書き換える経験を積んでみてください。段階5への扉は「自分の軸を手放す勇気」から開かれます。",
+    roleCategory: "アーキテクト（エグゼクティブ）",
+    roleDesc: "問題が与えられれば解き方を自ら考え実装する。論理・最適化・システム設計を得意とする段階。",
     barId: "bar-s4"
   },
   stage45: {
@@ -705,9 +797,11 @@ const results = {
     tagClass: "s4",
     label: "自己主導型〜自己変容型の境界",
     sub: "第4段階と第5段階の境界領域にいます",
-    body: `自らの軸を確立しながらも、それを相対化して手放すプロセスを模索している状態です。<strong>段階4（自己主導型）の力強さと、段階5（自己変容型）の柔軟性の両方</strong>を行き来しています。<br><br>
-    これは非常に高度な発達段階にいることを示しています。`,
+    body: `段階4（自己主導型）と段階5（自己変容型）の境界領域にいます。自らの軸を確立しながらも、それを相対化して手放すプロセスを模索している状態です。<br><br>
+    <strong>「自らの枠組みに対する執着の有無」</strong>と<strong>「認識の変化に伴う矛盾を許容するしなやかさ」</strong>が、両者を分ける最大のポイントです。`,
     advice: "「自分の軸」と「その軸の相対化」を意識的に行き来することを続けてください。どちらが優れているのではなく、状況に応じて使い分けられる柔軟性こそが段階5の本質です。",
+    roleCategory: "アーキテクト → イノベータの移行期",
+    roleDesc: "自らの確固たる軸を持ちながら、その軸を手放す柔軟性を模索している段階。",
     barId: "bar-s4"
   },
   stage5: {
@@ -715,9 +809,12 @@ const results = {
     tagClass: "s5",
     label: "自己変容型段階",
     sub: "あなたの現在地は「第5段階（自己変容型）」の傾向があります",
-    body: `段階4をさらに超えた<strong>「自己変容型」</strong>の傾向があります。確立した自分の軸すらも絶対視せず、他者や環境との相互作用を通じて枠組みそのものを絶えず手放し、アップデートし続ける究極の柔軟性を持っています。<br><br>
-    著者は、この段階に至るには<strong>生涯をかけた探究</strong>が必要だと述べています。AI時代の「コンダクター」として、最も高次の段階に位置しています。`,
+    body: `段階4をさらに超えた<strong>「自己変容型」</strong>の傾向があります。「守破離」でいえば<strong>離</strong>の究極の境地。確立した自分の軸すらも絶対視せず、他者や環境との相互作用を通じて枠組みそのものを絶えず手放しアップデートし続けます。<br><br>
+    職種的には<strong>イノベータ・アントレプレナ（メタリーダー）</strong>に相当し、問題を発見し、観点を切り替え、全体を把握できる存在です。
+    <span class="result-stat">参考：世界人口の約1%以下という非常に稀な段階です。</span>`,
     advice: "この段階にいる方にとっての「成長」とは、他者の成長を支援することかもしれません。自らの変容の経験を、チームや組織の知恵として還元していくことが、さらなる深化につながります。",
+    roleCategory: "イノベータ・アントレプレナ（エグゼクティブ）",
+    roleDesc: "問題を発見し、観点を切り替え、全体を把握する。枠組みそのものを創り出す段階。",
     barId: "bar-s5"
   }
 };
@@ -880,6 +977,13 @@ function showResult() {
     document.getElementById(id).classList.remove('active');
   });
   document.getElementById(r.barId).classList.add('active');
+
+  // 職種マップ
+  document.getElementById('role-category').textContent = r.roleCategory;
+  document.getElementById('role-desc').textContent     = r.roleDesc;
+  // 職種カードの色
+  document.getElementById('role-map-card').style.borderTopColor = cm.color;
+  document.getElementById('role-map-card').style.borderTopWidth = '3px';
 
   showScreen('result-screen');
   document.getElementById('result-screen').scrollIntoView({ behavior: 'smooth' });
