@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HI-Assess — 成人発達理論 セルフアセスメント</title>
+  <meta name="description" content="ロバート・キーガンの成人発達理論（第2〜第5段階）において、あなたが現在どの段階にいるかを診断するセルフアセスメントツールです。">
+  <meta property="og:title" content="HI-Assess — 成人発達理論 セルフアセスメント">
+  <meta property="og:description" content="7つの問いに答えるだけで、あなたの成人発達段階（第2〜第5段階）がわかります。">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== リセット & 基本 ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --bg-card:  #1a1f2e;
+      --bg-card2: #1f2535;
+      --border:   #2d3450;
+      --accent:   #5b8dee;
+      --accent2:  #7ec8e3;
+      --gold:     #f0c040;
+      --text:     #dde3f0;
+      --text-sub: #8a97b5;
+      --white:    #ffffff;
+      --stage2:   #e05555;
+      --stage3:   #e09040;
+      --stage4:   #4aad7a;
+      --stage5:   #5b8dee;
+      --radius:   12px;
+      --shadow:   0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ===== ナビ ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      height: 52px;
+      gap: 1rem;
+    }
+    .nav-back {
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--accent2); }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+    .nav-kanji {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--white);
+    }
+
+    /* ===== ヒーロー ===== */
+    .hero {
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      border-radius: 100px;
+      padding: 0.25rem 0.9rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), #4070cc);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2.2rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 4px 16px rgba(91,141,238,0.35);
+      letter-spacing: 0.03em;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(91,141,238,0.5);
+    }
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 0.88rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      margin-left: 0.8rem;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ===== 理論説明カード ===== */
+    .theory-section {
+      max-width: 720px;
+      margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+    .theory-section h2 {
+      font-size: 1.1rem;
+      color: var(--text-sub);
+      letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+    }
+    .stage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1rem;
+      border-top-width: 3px;
+    }
+    .stage-card.s2 { border-top-color: var(--stage2); }
+    .stage-card.s3 { border-top-color: var(--stage3); }
+    .stage-card.s4 { border-top-color: var(--stage4); }
+    .stage-card.s5 { border-top-color: var(--stage5); }
+    .stage-card .s-num {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+    .stage-card.s2 .s-num { color: var(--stage2); }
+    .stage-card.s3 .s-num { color: var(--stage3); }
+    .stage-card.s4 .s-num { color: var(--stage4); }
+    .stage-card.s5 .s-num { color: var(--stage5); }
+    .stage-card h3 { font-size: 0.88rem; color: var(--white); margin-bottom: 0.4rem; }
+    .stage-card p  { font-size: 0.77rem; color: var(--text-sub); line-height: 1.5; }
+
+    /* ===== アセスメント本体 ===== */
+    #app {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 1.5rem 6rem;
+    }
+
+    /* スクリーン共通 */
+    .screen { display: none; animation: fadeIn 0.4s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== 設問画面 ===== */
+    .q-header {
+      margin-bottom: 1.8rem;
+    }
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .q-phase {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      text-transform: uppercase;
+    }
+    .q-count {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .q-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .q-number {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.7rem;
+      text-transform: uppercase;
+    }
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+    }
+    .q-theme {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 0.8rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .choices { display: flex; flex-direction: column; gap: 0.75rem; }
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      cursor: pointer;
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      transition: border-color 0.18s, background 0.18s, transform 0.12s;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+    }
+    .choice-btn:hover {
+      border-color: var(--accent);
+      background: rgba(91,141,238,0.08);
+      transform: translateX(3px);
+    }
+    .choice-btn.selected {
+      border-color: var(--accent);
+      background: rgba(91,141,238,0.15);
+    }
+    .choice-label {
+      font-weight: 700;
+      color: var(--accent2);
+      min-width: 18px;
+      font-size: 0.8rem;
+      margin-top: 1px;
+    }
+
+    .q-nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+    .btn-next {
+      background: linear-gradient(135deg, var(--accent), #4070cc);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.8rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .btn-next.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .btn-next.enabled:hover { transform: translateY(-1px); }
+
+    /* ===== 結果画面 ===== */
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .result-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .result-stage-label {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+    .result-stage-sub {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 1.5rem;
+    }
+    .result-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.4rem 0;
+    }
+    .result-body {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .result-body strong { color: var(--white); }
+
+    /* ステップバー */
+    .stage-bar {
+      display: flex;
+      gap: 0;
+      margin: 1.8rem 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .stage-step {
+      flex: 1;
+      padding: 0.6rem 0.3rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      background: var(--bg-card2);
+      border-right: 1px solid var(--border);
+      transition: background 0.3s;
+      line-height: 1.3;
+    }
+    .stage-step:last-child { border-right: none; }
+    .stage-step.active {
+      color: var(--white);
+      font-weight: 700;
+    }
+    .stage-step.active.s2 { background: rgba(224,85,85,0.25); }
+    .stage-step.active.s3 { background: rgba(224,144,64,0.25); }
+    .stage-step.active.s4 { background: rgba(74,173,122,0.25); }
+    .stage-step.active.s5 { background: rgba(91,141,238,0.25); }
+    .stage-step .step-num { font-size: 0.9rem; font-weight: 700; display: block; }
+
+    .result-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+
+    /* 成長アドバイスカード */
+    .advice-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .advice-card h3 {
+      font-size: 0.88rem;
+      color: var(--accent2);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.8rem;
+    }
+    .advice-card p {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    /* ===== フッター ===== */
+    footer {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-sub);
+      font-size: 0.78rem;
+      line-height: 1.8;
+    }
+    footer a { color: var(--text-sub); text-decoration: none; }
+    footer a:hover { color: var(--accent2); }
+    .footer-members {
+      margin: 0.8rem 0;
+    }
+
+    /* ===== レスポンシブ ===== */
+    @media (max-width: 480px) {
+      .hero { padding: 3.5rem 1.2rem 3rem; }
+      .q-card { padding: 1.4rem; }
+      .result-card { padding: 1.4rem; }
+      .stage-bar { flex-direction: column; }
+      .stage-step { border-right: none; border-bottom: 1px solid var(--border); }
+      .stage-step:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ナビゲーション -->
+<nav>
+  <a href="https://chidouka-lab.com/" class="nav-back">← 知働化コミュニティ TOP</a>
+  <div class="nav-logo">
+    <div class="nav-kanji">人</div>
+    <span>HI-Assess</span>
+  </div>
+</nav>
+
+<!-- ヒーローセクション -->
+<section class="hero">
+  <div class="hero-tag">Self Assessment</div>
+  <h1><em>成人発達理論</em><br>セルフアセスメント</h1>
+  <p class="hero-sub">
+    ロバート・キーガンの「成人発達理論」における<br>
+    あなたの現在地（第2〜第5段階）を診断します。<br>
+    7つの問いに答えるだけで、結果がわかります。
+  </p>
+  <button class="btn-primary" onclick="startAssessment()">アセスメントを始める</button>
+  <a href="#about" class="btn-ghost">理論について</a>
+</section>
+
+<!-- 理論説明 -->
+<section class="theory-section" id="about">
+  <h2>— 成人発達理論の4つの段階 —</h2>
+  <div class="stage-grid">
+    <div class="stage-card s2">
+      <div class="s-num">STAGE 2</div>
+      <h3>利己的段階</h3>
+      <p>自分の「好き・嫌い」が行動の根拠。他者の世界はまだ自分の内側に留まる。</p>
+    </div>
+    <div class="stage-card s3">
+      <div class="s-num">STAGE 3</div>
+      <h3>環境順応型</h3>
+      <p>決められたルールの中でひたすらがんばる。組織の目標を自分の目標として受け入れる。</p>
+    </div>
+    <div class="stage-card s4">
+      <div class="s-num">STAGE 4</div>
+      <h3>自己主導型</h3>
+      <p>自らの確固たる内なる軸を確立し、ルールそのものを設計・組み換えられる。守破離の「離」。</p>
+    </div>
+    <div class="stage-card s5">
+      <div class="s-num">STAGE 5</div>
+      <h3>自己変容型</h3>
+      <p>確立した軸すらも相対化し、他者との対話の中で枠組みを絶えずアップデートし続ける。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== アセスメント本体 ===== -->
+<div id="app">
+
+  <!-- フェーズ1：設問1〜4 -->
+  <div id="q-screen" class="screen">
+    <div class="q-header">
+      <div class="q-meta">
+        <span class="q-phase" id="phase-label">フェーズ 1 — 基本診断</span>
+        <span class="q-count" id="q-count-label">1 / 7</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:14%"></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number" id="q-number">Question 01</div>
+      <p class="q-theme" id="q-theme"></p>
+      <p class="q-text" id="q-text"></p>
+      <div class="choices" id="choices"></div>
+      <div class="q-nav">
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">次へ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果画面 -->
+  <div id="result-screen" class="screen">
+    <div class="result-card">
+      <div class="result-tag" id="result-tag">診断結果</div>
+      <div class="result-stage-label" id="result-stage-label"></div>
+      <div class="result-stage-sub" id="result-stage-sub"></div>
+
+      <!-- ステップバー -->
+      <div class="stage-bar">
+        <div class="stage-step s2" id="bar-s2">
+          <span class="step-num">2</span>利己的
+        </div>
+        <div class="stage-step s3" id="bar-s3">
+          <span class="step-num">3</span>環境順応型
+        </div>
+        <div class="stage-step s4" id="bar-s4">
+          <span class="step-num">4</span>自己主導型
+        </div>
+        <div class="stage-step s5" id="bar-s5">
+          <span class="step-num">5</span>自己変容型
+        </div>
+      </div>
+
+      <hr class="result-divider">
+      <div class="result-body" id="result-body"></div>
+    </div>
+
+    <div class="advice-card" id="advice-card">
+      <h3>🌱 次の成長へのヒント</h3>
+      <p id="advice-text"></p>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-primary" onclick="resetAssessment()">もう一度やり直す</button>
+      <a href="https://chidouka-lab.com/ichi_s_otsuki/" class="btn-ghost" target="_blank">思考の技法を読む →</a>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- フッター -->
+<footer>
+  <div class="footer-members">
+    <a href="https://chidouka-lab.com/ichi_s_otsuki/">1_s_o</a> ｜
+    <a href="https://chidouka-lab.com/carl/">t0rapa</a> ｜
+    <a href="https://chidouka-lab.com/Hg/">Hg</a> ｜
+    <a href="https://chidouka-lab.com/St/">St</a>
+  </div>
+  <div>本アセスメントは『思考の技法2.0』（1_s_o 著）をもとに作成しています。</div>
+  <div style="margin-top:0.4rem;">
+    <a href="https://chidouka-lab.com/">© 知働化コミュニティ — chidouka-lab.com</a>
+  </div>
+</footer>
+
+<script>
+/* =====================================================
+   HI-Assess アセスメントロジック
+   成人発達理論 第2〜第5段階 セルフ診断
+   ===================================================== */
+
+// ===== 設問データ =====
+
+const phase1Questions = [
+  {
+    theme: "判断基準",
+    text: "仕事で何かを決断する際、最も重視する「判断基準」は何ですか？",
+    choices: [
+      { label: "A", text: "自分が「好きか、嫌いか」、感情的にやりたいかどうか。", score: "A" },
+      { label: "B", text: "決められたルールの中で「勝てるか、負けるか」、あるいは組織の目標を達成できるか。", score: "B" },
+      { label: "C", text: "そもそもそのルールが目的に照らして正しいか。必要があれば「自分で考え」、ルールそのものを設計し直す。", score: "C" },
+    ]
+  },
+  {
+    theme: "成長プロセス",
+    text: "日々の業務への取り組み方（成長プロセス）は、どれに最も近いですか？",
+    choices: [
+      { label: "A", text: "自分のやりたいこと、居心地の良い範囲にとどまっている。", score: "A" },
+      { label: "B", text: "与えられた枠組みやルールのなかで、とにかく一生懸命に「がんばる」。", score: "B" },
+      { label: "C", text: "既存の作法（守）や他流（破）を学んだ上で、形式を超えて自らの枠組みを批判的に吟味し、新たな道を切り開いている（離）。", score: "C" },
+    ]
+  },
+  {
+    theme: "他者の世界の範囲",
+    text: "仕事を通じて「貢献したい」「価値を提供したい」と想いを馳せる「他者の世界」の範囲はどこまでですか？",
+    choices: [
+      { label: "A", text: "自分自身、あるいは自分の利己的な世界。", score: "A" },
+      { label: "B", text: "自分の所属するチームや、会社の世界。", score: "B" },
+      { label: "C", text: "多様性を尊重し、社会全体や地球規模の広い世界。", score: "C" },
+    ]
+  },
+  {
+    theme: "認識の変化への対応",
+    text: "過去に自分が強く主張していた発言と、状況が変化した現在の考えが「矛盾」した場合、どう対応しますか？",
+    choices: [
+      { label: "A", text: "自分の感情やプライドを守るため、過去の主張を押し通す。", score: "A" },
+      { label: "B", text: "過去の発言との一貫性を守るため、決められたルールに沿って理屈をつける。", score: "B" },
+      { label: "C", text: "過去の発言との矛盾は問わず、その時々の認識の変化を許容し、しなやかな柔らかさを持って考えを改める。", score: "C" },
+    ]
+  }
+];
+
+const phase2Questions = [
+  {
+    theme: "信念 vs 他者の意見",
+    text: "あなた自身が確信を持っている方針に対し、優秀な他者から全く異なる枠組み（前提）の意見が出された場合、あなたはどのように対処しますか？",
+    choices: [
+      { label: "4", text: "自分の確立した価値観（軸）をベースに据え、相手の意見を傾聴・分析した上で、自分の枠組みの中で最適な解決策を論理的に導く。", score: "4" },
+      { label: "5", text: "双方の枠組みの限界を認識し、コミュニケーションを通じて自分自身の根底にある前提そのものを書き換え、全く新しい次元の結論を創出しようとする。", score: "5" },
+    ]
+  },
+  {
+    theme: "一貫性と変容",
+    text: "過去に強く主張し進めていた方針について「当時の自分の考えは間違っていた」と気づいたとき、自分の中でどう処理し、周囲にどう伝えますか？",
+    choices: [
+      { label: "4", text: "明確な論理的理由で方針転換し、過去の自分と今の自分の「一貫性」を保とうと努力する。", score: "4" },
+      { label: "5", text: "「あの時の自分はそうだったが、今はこう変わった」と自らの変容を軽やかに受け入れ、過去の一貫性に執着せずありのままに開示する。", score: "5" },
+    ]
+  },
+  {
+    theme: "「正しさ」の所在",
+    text: "仕事における「正しさ」や「真理」とは、どのように決定されるものだと考えていますか？",
+    choices: [
+      { label: "4", text: "自分自身の内面的な価値基準や「自らが構築した論理・ルール」によって、自律的に決定されるもの。", score: "4" },
+      { label: "5", text: "多様な他者とのコミュニケーションの中でその都度立ち上がり、絶えず進化・修正されていくもの。", score: "5" },
+    ]
+  }
+];
+
+// ===== 結果データ =====
+
+const results = {
+  stage2: {
+    tag: "段階 2",
+    tagClass: "s2",
+    label: "利己的段階",
+    sub: "あなたの現在地は「第2段階（利己的段階）」の傾向があります",
+    body: `あなたの行動や判断の根拠は、自らの「好き・嫌い」や感情にあります。認識する他者の世界が「自分の世界」に留まっており、組織の価値創造と連動する機会がまだ少ない状態かもしれません。<br><br>
+    これは決してネガティブなことではありません。<strong>成人発達理論における現在地を正確に知ること</strong>が、次のステップへの第一歩です。`,
+    advice: "まずは自分の感情から一歩引いて、チームや組織の目的を意識する習慣を育てていきましょう。「なぜこのルールがあるのか？」と問い直す小さな習慣が、段階3への扉を開きます。",
+    barId: "bar-s2"
+  },
+  stage3: {
+    tag: "段階 3",
+    tagClass: "s3",
+    label: "環境順応型段階",
+    sub: "あなたの現在地は「第3段階（環境順応型）」の傾向があります",
+    body: `近代社会の多くの大人が属する段階です。あなたは決められたルールの中で邁進する「がんばる人」「勝ち負けにこだわる人」であり、官僚的な強さを持っています。<br><br>
+    関心は「チームや会社の世界」に広がっていますが、ルールや枠組みそのものを疑う<strong>「守破離の破・離」へ踏み出すこと</strong>が、次の成長のテーマです。`,
+    advice: "「このルールは本当に正しいか？」「このやり方を変えるとしたら？」という問いを、日々の業務の中で意識してみてください。他流（他のやり方・他の組織）を積極的に学ぶ「破」の姿勢が、段階4への道を開きます。",
+    barId: "bar-s3"
+  },
+  stage4: {
+    tag: "段階 4",
+    tagClass: "s4",
+    label: "自己主導型段階",
+    sub: "あなたの現在地は「第4段階（自己主導型）」の傾向があります",
+    body: `AI時代に組織の中核として求められる<strong>「自分で考える人」</strong>です。自らの確固たる内なる軸（価値観・ルール）を確立し、既存の枠組みにとらわれず自律的に判断できる状態です。<br><br>
+    「守破離の離」の境地に達しており、ルールそのものを設計・組み換える力を持っています。AIエージェントを統べる「コンダクター」としての素質が備わっています。`,
+    advice: "さらなる成長のために、「自分が正しいと確信していること」を時に疑い、他者との深い対話の中で自らの前提を書き換える経験を積んでみてください。段階5への扉は「自分の軸を手放す勇気」から開かれます。",
+    barId: "bar-s4"
+  },
+  stage45: {
+    tag: "段階 4 / 5",
+    tagClass: "s4",
+    label: "自己主導型〜自己変容型の境界",
+    sub: "第4段階と第5段階の境界領域にいます",
+    body: `自らの軸を確立しながらも、それを相対化して手放すプロセスを模索している状態です。<strong>段階4（自己主導型）の力強さと、段階5（自己変容型）の柔軟性の両方</strong>を行き来しています。<br><br>
+    これは非常に高度な発達段階にいることを示しています。`,
+    advice: "「自分の軸」と「その軸の相対化」を意識的に行き来することを続けてください。どちらが優れているのではなく、状況に応じて使い分けられる柔軟性こそが段階5の本質です。",
+    barId: "bar-s4"
+  },
+  stage5: {
+    tag: "段階 5",
+    tagClass: "s5",
+    label: "自己変容型段階",
+    sub: "あなたの現在地は「第5段階（自己変容型）」の傾向があります",
+    body: `段階4をさらに超えた<strong>「自己変容型」</strong>の傾向があります。確立した自分の軸すらも絶対視せず、他者や環境との相互作用を通じて枠組みそのものを絶えず手放し、アップデートし続ける究極の柔軟性を持っています。<br><br>
+    著者は、この段階に至るには<strong>生涯をかけた探究</strong>が必要だと述べています。AI時代の「コンダクター」として、最も高次の段階に位置しています。`,
+    advice: "この段階にいる方にとっての「成長」とは、他者の成長を支援することかもしれません。自らの変容の経験を、チームや組織の知恵として還元していくことが、さらなる深化につながります。",
+    barId: "bar-s5"
+  }
+};
+
+// ===== 状態管理 =====
+let currentQuestionIndex = 0;
+let phase = 1;
+let answers = { A: 0, B: 0, C: 0, s4: 0, s5: 0 };
+let selectedChoice = null;
+let allQuestions = [];
+
+// ===== アセスメント開始 =====
+function startAssessment() {
+  // 画面スクロール
+  document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+
+  // 初期化
+  currentQuestionIndex = 0;
+  phase = 1;
+  answers = { A: 0, B: 0, C: 0, s4: 0, s5: 0 };
+  selectedChoice = null;
+  allQuestions = [...phase1Questions];
+
+  setTimeout(() => showQuestion(), 300);
+}
+
+// ===== 設問表示 =====
+function showQuestion() {
+  const q = allQuestions[currentQuestionIndex];
+  const total = 4 + (phase === 2 ? 3 : 0);
+  const current = currentQuestionIndex + 1;
+  const progress = (current / (phase === 1 ? 4 : 7)) * 100;
+
+  // フェーズラベル
+  document.getElementById('phase-label').textContent =
+    phase === 1 ? 'フェーズ 1 — 基本診断' : 'フェーズ 2 — 段階4 / 5 判別';
+  document.getElementById('q-count-label').textContent =
+    `${phase === 2 ? currentQuestionIndex + 5 : current} / ${phase === 1 ? 4 : 7}`;
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('q-number').textContent =
+    'Question ' + String(phase === 2 ? currentQuestionIndex + 5 : current).padStart(2, '0');
+  document.getElementById('q-theme').textContent = 'テーマ：' + q.theme;
+  document.getElementById('q-text').textContent = q.text;
+
+  // 選択肢
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="choice-label">${c.label}</span><span>${c.text}</span>`;
+    btn.onclick = () => selectChoice(c.score, btn);
+    choicesEl.appendChild(btn);
+  });
+
+  // 次へボタン無効化
+  selectedChoice = null;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.classList.remove('enabled');
+  nextBtn.textContent = current < (phase === 1 ? 4 : allQuestions.length) ? '次へ →' : '結果を見る';
+
+  // 画面表示
+  showScreen('q-screen');
+}
+
+function selectChoice(score, btn) {
+  // 全選択肢のハイライト解除
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedChoice = score;
+
+  // 次へボタン有効化
+  document.getElementById('btn-next').classList.add('enabled');
+}
+
+function nextQuestion() {
+  if (!selectedChoice) return;
+
+  // スコア記録
+  if (phase === 1) {
+    answers[selectedChoice]++;
+  } else {
+    if (selectedChoice === '4') answers.s4++;
+    else answers.s5++;
+  }
+
+  currentQuestionIndex++;
+
+  if (phase === 1 && currentQuestionIndex >= phase1Questions.length) {
+    // フェーズ1終了 → Cが最多かチェック
+    const cIsMax = answers.C > answers.A && answers.C > answers.B;
+    const cEqualB = answers.C === answers.B && answers.C > answers.A;
+
+    if (cIsMax || cEqualB) {
+      // フェーズ2へ
+      phase = 2;
+      allQuestions = phase2Questions;
+      currentQuestionIndex = 0;
+      selectedChoice = null;
+      showQuestion();
+    } else {
+      showResult();
+    }
+  } else if (phase === 2 && currentQuestionIndex >= phase2Questions.length) {
+    showResult();
+  } else {
+    selectedChoice = null;
+    showQuestion();
+  }
+}
+
+// ===== 結果表示 =====
+function showResult() {
+  let resultKey;
+
+  if (phase === 1) {
+    // フェーズ1で決まる場合
+    if (answers.A >= answers.B && answers.A >= answers.C) {
+      resultKey = 'stage2';
+    } else {
+      resultKey = 'stage3';
+    }
+  } else {
+    // フェーズ2で段階4/5を判別
+    if (answers.s4 > answers.s5) {
+      resultKey = 'stage4';
+    } else if (answers.s5 > answers.s4) {
+      resultKey = 'stage5';
+    } else {
+      resultKey = 'stage45';
+    }
+  }
+
+  const r = results[resultKey];
+
+  // タグ
+  const tagEl = document.getElementById('result-tag');
+  tagEl.textContent = r.tag;
+  tagEl.style.background = `rgba(var(--${r.tagClass}-rgb, 91,141,238), 0.15)`;
+  // 色別スタイル
+  const colorMap = {
+    s2: { bg: 'rgba(224,85,85,0.15)', color: '#e05555', border: 'rgba(224,85,85,0.3)' },
+    s3: { bg: 'rgba(224,144,64,0.15)', color: '#e09040', border: 'rgba(224,144,64,0.3)' },
+    s4: { bg: 'rgba(74,173,122,0.15)', color: '#4aad7a', border: 'rgba(74,173,122,0.3)' },
+    s5: { bg: 'rgba(91,141,238,0.15)', color: '#5b8dee', border: 'rgba(91,141,238,0.3)' },
+  };
+  const cm = colorMap[r.tagClass];
+  tagEl.style.background = cm.bg;
+  tagEl.style.color = cm.color;
+  tagEl.style.border = `1px solid ${cm.border}`;
+
+  document.getElementById('result-stage-label').textContent = r.label;
+  document.getElementById('result-stage-label').style.color = cm.color;
+  document.getElementById('result-stage-sub').textContent = r.sub;
+  document.getElementById('result-body').innerHTML = r.body;
+  document.getElementById('advice-text').textContent = r.advice;
+
+  // ステップバーのハイライト
+  ['bar-s2', 'bar-s3', 'bar-s4', 'bar-s5'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById(r.barId).classList.add('active');
+
+  showScreen('result-screen');
+  document.getElementById('result-screen').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAssessment() {
+  showScreen(null);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if (id) {
+    const el = document.getElementById(id);
+    el.classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
