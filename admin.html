@@ -143,6 +143,33 @@
 }
 .btn-logout:hover { background: var(--navy-pale); border-color: var(--navy-light); }
 
+/* ライブラリメンバ グループ表示 */
+.lib-id-group {
+  background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  margin-bottom: .75rem; overflow: hidden;
+}
+.lib-id-header {
+  background: var(--navy-pale); padding: .6rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.lib-id-label {
+  font-size: .97rem; font-weight: 700; color: var(--navy-main);
+}
+.lib-id-count {
+  font-size: .78rem; background: var(--navy-main); color: var(--white);
+  padding: .15em .75em; border-radius: 20px;
+}
+.lib-subid-row {
+  padding: .65rem 1.25rem .65rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--navy-pale);
+}
+.lib-subid-row:last-child { border-bottom: none; }
+.lib-subid-info { display: flex; flex-direction: column; gap: .15rem; }
+.lib-subid-text { font-size: .92rem; color: var(--text-main); }
+.lib-subid-meta { font-size: .78rem; color: var(--text-sub); }
+
 @media (max-width: 600px) {
   .login-card { padding: 36px 24px; }
   .log-card { padding: 1rem 1.1rem; }
@@ -574,18 +601,52 @@
         status.style.display = ''; status.textContent = 'ライブラリメンバがまだ登録されていません。';
         return;
       }
+
+      // IDごとにグループ化
+      var groups = {};
+      var idOrder = [];
       members.forEach(function (m) {
-        var row = document.createElement('div');
-        row.className = 'member-row';
-        row.innerHTML =
-          '<div>' +
-          '<div class="member-email">ID：' + escapeHtml(m.id) + ' ／ サブID：' + escapeHtml(m.subId) + '</div>' +
-          '<div class="member-nick">登録日：' + escapeHtml(m.registeredAt || '—') +
-            '　アクセス回数：' + escapeHtml(String(m.accessCount || 1)) + '回</div>' +
-          '</div>' +
-          '<button class="btn-remove" data-id="' + escapeHtml(m.id) + '" data-subid="' + escapeHtml(m.subId) + '">削除</button>';
-        list.appendChild(row);
+        if (!groups[m.id]) { groups[m.id] = []; idOrder.push(m.id); }
+        groups[m.id].push(m);
       });
+
+      // ID昇順・サブID昇順でソート
+      idOrder.sort();
+      idOrder.forEach(function (id) {
+        groups[id].sort(function (a, b) {
+          return a.subId < b.subId ? -1 : a.subId > b.subId ? 1 : 0;
+        });
+      });
+
+      // グループごとに描画
+      idOrder.forEach(function (id) {
+        var group = groups[id];
+        var groupDiv = document.createElement('div');
+        groupDiv.className = 'lib-id-group';
+
+        var header = document.createElement('div');
+        header.className = 'lib-id-header';
+        header.innerHTML =
+          '<span class="lib-id-label">ID：' + escapeHtml(id) + '</span>' +
+          '<span class="lib-id-count">サブID ' + group.length + ' 件</span>';
+        groupDiv.appendChild(header);
+
+        group.forEach(function (m) {
+          var row = document.createElement('div');
+          row.className = 'lib-subid-row';
+          row.innerHTML =
+            '<div class="lib-subid-info">' +
+            '<span class="lib-subid-text">サブID：' + escapeHtml(m.subId) + '</span>' +
+            '<span class="lib-subid-meta">登録日：' + escapeHtml(m.registeredAt || '—') +
+              '　アクセス：' + escapeHtml(String(m.accessCount || 1)) + '回</span>' +
+            '</div>' +
+            '<button class="btn-remove" data-id="' + escapeHtml(m.id) + '" data-subid="' + escapeHtml(m.subId) + '">削除</button>';
+          groupDiv.appendChild(row);
+        });
+
+        list.appendChild(groupDiv);
+      });
+
       list.querySelectorAll('.btn-remove').forEach(function (btn) {
         btn.addEventListener('click', function () {
           if (!confirm('ID: ' + btn.dataset.id + ' ／ サブID: ' + btn.dataset.subid + ' を削除しますか？')) return;
