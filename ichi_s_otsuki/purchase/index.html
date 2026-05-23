@@ -282,11 +282,21 @@ a:hover { text-decoration: underline; }
       </div>
 
       <div class="form-group">
+        <label class="form-label" for="field-doc-address">
+          書類の宛先情報（任意）
+        </label>
+        <textarea id="field-doc-address" class="form-textarea"
+          name="doc_address"
+          style="min-height:110px;"
+          placeholder="例）〒000-0000 東京都○○区…&#10;株式会社○○ 経理部 山田 太郎 様&#10;（見積書・納品書・領収書等の宛先が必要な場合にご記入ください）"></textarea>
+      </div>
+
+      <div class="form-group">
         <label class="form-label" for="field-message">
           メッセージ（任意）
         </label>
         <textarea id="field-message" class="form-textarea"
-          name="message" placeholder="書類の宛名・住所、その他ご要望などをご記入ください。"></textarea>
+          name="message" placeholder="その他ご要望などをご記入ください。"></textarea>
       </div>
 
       <button type="submit" class="btn-submit" id="submit-btn">送信する</button>
@@ -337,11 +347,12 @@ a:hover { text-decoration: underline; }
     msgEl.className = 'form-msg';
     msgEl.style.display = 'none';
 
-    const name    = document.getElementById('field-name').value.trim();
-    const email   = document.getElementById('field-email').value.trim();
-    const org     = document.getElementById('field-org').value.trim();
-    const qty     = parseInt(qtyInput.value, 10);
-    const message = document.getElementById('field-message').value.trim();
+    const name       = document.getElementById('field-name').value.trim();
+    const email      = document.getElementById('field-email').value.trim();
+    const org        = document.getElementById('field-org').value.trim();
+    const qty        = parseInt(qtyInput.value, 10);
+    const docAddress = document.getElementById('field-doc-address').value.trim();
+    const message    = document.getElementById('field-message').value.trim();
     const docs    = [];
     if (document.getElementById('doc-estimate').checked)  docs.push('見積書');
     if (document.getElementById('doc-delivery').checked)  docs.push('納品書');
@@ -367,7 +378,7 @@ a:hover { text-decoration: underline; }
       const res = await fetch('/api/purchase/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, org, qty, totalAmount, docs, message })
+        body: JSON.stringify({ name, email, org, qty, totalAmount, docs, docAddress, message })
       });
       const data = await res.json();
       if (res.ok && data.ok) {

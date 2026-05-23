@@ -29,13 +29,16 @@ async function sendMail(entry) {
     return { sent: false, reason: 'no_api_key' };
   }
 
-  const { name, email, org, qty, totalAmount, docs, message, date } = entry;
+  const { name, email, org, qty, totalAmount, docs, docAddress, message, date } = entry;
 
   const orgRow = org
     ? `<tr><td style="${tdHead}">会社名・所属</td><td style="${tdBody}">${esc(org)}</td></tr>`
     : '';
   const docsRow = docs && docs.length > 0
     ? `<tr><td style="${tdHead}">必要書類</td><td style="${tdBody}">${esc(docs.join('・'))}</td></tr>`
+    : '';
+  const docAddressRow = docAddress
+    ? `<tr><td style="${tdHead};vertical-align:top;">書類の宛先情報</td><td style="${tdBody};white-space:pre-wrap;">${esc(docAddress)}</td></tr>`
     : '';
   const msgRow = message
     ? `<tr><td style="${tdHead};vertical-align:top;">メッセージ</td><td style="${tdBody};white-space:pre-wrap;">${esc(message)}</td></tr>`
@@ -53,6 +56,7 @@ async function sendMail(entry) {
     <tr><td style="${tdHead}">購入希望冊数</td><td style="${tdBody}">${esc(String(qty))} 冊</td></tr>
     <tr><td style="${tdHead}">総額（税込）</td><td style="${tdBody};font-weight:700;color:#c17a00;">${totalFormatted}</td></tr>
     ${docsRow}
+    ${docAddressRow}
     ${msgRow}
   </table>
   <p style="margin-top:24px;font-size:12px;color:#888;">受信日時: ${date}</p>
@@ -65,6 +69,7 @@ async function sendMail(entry) {
     `購入希望冊数: ${qty} 冊`,
     `総額（税込）: ${totalFormatted}`,
     docs && docs.length > 0 ? `必要書類: ${docs.join('・')}` : null,
+    docAddress ? `\n書類の宛先情報:\n${docAddress}` : null,
     message ? `\nメッセージ:\n${message}` : null,
     `\n受信: ${date}`,
   ].filter(Boolean).join('\n');
@@ -103,7 +108,7 @@ module.exports = async function handler(req, res) {
   try { body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body; }
   catch { return res.status(400).json({ ok: false, error: 'Invalid JSON' }); }
 
-  const { name, email, org, qty, totalAmount, docs, message } = body || {};
+  const { name, email, org, qty, totalAmount, docs, docAddress, message } = body || {};
 
   if (!name || !email || !qty || isNaN(Number(qty)) || Number(qty) < 1)
     return res.status(400).json({ ok: false, error: '必須項目が不足しています。' });
@@ -116,6 +121,7 @@ module.exports = async function handler(req, res) {
     qty: Number(qty),
     totalAmount: Number(totalAmount),
     docs: Array.isArray(docs) ? docs : [],
+    docAddress: docAddress || '',
     message: message || '',
     date: new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
   };
