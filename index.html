@@ -469,6 +469,64 @@ img { display: block; max-width: 100%; }
 </section>
 
 <!-- ================================================================
+     Symposium2026 バナー（サブサイトへの参照）
+     ================================================================ -->
+<style>
+.sympo-banner{
+  max-width: var(--max-w); margin: 36px auto -8px; padding: 0 24px;
+}
+.sympo-banner-inner{
+  position: relative; overflow: hidden; display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between; gap: 22px;
+  background: linear-gradient(120deg, #1A1116 0%, #2A1418 55%, #3A171B 100%);
+  border: 1px solid #5a2326; border-radius: var(--radius-lg);
+  padding: 26px 32px; box-shadow: var(--shadow-md);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.sympo-banner-inner:hover{ transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: #E42C2C; }
+.sympo-banner-inner::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(circle at 88% 20%, rgba(228,44,44,.42), transparent 48%);
+}
+.sympo-banner-txt{ position: relative; }
+.sympo-banner-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:800; letter-spacing:.16em; color:#fff;
+  background:#E42C2C; padding:5px 12px; border-radius:999px; margin-bottom:12px;
+}
+.sympo-banner-title{ font-size:clamp(22px,3.6vw,30px); font-weight:900; color:#fff; line-height:1.2; }
+.sympo-banner-title .yr{ color:#FF6B6B; }
+.sympo-banner-sub{ font-size:14px; color:#E2C9CB; margin-top:8px; line-height:1.6; }
+.sympo-banner-sub b{ color:#fff; }
+.sympo-banner-cta{
+  position:relative; flex-shrink:0; display:inline-flex; align-items:center; gap:10px;
+  background:#E42C2C; color:#fff; font-size:15px; font-weight:800; letter-spacing:.02em;
+  padding:15px 28px; border-radius:999px; white-space:nowrap;
+  transition: background .2s ease, transform .15s ease;
+}
+.sympo-banner-inner:hover .sympo-banner-cta{ background:#C01E1E; }
+.sympo-banner-cta .arrow{ transition: transform .2s ease; }
+.sympo-banner-inner:hover .sympo-banner-cta .arrow{ transform: translateX(4px); }
+@media(max-width:640px){
+  .sympo-banner-inner{ flex-direction:column; align-items:flex-start; padding:24px; }
+  .sympo-banner-cta{ width:100%; justify-content:center; }
+}
+</style>
+<a href="/sympo26/" class="sympo-banner fade-in" aria-label="Symposium2026 開催要領を見る">
+  <div class="sympo-banner-inner">
+    <div class="sympo-banner-txt">
+      <span class="sympo-banner-eyebrow">アジャイルプロセス協議会 知働化研究会</span>
+      <div class="sympo-banner-title">Symposium<span class="yr">2026</span> 開催要領</div>
+      <p class="sympo-banner-sub">
+        テーマ「<b>知働化（Executable Knowledge and Texture）</b>」<br>
+        2026年11月14日（土）／ 工学院大学 新宿キャンパス　— 産学研究交流のオープン・シンポジウム
+      </p>
+    </div>
+    <span class="sympo-banner-cta">特設サイトを見る <span class="arrow">→</span></span>
+  </div>
+</a>
+
+<!-- ================================================================
      コミュニティについて
      ================================================================ -->
 <section id="about" class="about-section">
