@@ -54,7 +54,7 @@ const SYSTEM_PROMPT = `あなたは1_s_oの思想・著作を熟知した研究�
 
 記事には投稿日付（date）があります。
 「最新の記事」と聞かれたら、dateが最も新しい記事を答えてください。
-現在の最新記事は131番（2026年5月11日投稿）です。
+現在の最新記事は135番（2026年6月28日投稿）です。
 
 1_s_oは『思考の技法 新訂版』の著者であり、知働化・ソフトウェア工学・哲学・システム学・デザイン学を統合した独自の思想体系を持っています。
 
@@ -91,9 +91,9 @@ const SYSTEM_PROMPT = `あなたは1_s_oの思想・著作を熟知した研究�
 
 ---
 
-## 1_s_o note記事インデックス（全131件）
+## 1_s_o note記事インデックス（全135件）
 
-以下は1_s_oのnote記事131件のインデックスです。
+以下は1_s_oのnote記事135件のインデックスです。
 質問に関連する記事を参照して回答し、末尾に関連記事のタイトルとURLを紹介してください。
 
 ${knowledgeIndex}`;
@@ -158,7 +158,7 @@ module.exports = async (req, res) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2000,
         system: SYSTEM_PROMPT,
         messages: [
