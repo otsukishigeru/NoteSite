@@ -2,3 +2,8 @@
 Thumbs.db
 wireframes/
 .vercel
+
+# 環境変数（APIキー等のシークレット）
+.env.local
+.env
+.env.*.local
