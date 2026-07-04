@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="脱・Excel依存ロードマップの続編。データ中心設計から、自己進化するAI指向（オントロジー）システムへ。オントロジー・セマンティクス・エージェントの三層構造と内省ループを、同じ町工場の事例データで学ぶ教材サイト。">
+<meta property="og:title" content="「知」のアーキテクチャ｜Excel to System 2 教材">
+<meta property="og:description" content="データ中心から知識中心へ。オントロジー・セマンティクス・エージェントの三層構造を、事例データと意味を想起させるアイコンで学べる教材サイト。">
+<meta property="og:type" content="website">
+<title>エクセル依存からの脱却と「知」のアーキテクチャ｜Excel to System 2 教材</title>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+  --navy:       #16233F;
+  --navy-2:     #2E4B7A;
+  --steel:      #6B7B9E;
+  --steel-lt:   #AEB9CE;
+  --orange:     #E8622A;   /* エージェント層 */
+  --orange-dk:  #C64E1E;
+  --green:      #1E8E6B;   /* オントロジー層 */
+  --green-dk:   #146B50;
+  --purple:     #7C6FCB;   /* セマンティクス層 */
+  --purple-dk:  #5F53AE;
+  --gray-d:     #7C8798;   /* データ層 */
+  --ink:        #1D2532;
+  --ink-sub:    #4E5766;
+  --ink-light:  #8A93A2;
+  --bg:         #FFFFFF;
+  --paper:      #F4F5F2;
+  --gray:       #F1F3F6;
+  --line:       #E1E5EC;
+  --shadow-sm:  0 2px 12px rgba(22,35,63,.07);
+  --shadow-md:  0 10px 34px rgba(22,35,63,.12);
+  --radius:     14px;
+  --max-w:      1080px;
+}
+
+html{ scroll-behavior:smooth; font-size:16px; }
+body{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+em{ font-style:normal; }
+code{ font-family:'SF Mono',Menlo,monospace; }
+
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-track{ background:#fff; }
+::-webkit-scrollbar-thumb{ background:#c7ccd6; border-radius:4px; }
+
+.fade-in{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+.fade-in.visible{ opacity:1; transform:translateY(0); }
+
+.grid-bg{
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(rgba(22,35,63,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22,35,63,.045) 1px, transparent 1px);
+  background-size:26px 26px;
+}
+
+/* ── アイコン ── */
+.icon{ width:22px; height:22px; display:block; }
+.icon-badge{
+  flex-shrink:0; width:42px; height:42px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+}
+.icon-badge.sm{ width:34px; height:34px; border-radius:9px; }
+.icon-badge.sm .icon{ width:18px; height:18px; }
+.icon-badge.lg{ width:52px; height:52px; border-radius:13px; }
+.icon-badge.lg .icon{ width:28px; height:28px; }
+.icon-badge.c-green{  background:rgba(30,142,107,.12);  color:var(--green); }
+.icon-badge.c-purple{ background:rgba(124,111,203,.14); color:var(--purple); }
+.icon-badge.c-orange{ background:rgba(232,98,42,.12);   color:var(--orange); }
+.icon-badge.c-gray{   background:rgba(124,135,152,.16); color:var(--gray-d); }
+.icon-badge.c-navy{   background:rgba(22,35,63,.08);    color:var(--navy); }
+.icon-badge.c-steel{  background:rgba(107,123,158,.16); color:var(--steel); }
+.icon-badge.c-white{  background:rgba(255,255,255,.22); color:#fff; }
+
+/* ── コミュニティ トップバー ── */
+.community-bar{ background:var(--navy); padding:8px 20px; display:flex; align-items:center; justify-content:center; }
+.community-bar a{ display:flex; align-items:center; gap:9px; color:#fff; font-size:13px; font-weight:700; letter-spacing:.04em; opacity:.92; transition:opacity .15s; }
+.community-bar a:hover{ opacity:1; }
+.community-bar img{ height:20px; width:auto; }
+
+/* ── ヘッダー ── */
+.site-header{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.header-inner{ max-width:var(--max-w); margin:0 auto; padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:42px; height:42px; background:var(--navy); border-radius:9px;
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; font-weight:900;
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+.brand-mark::after{ content:""; position:absolute; right:-6px; bottom:-6px; width:20px; height:20px; background:var(--green); border-radius:50%; opacity:.92; }
+.brand-mark span{ position:relative; z-index:1; }
+.brand-text{ display:flex; flex-direction:column; line-height:1.25; }
+.brand-main{ font-size:15px; font-weight:800; color:var(--ink); }
+.brand-sub{ font-size:10px; color:var(--ink-light); letter-spacing:.06em; }
+.nav-links{ display:flex; gap:18px; }
+.nav-links a{ font-size:13px; font-weight:700; color:var(--ink-sub); transition:color .15s; white-space:nowrap; }
+.nav-links a:hover{ color:var(--green); }
+@media(max-width:960px){ .nav-links{ display:none; } }
+
+/* ── ヒーロー ── */
+.hero{ position:relative; overflow:hidden; background:var(--navy); color:#fff; padding:78px 24px 84px; }
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(124,111,203,.38), transparent 44%),
+    radial-gradient(circle at 12% 100%, rgba(30,142,107,.30), transparent 46%);
+  pointer-events:none;
+}
+.hero::after{
+  content:""; position:absolute; inset:0; opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:30px 30px; pointer-events:none;
+}
+.hero-inner{ position:relative; max-width:var(--max-w); margin:0 auto; z-index:1; }
+.hero-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:800; letter-spacing:.14em; color:#fff; background:var(--purple); padding:6px 15px; border-radius:999px; margin-bottom:24px; }
+.hero-title{ font-size:clamp(30px,5.6vw,58px); font-weight:900; line-height:1.16; letter-spacing:.01em; margin-bottom:14px; }
+.hero-title .ac{ color:var(--green); }
+.hero-title .ac2{ color:var(--orange); }
+.hero-sub{ font-size:clamp(15px,2.2vw,19px); font-weight:700; color:#D9DEE8; margin-bottom:26px; max-width:700px; }
+.hero-note{ display:inline-block; border:1px solid rgba(255,255,255,.24); border-radius:10px; padding:13px 20px; margin-bottom:30px; font-size:13.5px; line-height:1.75; color:#E6E9EF; max-width:700px; }
+.hero-note b{ color:#fff; }
+.hero-note a{ color:var(--green); font-weight:800; border-bottom:1px solid rgba(30,142,107,.5); }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:14px; }
+.btn{ display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:800; letter-spacing:.02em; padding:14px 26px; border-radius:999px; cursor:pointer; border:none; transition:transform .15s, box-shadow .2s, background .2s, border-color .2s; }
+.btn-primary{ background:var(--green); color:#fff; }
+.btn-primary:hover{ background:var(--green-dk); transform:translateY(-2px); box-shadow:0 10px 26px rgba(30,142,107,.42); }
+.btn-ghost{ background:transparent; color:#fff; border:1px solid rgba(255,255,255,.4); }
+.btn-ghost:hover{ border-color:#fff; transform:translateY(-2px); }
+
+/* ── 共通セクション ── */
+.section{ padding:76px 24px; }
+.section.paper{ background:var(--paper); }
+.wrap{ max-width:var(--max-w); margin:0 auto; }
+.wrap-narrow{ max-width:840px; margin:0 auto; }
+.sec-head{ margin-bottom:38px; display:flex; align-items:flex-start; gap:16px; }
+.sec-label{ display:inline-block; font-size:12px; font-weight:800; letter-spacing:.16em; margin-bottom:10px; }
+.sec-label.green{ color:var(--green); } .sec-label.purple{ color:var(--purple); } .sec-label.orange{ color:var(--orange); } .sec-label.navy{ color:var(--navy-2); }
+.sec-title{ font-size:clamp(22px,3.4vw,31px); font-weight:900; color:var(--navy); line-height:1.35; position:relative; padding-bottom:14px; }
+.sec-title::after{ content:""; position:absolute; left:0; bottom:0; width:54px; height:4px; background:var(--green); border-radius:2px; }
+.sec-title.center{ text-align:center; }
+.sec-title.center::after{ left:50%; transform:translateX(-50%); }
+.lead{ font-size:16px; color:var(--ink-sub); margin-bottom:16px; }
+.lead strong{ color:var(--ink); font-weight:800; }
+.lead .ac{ color:var(--green); font-weight:800; }
+.lead .ac2{ color:var(--orange); font-weight:800; }
+
+/* ── 問題点カード ── */
+.prob-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:8px; }
+@media(max-width:720px){ .prob-grid{ grid-template-columns:1fr; } }
+.prob-card{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--orange); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow-sm); display:flex; gap:14px; align-items:flex-start; }
+.prob-txt h4{ font-size:14.5px; font-weight:900; color:var(--navy); margin-bottom:3px; }
+.prob-txt p{ font-size:13px; color:var(--ink-sub); line-height:1.65; }
+.prob-lead-box{ margin-top:26px; background:var(--navy); color:#fff; border-radius:12px; padding:22px 26px; font-size:16px; font-weight:700; line-height:1.75; }
+.prob-lead-box b{ color:var(--green); }
+
+/* ── ロードマップ階段（復習） ── */
+.stairs-mini{ display:flex; align-items:flex-end; gap:6px; overflow-x:auto; padding:14px 4px 20px; }
+.stmini{ flex:0 0 auto; width:104px; text-align:center; position:relative; }
+.stmini-bar{ border-radius:8px 8px 4px 4px; margin-bottom:10px; background:linear-gradient(180deg, var(--steel), var(--navy-2)); position:relative; box-shadow:var(--shadow-sm); }
+.stmini.excel .stmini-bar{ background:linear-gradient(180deg, #F0895C, var(--orange)); }
+.stmini.focus .stmini-bar{ background:linear-gradient(180deg, var(--purple), var(--green)); box-shadow:0 0 0 3px rgba(30,142,107,.28), var(--shadow-sm); }
+.stmini-num{ position:absolute; top:8px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:900; color:#fff; }
+.stmini-label{ font-size:11px; font-weight:800; color:var(--navy); line-height:1.4; }
+.stmini-tag{ position:absolute; top:-24px; left:50%; transform:translateX(-50%); background:var(--green); color:#fff; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+.stairs-legend{ display:flex; gap:20px; justify-content:center; margin-top:6px; font-size:12px; color:var(--ink-sub); flex-wrap:wrap; }
+.stairs-legend span{ display:inline-flex; align-items:center; gap:7px; font-weight:700; }
+.dot{ width:12px; height:12px; border-radius:3px; }
+.dot.excel{ background:var(--orange); } .dot.sys{ background:var(--navy-2); } .dot.focus{ background:var(--green); }
+.part1-cta{ margin-top:26px; background:#fff; border:1.5px dashed var(--steel-lt); border-radius:12px; padding:18px 22px; font-size:14px; color:var(--ink-sub); display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:space-between; }
+.part1-cta a{ color:var(--orange); font-weight:800; }
+
+/* ── ステップブロック共通 ── */
+.step-block{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:30px 30px 32px; margin-bottom:26px; box-shadow:var(--shadow-sm); scroll-margin-top:80px; }
+@media(max-width:620px){ .step-block{ padding:24px 20px 26px; } }
+.step-head{ display:flex; align-items:center; gap:16px; margin-bottom:8px; }
+.step-titles h3{ font-size:19px; font-weight:900; color:var(--navy); line-height:1.3; }
+.step-titles .phase{ font-size:11.5px; font-weight:800; letter-spacing:.06em; color:var(--green); }
+.step-goal{ background:var(--paper); border-left:4px solid var(--steel); border-radius:8px; padding:12px 16px; margin:14px 0 18px; font-size:14px; color:var(--ink-sub); }
+.step-goal b{ color:var(--navy); font-weight:800; }
+.step-body{ font-size:15px; color:var(--ink-sub); }
+.step-body p{ margin-bottom:12px; }
+.step-body strong{ color:var(--ink); font-weight:800; }
+.step-body .ac{ color:var(--green); font-weight:800; }
+.step-body .ac2{ color:var(--orange); font-weight:800; }
+
+.demo{ margin-top:18px; background:var(--paper); border:1px dashed var(--steel-lt); border-radius:12px; padding:18px 18px 20px; }
+.demo-label{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.1em; color:var(--green); margin-bottom:14px; }
+.demo-label::before{ content:"▶"; font-size:9px; }
+
+/* テーブル */
+.tbl-wrap{ overflow-x:auto; }
+table.data{ border-collapse:collapse; width:100%; font-size:13.5px; background:#fff; min-width:300px; }
+table.data caption{ text-align:left; font-size:12.5px; font-weight:800; color:var(--navy); padding:0 0 7px; }
+table.data th, table.data td{ border:1px solid var(--line); padding:8px 11px; text-align:left; white-space:nowrap; }
+table.data th{ background:var(--navy); color:#fff; font-weight:700; }
+table.data tbody tr:nth-child(even){ background:var(--gray); }
+table.data td.key{ color:var(--orange); font-weight:800; }
+.tbl-note{ font-size:12.5px; color:var(--ink-light); margin-top:8px; }
+.tbl-2col{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+@media(max-width:700px){ .tbl-2col{ grid-template-columns:1fr; } }
+.tbl-3col{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; align-items:start; }
+
+/* UI Shift / DB Shift */
+.shift2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:760px){ .shift2{ grid-template-columns:1fr; } }
+.shift-card{ background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:22px; }
+.shift-card h4{ font-size:14.5px; font-weight:900; color:var(--navy); margin-bottom:14px; text-align:center; }
+.form-mock{ background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:14px 16px; font-size:12.5px; }
+.form-mock .fr{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--line); padding:6px 0; }
+.form-mock .fr span:first-child{ color:var(--ink-light); }
+.form-mock .fr span:last-child{ font-weight:800; color:var(--navy); }
+.form-mock .btn-mini{ margin-top:10px; background:var(--green); color:#fff; text-align:center; padding:8px 0; border-radius:7px; font-weight:800; font-size:12.5px; }
+.er-diagram{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; }
+.er-tbl{ background:#fff; border:1.5px solid var(--navy); border-radius:10px; overflow:hidden; min-width:128px; }
+.er-tbl h5{ background:var(--navy); color:#fff; font-size:11.5px; padding:6px 10px; font-weight:800; }
+.er-tbl .cols{ font-size:11px; padding:8px 10px; color:var(--ink); }
+.er-tbl .cols code{ background:var(--paper); border-radius:4px; padding:1px 5px; margin:1px 2px 1px 0; display:inline-block; font-weight:700; }
+.er-tbl .cols code.pk{ color:var(--green); }
+.er-arrow{ color:var(--green); font-size:18px; font-weight:900; }
+.shift-note{ margin-top:12px; font-size:12.5px; color:var(--ink-light); text-align:center; }
+.phase-band{ margin-top:16px; background:var(--navy); color:#fff; border-radius:8px; padding:12px 16px; font-size:13.5px; font-weight:700; text-align:center; }
+.phase-band b{ color:var(--green); }
+
+/* パラダイムシフト橋渡し */
+.bridge{ display:grid; grid-template-columns:1fr auto 1fr; gap:20px; align-items:center; }
+@media(max-width:820px){ .bridge{ grid-template-columns:1fr; } .bridge .bridge-arrow{ transform:rotate(90deg); margin:6px auto; } }
+.bridge-side{ background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:22px; text-align:center; }
+.bridge-side.left{ border-top:4px solid var(--steel); }
+.bridge-side.right{ border-top:4px solid var(--green); }
+.bridge-side h4{ font-size:14.5px; font-weight:900; color:var(--navy); margin:10px 0 8px; }
+.bridge-side p{ font-size:13px; color:var(--ink-sub); line-height:1.7; }
+.bridge-arrow{ font-size:26px; color:var(--green); }
+.bridge-note{ margin-top:20px; background:var(--paper); border-left:4px solid var(--purple); border-radius:8px; padding:16px 18px; font-size:14px; color:var(--ink-sub); }
+.bridge-note .ac{ color:var(--purple); font-weight:800; }
+
+/* 三層アーキテクチャ */
+.layer-stack{ display:flex; flex-direction:column; gap:4px; margin:22px 0 14px; }
+.layer{ display:flex; align-items:center; gap:16px; padding:17px 22px; border-radius:11px; color:#fff; }
+.layer h4{ font-size:15px; font-weight:900; margin-bottom:3px; }
+.layer p{ font-size:12.5px; opacity:.94; line-height:1.65; }
+.layer.agent{ background:var(--orange); }
+.layer.semantic{ background:var(--purple); }
+.layer.ontology{ background:var(--green); }
+.layer.data{ background:var(--gray-d); }
+.arch-flow-note{ text-align:center; font-size:13px; color:var(--ink-sub); margin-bottom:18px; }
+.arch-flow-note b{ color:var(--navy); }
+.arch-band{ margin-top:14px; background:var(--navy); color:#fff; border-radius:8px; padding:14px 18px; font-size:13.5px; font-weight:700; text-align:center; line-height:1.7; }
+.arch-band b{ color:var(--green); }
+
+.trace{ display:flex; flex-wrap:wrap; gap:0; margin-top:16px; }
+.trace-node{ flex:1; min-width:150px; background:#fff; border:1.5px solid var(--line); border-top:4px solid var(--steel); border-radius:10px; padding:13px 15px; position:relative; }
+.trace-node.data{ border-top-color:var(--gray-d); } .trace-node.ontology{ border-top-color:var(--green); } .trace-node.semantic{ border-top-color:var(--purple); } .trace-node.agent{ border-top-color:var(--orange); }
+.trace-node .tn-tag{ font-size:10.5px; font-weight:900; letter-spacing:.06em; color:var(--ink-light); margin-bottom:4px; }
+.trace-node .tn-body{ font-size:12.5px; color:var(--ink); font-weight:700; line-height:1.6; }
+.trace-sep{ display:flex; align-items:center; padding:0 6px; color:var(--green); font-size:18px; font-weight:900; }
+@media(max-width:700px){ .trace{ flex-direction:column; } .trace-sep{ transform:rotate(90deg); padding:6px 0; align-self:center; } }
+
+/* 認識モデル table */
+table.cog{ border-collapse:collapse; width:100%; font-size:13px; background:#fff; min-width:560px; }
+table.cog th, table.cog td{ border:1px solid var(--line); padding:11px 13px; text-align:left; vertical-align:top; }
+table.cog thead th{ background:var(--navy); color:#fff; font-weight:800; }
+table.cog td:first-child{ font-weight:800; color:var(--navy); white-space:nowrap; background:var(--gray); }
+table.cog .ac-o{ color:var(--green); font-weight:800; } table.cog .ac-s{ color:var(--purple); font-weight:800; } table.cog .ac-a{ color:var(--orange); font-weight:800; }
+.kant-box{ margin-top:16px; background:var(--navy); color:#fff; border-radius:12px; padding:20px 24px; font-size:14px; line-height:1.8; }
+.kant-box .cite{ color:#C9CFDB; font-size:12.5px; }
+.kant-box b{ color:var(--green); }
+
+/* オントロジー解剖 */
+.tbox-abox{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+@media(max-width:700px){ .tbox-abox{ grid-template-columns:1fr; } }
+.def-box{ background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:18px 20px; }
+.def-box h5{ font-size:13.5px; font-weight:900; color:var(--navy); margin-bottom:6px; }
+.def-box p{ font-size:13px; color:var(--ink-sub); line-height:1.7; }
+.graph-demo{ display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; margin:20px 0; }
+.node-circle{ width:132px; height:88px; border-radius:50%; border:2.5px solid var(--green); display:flex; align-items:center; justify-content:center; font-weight:900; color:var(--navy); text-align:center; padding:8px; background:#fff; font-size:14.5px; }
+.node-circle.strong{ border-color:var(--navy); }
+.graph-arrow-label{ font-size:12.5px; font-weight:800; color:var(--green); white-space:nowrap; text-align:center; }
+.role-box{ background:var(--paper); border:1.5px solid var(--green); border-radius:12px; padding:16px 20px; font-size:13.5px; color:var(--ink-sub); }
+.role-box b{ color:var(--green); }
+.fact-tbl-wrap{ margin-top:18px; }
+.fact-note{ font-size:12.5px; color:var(--ink-sub); margin-bottom:10px; }
+
+/* 6ステップ chevron */
+.chevron-flow{ display:flex; flex-wrap:wrap; gap:6px; margin:20px 0 6px; }
+.chevron{ flex:1; min-width:158px; padding:18px 18px 18px 30px; position:relative; color:#fff; clip-path:polygon(0 0,88% 0,100% 50%,88% 100%,0 100%,12% 50%); }
+.chevron .cv-num{ font-size:11px; font-weight:900; opacity:.85; margin-bottom:4px; }
+.chevron h5{ font-size:13.5px; font-weight:900; margin-bottom:5px; }
+.chevron p{ font-size:11.5px; line-height:1.6; opacity:.96; }
+.chevron.g1{ background:#8FC7AE; } .chevron.g2{ background:#5FAE8C; } .chevron.g3{ background:#3D9873; }
+.chevron.warn{ background:var(--orange); }
+.chevron.g5{ background:#1E8E6B; } .chevron.g6{ background:#146B50; }
+@media(max-width:640px){ .chevron{ clip-path:none; border-radius:10px; padding:16px 18px; } }
+.json-mock{ margin-top:16px; background:var(--navy); color:#BFE9D5; border-radius:10px; padding:16px 18px; font-family:'SF Mono',Menlo,monospace; font-size:12.5px; line-height:1.7; overflow-x:auto; }
+.json-mock .k{ color:#9FD6C4; } .json-mock .s{ color:#F0A97A; } .json-mock .c{ color:#7B8CAE; }
+
+/* セマンティクス×エージェント */
+.sa-grid{ display:grid; grid-template-columns:1fr auto 1fr; gap:18px; align-items:stretch; }
+@media(max-width:760px){ .sa-grid{ grid-template-columns:1fr; } .sa-grid .sa-gear{ transform:rotate(90deg); margin:4px auto; } }
+.sa-card{ background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:22px; border-top:5px solid var(--purple); }
+.sa-card.agent{ border-top-color:var(--orange); }
+.sa-card h4{ font-size:15px; font-weight:900; color:var(--navy); margin:10px 0 8px; }
+.sa-card p{ font-size:13px; color:var(--ink-sub); line-height:1.75; }
+.sa-gear{ display:flex; align-items:center; justify-content:center; color:var(--steel); }
+.mem-box{ margin-top:20px; background:var(--paper); border-radius:12px; padding:18px 22px; }
+.mem-row{ display:flex; gap:14px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--line); }
+.mem-row:last-child{ border-bottom:none; }
+.mem-row b{ color:var(--navy); }
+.mem-row p{ font-size:13px; color:var(--ink-sub); }
+
+/* 内省ループ */
+.loop-flow{ display:flex; flex-direction:column; gap:4px; max-width:520px; margin:20px auto 0; }
+.loop-step{ display:flex; align-items:center; gap:14px; background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:12px 16px; }
+.loop-step .ls-tag{ font-size:12.5px; font-weight:900; color:var(--navy); min-width:64px; }
+.loop-step p{ font-size:12.5px; color:var(--ink-sub); margin:0; }
+.loop-arrow-down{ text-align:center; color:var(--steel); font-size:16px; margin:1px 0; }
+.loop-branch{ background:var(--orange); color:#fff; border-radius:10px; padding:12px 16px; font-size:12.5px; margin-top:6px; }
+.loop-branch b{ display:block; margin-bottom:3px; }
+.loop-rules{ margin-top:24px; }
+.rule-row{ display:flex; gap:14px; align-items:flex-start; padding:12px 0; border-bottom:1px dashed var(--line); }
+.rule-row:last-child{ border-bottom:none; }
+.rule-row p{ font-size:13.5px; color:var(--ink-sub); }
+.rule-row b{ color:var(--navy); }
+
+/* 自由エネルギー */
+.fe-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:20px 0; }
+.fe-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; width:100%; }
+.fe-box{ flex:1; min-width:150px; max-width:230px; background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:14px 16px; text-align:center; }
+.fe-box.surprise{ background:var(--orange); color:#fff; border:none; }
+.fe-box.assim{ border-top:4px solid var(--green); } .fe-box.accom{ border-top:4px solid var(--purple); }
+.fe-box.equi{ background:var(--navy); color:#fff; border:none; max-width:280px; }
+.fe-box h5{ font-size:13px; font-weight:900; margin-bottom:4px; }
+.fe-box p{ font-size:11.5px; opacity:.92; line-height:1.6; }
+.fe-formula{ margin-top:16px; background:var(--paper); border-radius:10px; padding:16px 20px; font-size:13.5px; color:var(--ink-sub); text-align:center; }
+.fe-formula code{ font-weight:900; color:var(--navy); font-size:15px; }
+
+/* 5シグナル */
+.signal-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:8px; }
+.signal-card{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 20px; border-top:4px solid var(--navy-2); }
+.signal-card h4{ font-size:14px; font-weight:900; color:var(--navy); margin:10px 0 6px; }
+.signal-card p{ font-size:12.5px; color:var(--ink-sub); line-height:1.65; }
+.signal-card .ex{ margin-top:8px; font-size:11.5px; color:var(--green); font-weight:700; }
+
+/* 3つの時代 matrix */
+.matrix-wrap{ overflow-x:auto; }
+table.matrix{ border-collapse:collapse; width:100%; font-size:13.5px; min-width:600px; background:#fff; }
+table.matrix th, table.matrix td{ border:1px solid var(--line); padding:11px 13px; text-align:left; }
+table.matrix thead th{ background:var(--navy); color:#fff; font-weight:800; }
+table.matrix td:first-child{ font-weight:800; color:var(--navy); white-space:nowrap; background:var(--gray); }
+table.matrix .era3{ background:rgba(30,142,107,.07); font-weight:700; color:var(--green-dk); }
+
+/* まとめ */
+.closing{ background:var(--navy); color:#fff; border-radius:18px; padding:40px 36px; position:relative; overflow:hidden; }
+.closing::before{ content:""; position:absolute; inset:0; opacity:.4; background:radial-gradient(circle at 88% 12%, rgba(30,142,107,.5), transparent 46%); }
+.closing-q{ position:relative; font-size:clamp(18px,2.4vw,22px); font-weight:800; line-height:1.7; margin-bottom:8px; }
+.closing-q .ac{ color:var(--green); }
+.closing-sub{ position:relative; font-size:14px; color:#C9CFDB; margin-bottom:26px; }
+.closing-cards{ position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media(max-width:720px){ .closing-cards{ grid-template-columns:1fr; } }
+.cc{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:18px 20px; }
+.cc .n{ font-size:12px; font-weight:900; color:var(--green); margin-bottom:6px; }
+.cc h4{ font-size:15px; font-weight:800; margin-bottom:6px; }
+.cc p{ font-size:12.5px; color:#C9CFDB; line-height:1.7; }
+
+/* ── フッター ── */
+.site-footer{ background:var(--navy); color:#C9CFDB; padding:46px 24px 40px; text-align:center; }
+.footer-back{ display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:12px 24px; font-size:14px; font-weight:700; color:#fff; transition:background .2s, transform .15s; margin:0 8px 24px; }
+.footer-back:hover{ background:rgba(30,142,107,.92); border-color:transparent; transform:translateY(-2px); }
+.footer-meta{ font-size:13px; line-height:1.9; }
+.footer-meta strong{ color:#fff; }
+.footer-copy{ font-size:11px; opacity:.55; margin-top:18px; }
+
+.page-top{ position:fixed; right:22px; bottom:22px; width:46px; height:46px; background:var(--green); color:#fff; border:none; border-radius:50%; font-size:20px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .25s, transform .15s; box-shadow:0 6px 18px rgba(30,142,107,.4); z-index:90; }
+.page-top.show{ opacity:1; pointer-events:auto; }
+.page-top:hover{ transform:translateY(-3px); }
+</style>
+</head>
+<body>
+
+<!-- アイコンスプライト（テキスト表現の意味を想起させる線画アイコン集） -->
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="ic-grid" viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="3" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="6" y1="18" x2="42" y2="18" stroke="currentColor" stroke-width="2.6"/><line x1="6" y1="28" x2="42" y2="28" stroke="currentColor" stroke-width="2.6"/><line x1="18" y1="8" x2="18" y2="40" stroke="currentColor" stroke-width="2.6"/><line x1="30" y1="8" x2="30" y2="40" stroke="currentColor" stroke-width="2.6"/></symbol>
+
+<symbol id="ic-lock-db" viewBox="0 0 48 48"><path d="M8 14a12 4 0 0 1 24 0v14a12 4 0 0 1-24 0z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="20" cy="14" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M13 21a12 4 0 0 0 14 0" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="28" y="30" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M31 30v-4a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="2.6"/></symbol>
+
+<symbol id="ic-maze" viewBox="0 0 48 48"><path d="M6 6h20v14h14v22H20V28H6z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M14 14h8v8" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="34" cy="36" r="2.6" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-repeat" viewBox="0 0 48 48"><rect x="6" y="10" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="28" y="20" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M20 16h12" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M28 12l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 32H16" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M20 28l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-person-lock" viewBox="0 0 48 48"><circle cx="18" cy="14" r="7" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M6 38c0-9 6-14 12-14s12 5 12 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><rect x="30" y="24" width="13" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M33 24v-3a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+
+<symbol id="ic-blackbox" viewBox="0 0 48 48"><rect x="8" y="16" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M8 16l8-8h16l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M18 34v-8l6 4 6-4v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-staircase" viewBox="0 0 48 48"><path d="M6 40v-8h8v-8h8v-8h8v-8h8" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 12l6-4v6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-funnel-target" viewBox="0 0 48 48"><path d="M8 8h32l-11 16v10l-10 4V24z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="24" cy="24" r="1.8" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-db" viewBox="0 0 48 48"><ellipse cx="24" cy="10" rx="16" ry="5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M8 10v28a16 5 0 0 0 32 0V10" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M8 22a16 5 0 0 0 32 0" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+
+<symbol id="ic-chain" viewBox="0 0 48 48"><rect x="6" y="16" width="20" height="14" rx="7" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="22" y="18" width="20" height="14" rx="7" fill="none" stroke="currentColor" stroke-width="2.6"/></symbol>
+
+<symbol id="ic-ui-form" viewBox="0 0 48 48"><rect x="7" y="7" width="34" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="13" y1="17" x2="35" y2="17" stroke="currentColor" stroke-width="2.4"/><line x1="13" y1="25" x2="35" y2="25" stroke="currentColor" stroke-width="2.4"/><rect x="13" y="31" width="22" height="6" rx="3" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-network" viewBox="0 0 48 48"><circle cx="24" cy="10" r="4.2" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="10" cy="34" r="4.2" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="38" cy="34" r="4.2" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="24" cy="26" r="4" fill="currentColor" stroke="none"/><path d="M24 14v8M20 28l-8 4M28 28l8 4" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+
+<symbol id="ic-brain" viewBox="0 0 48 48"><path d="M18 8a7 7 0 0 0-7 7 6 6 0 0 0-3 10 7 7 0 0 0 7 11h5V10a7 7 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M30 8a7 7 0 0 1 7 7 6 6 0 0 1 3 10 7 7 0 0 1-7 11h-5V10a7 7 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><line x1="24" y1="10" x2="24" y2="36" stroke="currentColor" stroke-width="2" stroke-dasharray="2 3"/></symbol>
+
+<symbol id="ic-agent" viewBox="0 0 48 48"><circle cx="24" cy="24" r="7" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11 11l4.2 4.2M32.8 32.8L37 37M37 11l-4.2 4.2M15.2 32.8L11 37" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+
+<symbol id="ic-blueprint" viewBox="0 0 48 48"><rect x="8" y="8" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M8 8v8M8 8h8M40 8v8M40 8h-8M8 40v-8M8 40h8M40 40v-8M40 40h-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><line x1="16" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="2"/><line x1="16" y1="28" x2="26" y2="28" stroke="currentColor" stroke-width="2"/></symbol>
+
+<symbol id="ic-doc-stack" viewBox="0 0 48 48"><rect x="12" y="6" width="24" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="8" y="12" width="24" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="13" y1="20" x2="27" y2="20" stroke="currentColor" stroke-width="2"/><line x1="13" y1="27" x2="27" y2="27" stroke="currentColor" stroke-width="2"/><line x1="13" y1="34" x2="22" y2="34" stroke="currentColor" stroke-width="2"/></symbol>
+
+<symbol id="ic-layers" viewBox="0 0 48 48"><path d="M24 6L6 16l18 10 18-10z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 24l18 10 18-10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 32l18 10 18-10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-ladder" viewBox="0 0 48 48"><line x1="14" y1="6" x2="14" y2="42" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><line x1="34" y1="6" x2="34" y2="42" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><line x1="14" y1="12" x2="34" y2="12" stroke="currentColor" stroke-width="2.4"/><line x1="14" y1="20" x2="34" y2="20" stroke="currentColor" stroke-width="2.4"/><line x1="14" y1="28" x2="34" y2="28" stroke="currentColor" stroke-width="2.4"/><line x1="14" y1="36" x2="34" y2="36" stroke="currentColor" stroke-width="2.4"/></symbol>
+
+<symbol id="ic-scope" viewBox="0 0 48 48"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="20" cy="20" r="4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="29" y1="29" x2="40" y2="40" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></symbol>
+
+<symbol id="ic-extract" viewBox="0 0 48 48"><rect x="6" y="8" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="10" y1="14" x2="18" y2="14" stroke="currentColor" stroke-width="1.8"/><line x1="10" y1="19" x2="18" y2="19" stroke="currentColor" stroke-width="1.8"/><path d="M24 18h8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M29 14l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="10" r="2.6" fill="currentColor" stroke="none"/><circle cx="42" cy="18" r="2.6" fill="currentColor" stroke="none"/><circle cx="36" cy="24" r="2.6" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-merge" viewBox="0 0 48 48"><circle cx="12" cy="14" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="34" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="36" cy="24" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M18 16l14 6M18 32l14-6" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+
+<symbol id="ic-git" viewBox="0 0 48 48"><circle cx="14" cy="10" r="4.2" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="14" cy="38" r="4.2" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="34" cy="24" r="4.2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 14v20" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 24c0-6 6-10 16-10" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+
+<symbol id="ic-shield-check" viewBox="0 0 48 48"><path d="M24 6l16 6v12c0 10-7 16-16 18-9-2-16-8-16-18V12z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 24l6 6 11-13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-clock" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M24 14v10l7 5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-archive" viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M9 18v18a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3V18" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="20" y1="25" x2="28" y2="25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+
+<symbol id="ic-loop" viewBox="0 0 48 48"><path d="M40 24a16 16 0 1 1-5-11.6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M40 6v9h-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="3.4" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-balance" viewBox="0 0 48 48"><line x1="24" y1="6" x2="24" y2="38" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><line x1="8" y1="14" x2="40" y2="14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M8 14l-5 12a6 6 0 0 0 10 0z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M40 14l-5 12a6 6 0 0 0 10 0z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M15 40h18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+
+<symbol id="ic-alert" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.6"/><line x1="24" y1="14" x2="24" y2="27" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><circle cx="24" cy="33" r="2" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-gauge" viewBox="0 0 48 48"><path d="M8 34a16 16 0 1 1 32 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><line x1="24" y1="34" x2="32" y2="22" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="34" r="2.4" fill="currentColor" stroke="none"/></symbol>
+
+<symbol id="ic-compass" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M30 18l-4 10-10 4 4-10z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-target-arrow" viewBox="0 0 48 48"><circle cx="20" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="20" cy="28" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="28" r="1.6" fill="currentColor" stroke="none"/><path d="M26 22l14-14M40 8h-8M40 8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+
+<symbol id="ic-conclusion" viewBox="0 0 48 48"><rect x="6" y="16" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M20 24h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M26 19l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="14" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="42" cy="24" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="36" cy="34" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 17v14M39 15l3 7-3 7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+</defs>
+</svg>
+
+<!-- コミュニティ トップバー -->
+<div class="community-bar">
+  <a href="/">
+    <img src="/assets/images/ParadigmIcon.png" alt="知働化コミュニティ">
+    ← 知働化コミュニティ トップへ（chidouka-lab.com）
+  </a>
+</div>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark"><span>知<br>働</span></span>
+      <span class="brand-text">
+        <span class="brand-main">Excel to System 2</span>
+        <span class="brand-sub">「知」のアーキテクチャ 教材</span>
+      </span>
+    </a>
+    <nav class="nav-links">
+      <a href="#why">なぜ抜け出せない</a>
+      <a href="#roadmap">ロードマップ復習</a>
+      <a href="#architecture">三層構造</a>
+      <a href="#ontology">オントロジー実装</a>
+      <a href="#introspection">内省と進化</a>
+      <a href="#closing">まとめ</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <span class="hero-eyebrow">学習教材 Part 2：データ中心 → 知識中心（AI指向）</span>
+    <h1 class="hero-title">エクセル依存からの脱却と<br><span class="ac">「知」の</span><span class="ac2">アーキテクチャ</span></h1>
+    <p class="hero-sub">
+      データ中心設計から、自己進化するAI指向（オントロジー）システムへ。〈オントロジー〉〈セマンティクス〉〈エージェント〉の三層構造を、同じ町工場の事例データを使って一歩ずつ学びます。
+    </p>
+    <div class="hero-note">
+      <b>この教材の位置づけ</b>：前作「脱・Excel依存のロードマップ」（<a href="/ExcelToSystem/">Part 1・8ステップ体験教材</a>）の続編です。Part 1 が Step 0〜7（ファイル中心 → データ中心）を扱ったのに対し、本教材は〈Step 8：AI活用〉の中身——なぜAIには「意味」が必要なのかを掘り下げます。各セクションの見出しには、日本語が読めなくても意味を想起できるようアイコンを添えています。
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#architecture">「知」の三層構造を見る →</a>
+      <a class="btn btn-ghost" href="#why">まず課題から読む</a>
+    </div>
+  </div>
+</section>
+
+<!-- なぜExcelから抜け出せないのか -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-orange"><svg class="icon"><use href="#ic-alert"></use></svg></div>
+      <div>
+        <span class="sec-label orange">The Problem</span>
+        <h2 class="sec-title">Excelは悪ではない。役割を超えていることが問題である</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      現場の混乱の真因は、<strong>「Excelが悪い」のではなく「役割の限界」</strong>にあります。本来は集計や下書きのための道具であるExcelが、<span class="ac2">組織の唯一の正本</span>という重すぎる役割まで背負わされているのです。
+    </p>
+    <div class="prob-grid">
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-lock-db"></use></svg></div>
+        <div class="prob-txt"><h4>マスタ化の弊害</h4><p>Excelが正本となり、データがサイロ化する。</p></div>
+      </div>
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-maze"></use></svg></div>
+        <div class="prob-txt"><h4>バージョンの迷宮</h4><p>最新ファイルが不明確になり、情報が散乱する。</p></div>
+      </div>
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-repeat"></use></svg></div>
+        <div class="prob-txt"><h4>転記の連鎖</h4><p>システム間の連携がなく、手作業での再入力が常態化する。</p></div>
+      </div>
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-person-lock"></use></svg></div>
+        <div class="prob-txt"><h4>属人化の極致</h4><p>特定の担当者に依存し、他人は修正不能になる。</p></div>
+      </div>
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-blackbox"></use></svg></div>
+        <div class="prob-txt"><h4>ブラックボックス化</h4><p>複雑なVBAが引き継がれずレガシー化する。</p></div>
+      </div>
+      <div class="prob-card fade-in" style="border-left-color:var(--green);">
+        <div class="icon-badge c-green"><svg class="icon"><use href="#ic-conclusion"></use></svg></div>
+        <div class="prob-txt"><h4>結論</h4><p>「Excelを捨てる」のではなく、「ファイル中心」から「データ中心」への段階的な移行が必要。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ロードマップ復習 -->
+<section class="section paper grid-bg" id="roadmap">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-steel"><svg class="icon"><use href="#ic-staircase"></use></svg></div>
+      <div>
+        <span class="sec-label navy">The Roadmap (Recap)</span>
+        <h2 class="sec-title">進化のロードマップ：「個人ファイル」から「AIの自律判断」まで</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">Step 0 の属人化Excelから、Step 8 のAI活用まで。この教材が深掘りするのは、右端に輝く <strong>Step 8</strong> の中身です。</p>
+    <div class="stairs-mini fade-in" id="stairsMini"></div>
+    <div class="stairs-legend fade-in">
+      <span><i class="dot excel"></i>Excelが主役（Step 0–2）</span>
+      <span><i class="dot sys"></i>システム／DBが主役（Step 3–7）</span>
+      <span><i class="dot focus"></i>この教材が扱う範囲（Step 8）</span>
+    </div>
+    <div class="part1-cta fade-in">
+      <span>Step 0〜7（ファイル中心 → データ中心）を事例データで体験したい方は、まず前作の教材をどうぞ。</span>
+      <a href="/ExcelToSystem/">Part 1「脱・Excel依存のロードマップ」を開く →</a>
+    </div>
+  </div>
+</section>
+
+<!-- フェーズ1：単一の真実 -->
+<section class="section" id="ssot">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-funnel-target"></use></svg></div>
+      <div>
+        <span class="sec-label green">Phase 1 (Recap)</span>
+        <h2 class="sec-title">冗長なシートから「単一の真実（Single Source of Truth）」へ</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">「品番・品名・材質」が毎回手入力されると、重複と表記ゆれが発生します。データ正規化の第一歩として、品名や材質はLOOKUPで取得し、データの「正本」を品番マスタに一本化します（STEP 2–3）。</p>
+    <div class="tbl-2col fade-in">
+      <div class="tbl-wrap"><table class="data">
+        <caption>マスタ（品番マスタ）<span style="color:var(--green);font-weight:800;">唯一の正</span></caption>
+        <thead><tr><th>品番</th><th>品名</th><th>材質</th></tr></thead>
+        <tbody><tr><td class="key">A001</td><td>シャフト</td><td>S45C</td></tr></tbody>
+      </table></div>
+      <div class="tbl-wrap"><table class="data">
+        <caption>トランザクション（受注データ）</caption>
+        <thead><tr><th>受注番号</th><th>品番</th><th>数量</th></tr></thead>
+        <tbody><tr><td class="key">R001</td><td>A001</td><td>50</td></tr></tbody>
+      </table></div>
+    </div>
+    <p class="tbl-note fade-in">受注データは品番マスタを「参照」するだけ。マスタを直せば全ての受注に反映されます。</p>
+  </div>
+</section>
+
+<!-- フェーズ2：リレーショナルDB -->
+<section class="section paper grid-bg" id="rdb">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-db"></use></svg></div>
+      <div>
+        <span class="sec-label green">Phase 2 (Recap)</span>
+        <h2 class="sec-title">ファイルの限界を超え、リレーショナル・データベースへ</h2>
+      </div>
+    </div>
+    <div class="shift2 fade-in">
+      <div class="shift-card">
+        <h4><svg class="icon" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px;color:var(--green);"><use href="#ic-ui-form"></use></svg>The UI Shift</h4>
+        <div class="form-mock">
+          <div class="fr"><span>受注番号</span><span>R002</span></div>
+          <div class="fr"><span>顧客名</span><span>ABC精密工業</span></div>
+          <div class="fr"><span>品番</span><span>A002</span></div>
+          <div class="fr"><span>数量</span><span>100</span></div>
+          <div class="btn-mini">登録</div>
+        </div>
+        <p class="shift-note">現場はExcelを開かない。Web画面による入力一本化。</p>
+      </div>
+      <div class="shift-card">
+        <h4><svg class="icon" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px;color:var(--green);"><use href="#ic-chain"></use></svg>The Database Shift</h4>
+        <div class="er-diagram">
+          <div class="er-tbl"><h5>顧客テーブル</h5><div class="cols"><code class="pk">顧客ID</code><code>顧客名</code></div></div>
+          <span class="er-arrow">→</span>
+          <div class="er-tbl"><h5>受注テーブル</h5><div class="cols"><code class="pk">受注ID</code><code>顧客ID</code></div></div>
+          <span class="er-arrow">→</span>
+          <div class="er-tbl"><h5>明細テーブル</h5><div class="cols"><code class="pk">明細ID</code><code>品番ID</code></div></div>
+          <span class="er-arrow">←</span>
+          <div class="er-tbl"><h5>品番テーブル</h5><div class="cols"><code class="pk">品番ID</code><code>品名</code></div></div>
+        </div>
+        <p class="shift-note">関係性（リレーション）による管理への移行。</p>
+      </div>
+    </div>
+    <div class="phase-band fade-in">このSTEP 6（工程管理システム連携）までの達成により、「データ」は蓄積されます。しかし<b>STEP 8（AI活用）</b>へ至るには、さらなるパラダイムシフトが必要です。</div>
+  </div>
+</section>
+
+<!-- パラダイムシフト -->
+<section class="section" id="paradigm">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-purple"><svg class="icon"><use href="#ic-network"></use></svg></div>
+      <div>
+        <span class="sec-label purple">The Paradigm Shift</span>
+        <h2 class="sec-title">「データ」の蓄積から、「意味」のネットワークへ</h2>
+      </div>
+    </div>
+    <div class="bridge fade-in">
+      <div class="bridge-side left">
+        <div class="icon-badge c-steel" style="margin:0 auto 10px;"><svg class="icon"><use href="#ic-db"></use></svg></div>
+        <h4>Data-Centric / RDB</h4>
+        <p>リレーショナルDB。データを「表」として整理。人間がクエリを書かなければ情報を取り出せない。</p>
+      </div>
+      <div class="bridge-arrow">→</div>
+      <div class="bridge-side right">
+        <div class="icon-badge c-green" style="margin:0 auto 10px;"><svg class="icon"><use href="#ic-agent"></use></svg></div>
+        <h4>AI-Centric / STEP 8</h4>
+        <p>自律型AIエージェント。文脈を理解し、推論し、自己改善する。</p>
+      </div>
+    </div>
+    <div class="bridge-note fade-in">
+      RDBのデータはAIには「意味」を持ちません。AIを駆動させるには、データの背後にある<span class="ac">〈存在の構造〉</span>と<span class="ac">〈意味〉</span>を明示するアーキテクチャが不可欠です。
+    </div>
+  </div>
+</section>
+
+<!-- AI指向アーキテクチャ：三層 -->
+<section class="section paper grid-bg" id="architecture">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-layers"></use></svg></div>
+      <div>
+        <span class="sec-label navy">AI-Oriented Architecture</span>
+        <h2 class="sec-title">〈意味をあつかう三つの層〉の分離と連結</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">オントロジー・セマンティクス・エージェントという3つの層を、土台の「データ層」の上に積み上げます。上から下へ〈Grounding・根拠づけ〉、下から上へ〈Integration・知識化〉が働きます。</p>
+    <div class="layer-stack fade-in">
+      <div class="layer agent">
+        <div class="icon-badge c-white"><svg class="icon"><use href="#ic-agent"></use></svg></div>
+        <div><h4>エージェント層（行為主体）</h4><p>計画・ツール使用・記憶・内省。「知覚→推論→行為」のループを回す動的な動力。</p></div>
+      </div>
+      <div class="layer semantic">
+        <div class="icon-badge c-white"><svg class="icon"><use href="#ic-brain"></use></svg></div>
+        <div><h4>セマンティクス層（意味）</h4><p>LLM・解釈・RAG。記号と対象を結ぶ柔軟な解釈のはたらき。</p></div>
+      </div>
+      <div class="layer ontology">
+        <div class="icon-badge c-white"><svg class="icon"><use href="#ic-blueprint"></use></svg></div>
+        <div><h4>オントロジー層（存在の構造）</h4><p>知識グラフ・概念・制約。静的な〈意味の骨格〉であり、AIの幻覚を防ぐ。</p></div>
+      </div>
+      <div class="layer data">
+        <div class="icon-badge c-white"><svg class="icon"><use href="#ic-doc-stack"></use></svg></div>
+        <div><h4>データ層（源泉）</h4><p>文書・信号・外部ソース。すべての意味が根を下ろす源泉。</p></div>
+      </div>
+    </div>
+    <div class="arch-band fade-in">LLM単独の弱点（一貫性の欠如・幻覚）を<b>オントロジー</b>が補い、<b>エージェント</b>が束ねる「ニューロシンボリック統合」です。</div>
+
+    <p class="arch-flow-note fade-in" style="margin-top:30px;">この事例データで四層を実際にたどってみます。</p>
+    <div class="trace fade-in">
+      <div class="trace-node data"><div class="tn-tag">DATA</div><div class="tn-body">受注R001の実績ログ（切削9:00–10:10／検査未着手）</div></div>
+      <div class="trace-sep">→</div>
+      <div class="trace-node ontology"><div class="tn-tag">ONTOLOGY</div><div class="tn-body">[A001]は「品番」型、材質は[S45C]という〈存在の構造〉で登録</div></div>
+      <div class="trace-sep">→</div>
+      <div class="trace-node semantic"><div class="tn-tag">SEMANTICS</div><div class="tn-body">LLMが文脈から「納期遅延リスクが高い」と解釈</div></div>
+      <div class="trace-sep">→</div>
+      <div class="trace-node agent"><div class="tn-tag">AGENT</div><div class="tn-body">検査工程の担当を増員する再スケジュールを提案</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 知覚・認識のリファレンスモデル -->
+<section class="section" id="cognition">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-steel"><svg class="icon"><use href="#ic-ladder"></use></svg></div>
+      <div>
+        <span class="sec-label navy">Reference Model</span>
+        <h2 class="sec-title">知覚・認識のリファレンスモデル：人間とAIの対称性</h2>
+      </div>
+    </div>
+    <div class="tbl-wrap fade-in">
+      <table class="cog">
+        <thead><tr><th>認識の段階（L0〜L7）</th><th>内容（人間側）</th><th>対応するAI技術</th></tr></thead>
+        <tbody>
+          <tr><td>L0-L1（刺激/感覚）</td><td>物理エネルギー → センサー・生データ</td><td>センサー・生データ</td></tr>
+          <tr><td>L2-L3（知覚/認識）</td><td>パターン化・カテゴリ化</td><td>CNN・エンベディング</td></tr>
+          <tr><td>L4（概念）</td><td>抽象化・言語化</td><td><span class="ac-o">〈オントロジー〉</span>・知識グラフ</td></tr>
+          <tr><td>L5（意味）</td><td>文脈統合・解釈</td><td><span class="ac-s">〈セマンティクス〉</span>・LLM</td></tr>
+          <tr><td>L6-L7（判断/行為）</td><td>意思決定・環境への働きかけ</td><td><span class="ac-a">〈エージェント〉</span>・プランニング・実行</td></tr>
+          <tr><td>横断（メタ認知）</td><td>自己の認知の監視</td><td>内省・自己評価ループ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="kant-box fade-in">
+      <p><span class="cite">「直観なき概念は空虚であり、概念なき直観は盲目である」—カント。</span><br>
+      <b>オントロジー</b>（概念）なきLLM（直観）は暴走し、LLMなきオントロジーは動かない。</p>
+    </div>
+  </div>
+</section>
+
+<!-- オントロジー層の解剖 -->
+<section class="section paper grid-bg" id="ontology">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-blueprint"></use></svg></div>
+      <div>
+        <span class="sec-label green">Anatomy of Ontology</span>
+        <h2 class="sec-title">オントロジー層の解剖：「知識の文法」を定義する</h2>
+      </div>
+    </div>
+    <div class="tbox-abox fade-in">
+      <div class="def-box"><h5>TBox（スキーマ）</h5><p>どんな種類のノード（人物・概念）とエッジ（著者・上位概念）を認めるかという「型」の定義。</p></div>
+      <div class="def-box"><h5>ABox（ファクト）</h5><p>型に基づいて格納される個々の事実データ。</p></div>
+    </div>
+    <div class="graph-demo fade-in">
+      <div class="node-circle">大槻繁</div>
+      <span class="graph-arrow-label">──提唱する──▶</span>
+      <div class="node-circle strong">知働化</div>
+    </div>
+    <div class="role-box fade-in"><b>役割：</b>これがAIに対する厳格な「基盤的真理」となり、LLMの確率的な推論に一貫性と検証可能性を与える。</div>
+
+    <div class="fact-tbl-wrap fade-in">
+      <p class="fact-note">同じ考え方を、事例データ（町工場の受注）のABoxとして書き起こすと次のようになります。</p>
+      <div class="tbl-wrap"><table class="data">
+        <thead><tr><th>主語（ノード）</th><th>関係（エッジ）</th><th>目的語（ノード）</th></tr></thead>
+        <tbody>
+          <tr><td class="key">R001</td><td>対象品番</td><td>A001</td></tr>
+          <tr><td class="key">A001</td><td>材質である</td><td>S45C</td></tr>
+          <tr><td class="key">A001</td><td>担当工程</td><td>切削</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- オントロジー実装の6ステップ -->
+<section class="section" id="ontology-steps">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-git"></use></svg></div>
+      <div>
+        <span class="sec-label green">6 Steps to Build</span>
+        <h2 class="sec-title">オントロジー（知識グラフ）実装の6ステップ</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">受注データを題材に、「納期遅延リスクを予測したい」という問いに答える知識グラフを、実際に組み立ててみます。</p>
+    <div class="chevron-flow fade-in">
+      <div class="chevron g1"><div class="cv-num">STEP 1</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-scope"></use></svg>スコープ定義</h5><p>「受注R001の納期遅延リスクに答えたい」という目的を固定する。</p></div>
+      <div class="chevron g2"><div class="cv-num">STEP 2</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-blueprint"></use></svg>スキーマ設計</h5><p>ノード型「受注・品番・工程」、エッジ型「対象品番・担当工程」を定義（TBox）。</p></div>
+      <div class="chevron g3"><div class="cv-num">STEP 3</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-extract"></use></svg>抽出</h5><p>LLMで作業日報から [R001]──対象品番──[A001] のようなトリプルを下書きする。</p></div>
+      <div class="chevron warn"><div class="cv-num">STEP 4 ⚠</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-merge"></use></svg>名寄せ（正規化）</h5><p>「シャフト」「SHAFT-01」等の表記ゆれを正準ID A001 に統合。品質の要。</p></div>
+      <div class="chevron g5"><div class="cv-num">STEP 5</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-git"></use></svg>格納</h5><p>初期は重いグラフDBを避け、JSONの配列＋Git版管理で身軽に開始する。</p></div>
+      <div class="chevron g6"><div class="cv-num">STEP 6</div><h5><svg class="icon" style="width:15px;height:15px;vertical-align:-2px;margin-right:3px;"><use href="#ic-shield-check"></use></svg>検証</h5><p>「受注には品番が必須」等のスキーマ制約に照らし矛盾を点検。人間の確認を挟む。</p></div>
+    </div>
+    <div class="json-mock fade-in">
+<span class="c">// STEP 5：JSON配列＋Gitで身軽に開始する例</span><br>
+[<br>
+&nbsp;&nbsp;{ <span class="k">"subject"</span>: <span class="s">"R001"</span>, <span class="k">"predicate"</span>: <span class="s">"対象品番"</span>, <span class="k">"object"</span>: <span class="s">"A001"</span> },<br>
+&nbsp;&nbsp;{ <span class="k">"subject"</span>: <span class="s">"A001"</span>, <span class="k">"predicate"</span>: <span class="s">"材質である"</span>, <span class="k">"object"</span>: <span class="s">"S45C"</span> }<br>
+]
+    </div>
+  </div>
+</section>
+
+<!-- セマンティクスとエージェント -->
+<section class="section paper grid-bg" id="semantics">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-purple"><svg class="icon"><use href="#ic-brain"></use></svg></div>
+      <div>
+        <span class="sec-label purple">Semantics × Agent</span>
+        <h2 class="sec-title">構造を「理解」し、「行為」へ変換する</h2>
+      </div>
+    </div>
+    <div class="sa-grid fade-in">
+      <div class="sa-card">
+        <div class="icon-badge c-purple"><svg class="icon"><use href="#ic-brain"></use></svg></div>
+        <h4>セマンティクス層（意味）</h4>
+        <p><strong>解釈のはたらき：</strong>オントロジーの静的な構造に対し、LLMの自然言語処理・エンベディング・RAGを用いて「文脈に即した柔軟な理解」を与える。記号と対象を概念を介して結ぶ。</p>
+      </div>
+      <div class="sa-gear"><svg class="icon" style="width:36px;height:36px;"><use href="#ic-loop"></use></svg></div>
+      <div class="sa-card agent">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-agent"></use></svg></div>
+        <h4>エージェント層（行為主体）</h4>
+        <p><strong>動的な動力：</strong>意味を用いて世界を理解し、存在論で検証し、自律的に行為する。</p>
+      </div>
+    </div>
+    <div class="mem-box fade-in">
+      <div class="mem-row">
+        <div class="icon-badge sm c-orange"><svg class="icon"><use href="#ic-clock"></use></svg></div>
+        <div><b>短期記憶：</b><p>タスク実行中の試行履歴。例）「検査工程の待ち行列が長い」という一時メモ。</p></div>
+      </div>
+      <div class="mem-row">
+        <div class="icon-badge sm c-orange"><svg class="icon"><use href="#ic-archive"></use></svg></div>
+        <div><b>長期記憶：</b><p>タスクを越えて残す教訓（Upstash Redis等に保存し、知識グラフへ還元）。例）「検査工程は繁忙期に遅延しやすい」という教訓としてオントロジーへ格上げ。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 内省ループ -->
+<section class="section" id="introspection">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-orange"><svg class="icon"><use href="#ic-loop"></use></svg></div>
+      <div>
+        <span class="sec-label orange">Metacognition</span>
+        <h2 class="sec-title">内省ループ（メタ認知）の設計：自己改善する知識系</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">ゴール「R001の納期遅延リスクを評価せよ」を例に、自己改善のループをたどってみます。</p>
+    <div class="loop-flow fade-in">
+      <div class="loop-step"><span class="ls-tag">［計画］</span><p>ゴールを分解——各工程の進捗を確認する計画を立てる。</p></div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="loop-step"><span class="ls-tag">［実行］</span><p>ツールを使い行為——各工程DBを参照する。</p></div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="loop-step"><span class="ls-tag">［観察］</span><p>結果を取得——検査工程がまだ未着手だと分かる。</p></div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="loop-step"><span class="ls-tag">［評価］</span><p>基準と照合——「残り工程時間 &lt; 残り日数か」を判定する。</p></div>
+      <div class="loop-branch"><b>満たさない場合 →［内省］</b>原因を分析（検査待ち行列が長い）し、教訓を記憶。再び［実行］へ戻る。</div>
+    </div>
+    <div class="loop-rules fade-in">
+      <div class="rule-row">
+        <div class="icon-badge sm c-navy"><svg class="icon"><use href="#ic-alert"></use></svg></div>
+        <p><b>停止条件の明示：</b>トークン浪費を防ぐ（基準達成・最大反復・収束）。</p>
+      </div>
+      <div class="rule-row">
+        <div class="icon-badge sm c-navy"><svg class="icon"><use href="#ic-balance"></use></svg></div>
+        <p><b>評価基準（ルーブリック）：</b>「良いか？」ではなく「事実誤りはないか」「指定形式か」など具体的に。</p>
+      </div>
+      <div class="rule-row">
+        <div class="icon-badge sm c-navy"><svg class="icon"><use href="#ic-loop"></use></svg></div>
+        <p><b>知識グラフへの還元：</b>得られた教訓（長期記憶）はオントロジー層へ書き込まれ、次回の計画に活かされる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 自由エネルギー原理 -->
+<section class="section paper grid-bg" id="freeenergy">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-balance"></use></svg></div>
+      <div>
+        <span class="sec-label green">The Evolution Engine</span>
+        <h2 class="sec-title">進化のエンジン：自由エネルギー原理と予測誤差</h2>
+      </div>
+    </div>
+    <div class="fe-flow fade-in">
+      <div class="fe-row">
+        <div class="fe-box"><h5>予測</h5><p>モデルからの期待。例）検査完了予定 11:40。</p></div>
+        <div class="fe-box"><h5>観察</h5><p>結果を取得。例）実績は 11:55。</p></div>
+      </div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="fe-row"><div class="fe-box surprise"><h5>予測誤差＝驚き（Surprise）</h5><p>−log p(o)。ズレの大きさを数値化する。</p></div></div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="fe-row">
+        <div class="fe-box assim"><h5>誤差小 →［同化］</h5><p>既存スキーマに素直に取り込み（事実の追加）。この受注の実績として記録するだけ。</p></div>
+        <div class="fe-box accom"><h5>誤差大・持続 →［調節］</h5><p>知識グラフ・型（スキーマ）自体を作り変える改訂。複数受注で「検査＋20分」のズレが続くなら、標準工程時間モデル自体を改訂。</p></div>
+      </div>
+      <div class="loop-arrow-down">↓</div>
+      <div class="fe-row"><div class="fe-box equi"><h5>［均衡化］</h5><p>自由エネルギー最小化。ここで得た教訓は、次の「予測」の精度へ還元される。</p></div></div>
+    </div>
+    <div class="fe-formula fade-in"><code>F ≈ 複雑性 − 正確性</code><br>自由エネルギー（F）の最小化とは、「観測を最もよく説明し（正確性）、かつ信念の変更・グラフの肥大化を最小限に抑える（複雑性の抑制）」こと。オッカムの剃刀として機能する。</div>
+  </div>
+</section>
+
+<!-- 5つの制御シグナル -->
+<section class="section" id="signals">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-gauge"></use></svg></div>
+      <div>
+        <span class="sec-label navy">5 Control Signals</span>
+        <h2 class="sec-title">アーキテクチャへの評価の組み込み：5つの制御シグナル</h2>
+      </div>
+    </div>
+    <div class="signal-grid fade-in">
+      <div class="signal-card">
+        <div class="icon-badge sm c-orange"><svg class="icon"><use href="#ic-gauge"></use></svg></div>
+        <h4>1. 予測誤差（Surprise）</h4>
+        <p>「調節」の引き金。誤差が大きい箇所を特定し、いつグラフを改訂すべきかを決定。</p>
+        <p class="ex">例：検査工程のズレが続けば改訂を発動。</p>
+      </div>
+      <div class="signal-card">
+        <div class="icon-badge sm c-orange"><svg class="icon"><use href="#ic-alert"></use></svg></div>
+        <h4>2. 信念のエントロピー（Uncertainty）</h4>
+        <p>行動の門（停止条件）。確信度が低ければ行為を止め、情報収集へ回帰。</p>
+        <p class="ex">例：担当者未確定なら提案を保留。</p>
+      </div>
+      <div class="signal-card">
+        <div class="icon-badge sm c-green"><svg class="icon"><use href="#ic-compass"></use></svg></div>
+        <h4>3. 期待情報利得（Curiosity）</h4>
+        <p>探索の方向づけ。「最も不確実性を減らせる」領域を特定し、学習を促す。</p>
+        <p class="ex">例：遅延要因が未知の工程を優先調査。</p>
+      </div>
+      <div class="signal-card">
+        <div class="icon-badge sm c-purple"><svg class="icon"><use href="#ic-balance"></use></svg></div>
+        <h4>4. 複雑性－正確性（Regularization）</h4>
+        <p>知識グラフの正則化。冗長なノード追加を防ぎ、名寄せ・品質を維持するブレーキ。</p>
+        <p class="ex">例：似た品番ノードの乱立を抑制。</p>
+      </div>
+      <div class="signal-card">
+        <div class="icon-badge sm c-steel"><svg class="icon"><use href="#ic-target-arrow"></use></svg></div>
+        <h4>5. 学習進度（Effort Allocation）</h4>
+        <p>労力の最適配分。誤差が速く減る「最近接発達領域」にメタ認知の注意を集中させる。</p>
+        <p class="ex">例：改善余地の大きい検査工程に注力。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 経営管理の3つの時代 -->
+<section class="section paper grid-bg" id="eras">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-layers"></use></svg></div>
+      <div>
+        <span class="sec-label navy">3 Eras of Management</span>
+        <h2 class="sec-title">経営管理の3つの時代：真のスマートファクトリーへ</h2>
+      </div>
+    </div>
+    <div class="matrix-wrap fade-in">
+      <table class="matrix">
+        <thead><tr><th></th><th>ファイル中心（STEP 0-3）</th><th>データ中心（STEP 4-7）</th><th class="era3">知識中心（STEP 8）</th></tr></thead>
+        <tbody>
+          <tr><td>管理のパラダイム</td><td>属人化・サイロ化</td><td>構造化・単一情報源</td><td class="era3">意味と自律性の統合</td></tr>
+          <tr><td>データの姿</td><td>個別ファイルの乱立</td><td>テーブルとリレーション</td><td class="era3">知識グラフ（トリプル）</td></tr>
+          <tr><td>主なツール</td><td>Excel</td><td>RDB・Web UI</td><td class="era3">オントロジー＋LLM＋エージェント</td></tr>
+          <tr><td>AIの適性</td><td>無</td><td>低（意味がない）</td><td class="era3">完全</td></tr>
+          <tr><td>進化のメカニズム</td><td>人間による手作業の更新</td><td>人間によるクエリと設計</td><td class="era3">予測誤差による自己進化（同化と調節）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="phase-band fade-in" style="margin-top:20px;">エクセルシートの限界をシステム化で乗り越え、その先に広がる「自己改善する知識体系」の構築こそが、次世代の製造業DX（知働化）の終着点である。</div>
+  </div>
+</section>
+
+<!-- まとめ -->
+<section class="section" id="closing">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-conclusion"></use></svg></div>
+      <div>
+        <span class="sec-label green">Wrap-up</span>
+        <h2 class="sec-title">まとめ：データの先にある「意味」を設計する</h2>
+      </div>
+    </div>
+    <div class="closing fade-in">
+      <p class="closing-q">
+        「AI活用の本質は、データを貯めることではありません。<br>
+        データの背後に<span class="ac">〈存在の構造〉</span>と<span class="ac">〈意味〉</span>を与え、自ら学び続ける知識体系へ発展させることです。」
+      </p>
+      <p class="closing-sub">— オントロジー・セマンティクス・エージェントを分離しながら連結し、内省ループで自己改善する。</p>
+      <div class="closing-cards">
+        <div class="cc"><div class="n">01</div><h4>意味の骨格を与える</h4><p>知識グラフ（オントロジー）でAIの幻覚を防ぎ、検証可能な基盤的真理をつくる。</p></div>
+        <div class="cc"><div class="n">02</div><h4>LLMとオントロジーを組み合わせる</h4><p>セマンティクス層が文脈を柔軟に解釈し、記号と対象を結ぶ。</p></div>
+        <div class="cc"><div class="n">03</div><h4>評価ループを組み込む</h4><p>予測誤差を制御シグナルとして、自ら学習し続けるエージェントへ。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <a class="footer-back" href="/">← 知働化コミュニティ トップへ戻る</a>
+  <a class="footer-back" href="/ExcelToSystem/">← Part 1「脱・Excel依存のロードマップ」へ</a>
+  <p class="footer-meta">
+    <strong>Excel to System 2 — エクセル依存からの脱却と「知」のアーキテクチャ 教材</strong><br>
+    データ中心設計から、自己進化するAI指向（オントロジー）システムへの進化ロードマップ
+  </p>
+  <p class="footer-copy">© 知働化研究会 / Agile Process Association　|　chidouka-lab.com/ExcelToSystem2/</p>
+</footer>
+
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script>
+/* ── ロードマップ復習：ミニ階段の生成 ── */
+const STEPS = [
+  {n:0, label:'個人Excel<br>（属人化）', kind:'excel'},
+  {n:1, label:'Excel<br>標準化', kind:'excel'},
+  {n:2, label:'マスタ<br>分離', kind:'excel'},
+  {n:3, label:'入力<br>一本化', kind:'sys'},
+  {n:4, label:'データ<br>ベース化', kind:'sys'},
+  {n:5, label:'Web入力<br>画面化', kind:'sys'},
+  {n:6, label:'工程・部門<br>間連携', kind:'sys'},
+  {n:7, label:'IoT連携<br>（自動収集）', kind:'sys'},
+  {n:8, label:'AI活用<br>（知識中心）', kind:'focus'},
+];
+const nav = document.getElementById('stairsMini');
+STEPS.forEach((s,i)=>{
+  const el = document.createElement('div');
+  el.className = 'stmini ' + s.kind;
+  const h = 40 + i*15;
+  el.innerHTML =
+    (s.kind==='focus' ? '<span class="stmini-tag">この教材</span>' : '') +
+    '<div class="stmini-bar" style="height:'+h+'px;"><span class="stmini-num">'+s.n+'</span></div>'+
+    '<div class="stmini-label">'+s.label+'</div>';
+  nav.appendChild(el);
+});
+
+/* ── フェードイン ── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+},{ threshold:.1 });
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+/* ── ページトップ ── */
+const pt = document.querySelector('.page-top');
+window.addEventListener('scroll',()=>{ pt.classList.toggle('show', window.scrollY>600); });
+pt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+
+</body>
+</html>
