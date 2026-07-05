@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# make_noteidx.py — noteidx.pdf (15件版) を生成する
+# make_noteidx.py — noteidx.pdf (16件版) を生成する
 # 実行: python3 make_noteidx.py
 
 from reportlab.pdfbase import pdfmetrics
@@ -201,6 +201,19 @@ articles = [
             "なっています。"
         ),
     },
+    {
+        "num": "016",
+        "title": "最強AIモデル選びの終焉――経営思想史から紐解く、AI時代を生き抜く「学習する組織」の設計論",
+        "date": "2026-07-02", "like": "1",
+        "url": "https://note.com/carl/n/nfc1d534544f9",
+        "desc": (
+            "AI時代における企業の競争力は、単なる最新AIモデルの導入ではなく、現場の暗黙知をAIと"
+            "結びつけて循環させる「学習ループ」の設計にあると論じた記事です。マイケル・ポランニー"
+            "や野中郁次郎などの経営思想史を紐解きながら、AIが進化するほど重要性を増す「人間の判断"
+            "力」について解説しています。特定のAI企業への依存を防ぎ、自社の知財（IP）や主権を守り"
+            "ながら成長するための「フロンティア・エコシステム」の構築を提唱しています。"
+        ),
+    },
 ]
 
 
@@ -315,7 +328,9 @@ def build_pdf(output_path):
 
     # サブタイトル
     c.setFont(font_body, size_h2)
-    c.drawString(MARGIN_L, y, "t0rapa(carl)氏の作品15件を作成日順に掲載します。（第15番追記：2026年5月28日）")
+    c.drawString(MARGIN_L, y, "t0rapa（carl）の作品を全16件を作成日順に掲載します。")
+    y -= size_h2 + 4
+    c.drawString(MARGIN_L, y, "（取得日：2026年7月2日）")
     y -= size_h2 + 20
 
     page_bottom = MARGIN_B + 20  # footer 用余白
