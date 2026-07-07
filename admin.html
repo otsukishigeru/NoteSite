@@ -224,6 +224,7 @@
       <button class="tab-btn" data-tab="comments">コメント管理</button>
       <button class="tab-btn" data-tab="libmembers">ライブラリメンバ</button>
       <button class="tab-btn" data-tab="libfiles">ライブラリファイル</button>
+      <button class="tab-btn" data-tab="hiancate">hi-ancateアンケート</button>
     </div>
 
     <!-- タブ：交流メンバ管理 -->
@@ -335,6 +336,24 @@
       </div>
     </div>
 
+    <!-- タブ：hi-ancateアンケート -->
+    <div id="tab-hiancate" class="tab-panel">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.75rem;align-items:center;">
+        <div class="admin-meta" id="hiancate-meta"></div>
+        <button id="hiancate-csv-btn" class="btn-outline" style="cursor:pointer;">⬇ CSVダウンロード</button>
+        <button id="hiancate-reload-btn" class="btn-outline" style="cursor:pointer;">🔄 再読み込み</button>
+      </div>
+      <div id="hiancate-status" class="admin-status">読み込み中...</div>
+      <div class="member-form">
+        <h2>学生・卒業生の回答</h2>
+        <div id="hiancate-student-list" class="member-list"></div>
+      </div>
+      <div class="member-form">
+        <h2>企業の回答</h2>
+        <div id="hiancate-company-list" class="member-list"></div>
+      </div>
+    </div>
+
     <!-- タブ：対話履歴 -->
     <div id="tab-logs" class="tab-panel">
       <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;gap:.75rem;align-items:center;">
@@ -375,6 +394,7 @@
       if (btn.dataset.tab === 'members') loadMembers();
       if (btn.dataset.tab === 'libmembers') loadLibMembers();
       if (btn.dataset.tab === 'libfiles') loadLibFiles();
+      if (btn.dataset.tab === 'hiancate') loadHiAncate();
     });
   });
 
@@ -572,6 +592,83 @@
     });
   }
   document.getElementById('comments-reload-btn').addEventListener('click', loadAdminComments);
+
+  // ── hi-ancateアンケート ──────────────────────────────────
+  var hiancateData = { student: [], company: [] };
+
+  function loadHiAncate() {
+    var status = document.getElementById('hiancate-status');
+    var meta   = document.getElementById('hiancate-meta');
+    var studentList = document.getElementById('hiancate-student-list');
+    var companyList = document.getElementById('hiancate-company-list');
+    status.style.display = ''; status.textContent = '読み込み中...';
+    studentList.innerHTML = ''; companyList.innerHTML = ''; meta.textContent = '';
+
+    fetch('/api/hi-ancate/admin?password=' + encodeURIComponent(savedPassword))
+      .then(function (r) { return r.json().then(function (b) { return { status: r.status, body: b }; }); })
+      .then(function (r) {
+        if (r.status !== 200 || !r.body.ok) {
+          status.textContent = '読み込みに失敗しました。';
+          return;
+        }
+        status.style.display = 'none';
+        hiancateData = { student: r.body.student, company: r.body.company };
+        meta.textContent = '学生 ' + r.body.student.length + '件 / 企業 ' + r.body.company.length + '件';
+
+        renderHiAncateList(studentList, r.body.student, false);
+        renderHiAncateList(companyList, r.body.company, true);
+      })
+      .catch(function (e) {
+        status.textContent = 'ネットワークエラー: ' + e.message;
+      });
+  }
+
+  function renderHiAncateList(listEl, entries, showOrg) {
+    if (!entries || entries.length === 0) {
+      listEl.innerHTML = '<div class="admin-status">回答がありません。</div>';
+      return;
+    }
+    entries.slice().reverse().forEach(function (e) {
+      var vals = Object.keys(e.answers || {}).map(function (k) { return k + '=' + e.answers[k]; }).join(' ');
+      var row = document.createElement('div');
+      row.className = 'member-row';
+      row.innerHTML =
+        '<div><div class="member-email">' + escapeHtml(e.date || '') + (showOrg && e.org ? '　' + escapeHtml(e.org) : '') + '</div>' +
+        '<div class="member-nick" style="word-break:break-all;">' + escapeHtml(vals) + '</div></div>';
+      listEl.appendChild(row);
+    });
+  }
+
+  function hiAncateToCsv() {
+    var header = ['role', 'date', 'org'].concat(hiAncateQuestionIds());
+    var rows = [header];
+    ['student', 'company'].forEach(function (role) {
+      (hiancateData[role] || []).forEach(function (e) {
+        var row = [role, e.date || '', e.org || ''];
+        hiAncateQuestionIds().forEach(function (id) { row.push(e.answers && e.answers[id] != null ? e.answers[id] : ''); });
+        rows.push(row);
+      });
+    });
+    return rows.map(function (r) {
+      return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\r\n');
+  }
+
+  function hiAncateQuestionIds() {
+    return ['a1','a2','a3','a4','b1','b2','b3','c1','c2','c3','d1','d2','d3','d4','e1','e2','e3','f1','f2','f3'];
+  }
+
+  document.getElementById('hiancate-reload-btn').addEventListener('click', loadHiAncate);
+  document.getElementById('hiancate-csv-btn').addEventListener('click', function () {
+    var csv = '﻿' + hiAncateToCsv();
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'hi-ancate_' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
   document.getElementById('reload-btn').addEventListener('click', loadLogs);
 
   // ── ライブラリ API 呼び出し ─────────────────────────────────

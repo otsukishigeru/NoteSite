@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>集計結果 — hi-ancate</title>
+<meta name="description" content="AI時代の人材像アンケート、学生・卒業生側と企業側の集計結果・認識のギャップを可視化するダッシュボードです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+  <a href="./" class="nav-back">← hi-ancate トップ</a>
+  <div class="nav-logo">
+    <div class="nav-kanji">問</div>
+    <span>hi-ancate</span>
+  </div>
+</nav>
+
+<section class="hero" style="padding-top:3.5rem;">
+  <div class="hero-tag">Results</div>
+  <h1><em>集計結果</em></h1>
+  <p class="hero-sub">学生・卒業生側と企業側、それぞれの回答を同じ20項目で集計しています。</p>
+</section>
+
+<div id="dash-empty" class="dash-section hidden-el">
+  <p class="empty-note">まだ回答が集まっていません。<br><a href="student.html" style="color:var(--accent);">学生アンケート</a> または <a href="company.html" style="color:var(--accent);">企業アンケート</a> にご協力ください。</p>
+</div>
+
+<div id="dash-content">
+
+  <div class="dash-summary" id="dash-summary"></div>
+
+  <div class="dash-section" id="preliminary-note-wrap">
+    <p class="form-note hidden-el" id="preliminary-note" style="text-align:center;">※ 現時点では回答数が少ないため、集計結果は参考値です。</p>
+  </div>
+
+  <div class="dash-section">
+    <h2>カテゴリ別の重要度・重視度</h2>
+    <div class="legend-row">
+      <span><span class="legend-dot" style="background:var(--student)"></span>学生・卒業生</span>
+      <span><span class="legend-dot" style="background:var(--company)"></span>企業</span>
+    </div>
+    <div id="category-bars"></div>
+  </div>
+
+  <div class="dash-section">
+    <h2>認識のギャップが大きい項目（上位5件）</h2>
+    <div class="legend-row">
+      <span><span class="legend-dot" style="background:var(--student)"></span>学生・卒業生</span>
+      <span><span class="legend-dot" style="background:var(--company)"></span>企業</span>
+    </div>
+    <div id="gap-ranking"></div>
+  </div>
+
+  <div class="dash-section">
+    <h2>集計から見えること</h2>
+    <div class="guide-card" id="guide-text"></div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="https://chidouka-lab.com/">© 知働化コミュニティ — chidouka-lab.com</a>
+</footer>
+
+<script src="js/questions.js"></script>
+<script src="js/results.js"></script>
+</body>
+</html>

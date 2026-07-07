@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企業アンケート — hi-ancate</title>
+<meta name="description" content="新卒採用にあたり、学生にどのような力を求めるかをお聞きする企業向けアンケートです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-role="company">
+
+<nav>
+  <a href="./" class="nav-back">← hi-ancate トップ</a>
+  <div class="nav-logo">
+    <div class="nav-kanji">問</div>
+    <span>hi-ancate</span>
+  </div>
+</nav>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div id="app">
+
+  <div id="form-screen" class="screen active">
+    <div class="form-header">
+      <h1 id="form-title"></h1>
+      <p class="form-lead" id="form-lead"></p>
+    </div>
+
+    <form id="survey-form">
+      <div class="form-field">
+        <label for="org-field">貴社の業種（任意）</label>
+        <input type="text" id="org-field" placeholder="例：情報通信業、製造業 など">
+      </div>
+
+      <div id="questions"></div>
+
+      <div class="progress-count" id="progress-count">回答済み 0 / 20</div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-primary" id="btn-submit" disabled>回答を送信する</button>
+        <div class="form-error" id="form-error"></div>
+        <p class="form-note">回答は匿名で集計されます。会社名・ご担当者名等は取得しません。</p>
+      </div>
+    </form>
+  </div>
+
+  <div id="done-screen" class="screen">
+    <div class="done-card">
+      <h2>ご回答ありがとうございました</h2>
+      <p>いただいた回答は、学生側の回答とあわせて匿名で集計され、「AI時代の人材像」を明らかにするための資料として活用されます。</p>
+      <a href="results.html" class="btn-primary">集計結果を見る</a>
+      <a href="./" class="btn-ghost">トップに戻る</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="https://chidouka-lab.com/">© 知働化コミュニティ — chidouka-lab.com</a>
+</footer>
+
+<script src="js/questions.js"></script>
+<script src="js/survey.js"></script>
+</body>
+</html>
