@@ -104,7 +104,7 @@
     btn.textContent = '送信中…';
 
     try {
-      const res = await fetch('/api/hi-ancate/submit', {
+      const res = await fetch('/api/hi-ancate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role, answers, org }),

@@ -116,7 +116,7 @@
 
   async function load() {
     try {
-      const res = await fetch('/api/hi-ancate/results');
+      const res = await fetch('/api/hi-ancate');
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
 
