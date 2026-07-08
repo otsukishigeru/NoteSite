@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="知働化コミュニティが提供するサブサイト（AI-COCOMO・HI-Assess・hi-ancate・脱・Excel）のご案内ページ。">
+<meta property="og:title"       content="サブサイト案内 — chidouka-lab.com">
+<meta property="og:description" content="知働化コミュニティが公開する4つのツール・教材サブサイトを一覧でご案内します。">
+<meta property="og:type"        content="website">
+<title>サブサイト案内 — chidouka-lab.com</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:          #0B1628;
+  --white:       #132035;
+  --dark:        #0E1420;
+  --mid:         #1E2A40;
+  --text-main:   #DDE6F4;
+  --text-sub:    #8AAAC8;
+  --text-light:  #4E6A88;
+  --border:      #1C3050;
+  --accent:      #8EB4E3;
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.28);
+  --shadow-md:   0 4px 20px rgba(0,0,0,.40);
+  --shadow-lg:   0 8px 40px rgba(0,0,0,.55);
+  --radius:      12px;
+  --radius-lg:   20px;
+  --max-w:       1040px;
+  --header-h:    64px;
+
+  /* サブサイトカラー */
+  --col-cocomo:  #b08030;   /* AI-COCOMO */
+  --col-assess:  #7c6cf0;   /* HI-Assess */
+  --col-ancate:  #d4488f;   /* hi-ancate */
+  --col-excel:   #2a8a9a;   /* 脱・Excel */
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background: var(--bg); color: var(--text-main); line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0B1628; }
+::-webkit-scrollbar-thumb { background: #2A4060; border-radius: 3px; }
+
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ── ヘッダー（トップページと共通） ── */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: #0E1E32;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 24px; height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo-block { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 42px; height: 42px; background: var(--dark); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; font-weight: 900; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(14,20,32,.4);
+}
+.logo-text-block { display: flex; flex-direction: column; line-height: 1.2; }
+.logo-main { font-size: 15px; font-weight: 800; color: var(--text-main); }
+.logo-sub  { font-size: 10px; color: var(--text-light); letter-spacing: .02em; }
+
+.header-nav { display: flex; align-items: center; gap: 4px; }
+.nav-link {
+  padding: 6px 12px; border-radius: 20px; font-size: 12px;
+  color: var(--text-sub); transition: background .2s, color .2s; white-space: nowrap;
+}
+.nav-link:hover { background: rgba(255,255,255,.07); color: var(--text-main); }
+.nav-link.current { background: rgba(255,255,255,.09); color: var(--text-main); font-weight: 700; }
+.nav-link.cta {
+  background: var(--dark); color: #fff;
+  font-weight: 600; padding: 7px 16px;
+  box-shadow: 0 2px 8px rgba(14,20,32,.35);
+}
+.nav-link.cta:hover { background: var(--mid); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  width: 32px; cursor: pointer; padding: 4px;
+}
+.hamburger span { display: block; height: 2px; background: var(--text-main); border-radius: 2px; transition: .3s; }
+
+.mobile-nav {
+  display: none; position: fixed; inset: 0; z-index: 90;
+  background: var(--dark); padding: 80px 32px 32px;
+  flex-direction: column; gap: 4px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  padding: 14px 0; font-size: 16px; color: rgba(255,255,255,.9);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.mobile-nav a.cta { color: #8EB4E3; font-weight: 700; }
+
+/* ── パンくず ── */
+.breadcrumb {
+  max-width: var(--max-w); margin: 20px auto 0; padding: 0 24px;
+  font-size: 12px; color: var(--text-light);
+}
+.breadcrumb a { color: var(--accent); }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* ── ページヘッダー ── */
+.page-head {
+  max-width: var(--max-w); margin: 0 auto; padding: 24px 24px 8px;
+}
+.page-eyebrow {
+  font-size: 10px; letter-spacing: 4px; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.page-h1 { font-size: clamp(24px, 3.6vw, 34px); font-weight: 900; color: #fff; margin-bottom: 14px; }
+.page-lead { font-size: 14px; color: var(--text-sub); line-height: 1.9; max-width: 640px; }
+
+/* ── サブサイトカード ── */
+.guide-section { max-width: var(--max-w); margin: 0 auto; padding: 40px 24px 0; }
+.guide-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+.guide-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md); overflow: hidden;
+  display: flex; flex-direction: column;
+  border-top: 4px solid var(--card-color, var(--accent));
+}
+.guide-card-body { padding: 26px 28px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.guide-card-eyebrow {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--card-color, var(--accent)); font-weight: 700;
+}
+.guide-card-name { font-size: 19px; font-weight: 800; color: var(--text-main); }
+.guide-card-desc { font-size: 13px; color: var(--text-sub); line-height: 1.85; flex: 1; }
+.guide-card-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.guide-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700;
+  background: var(--card-color, var(--accent)); color: #0E1420;
+  transition: transform .2s, box-shadow .2s;
+}
+.guide-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.guide-btn.sub {
+  background: transparent; color: var(--text-sub);
+  border: 1px solid var(--border);
+}
+.guide-btn.sub:hover { color: var(--text-main); border-color: var(--card-color, var(--accent)); }
+
+.guide-card-note {
+  font-size: 11.5px; color: var(--text-light); line-height: 1.7;
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.guide-card-note a { color: var(--accent); font-weight: 700; }
+.guide-card-note a:hover { text-decoration: underline; }
+
+/* ── 戻る導線 ── */
+.back-section {
+  max-width: var(--max-w); margin: 0 auto; padding: 48px 24px 0;
+  text-align: center;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 999px; font-size: 13px; font-weight: 700;
+  background: var(--white); border: 1px solid var(--border); color: var(--text-sub);
+  transition: color .2s, border-color .2s;
+}
+.back-link:hover { color: var(--text-main); border-color: var(--accent); }
+
+/* ── フッター ── */
+.site-footer {
+  background: var(--dark); color: rgba(255,255,255,.65);
+  text-align: center; padding: 36px 24px;
+  font-size: 12px; line-height: 2;
+  margin-top: 80px;
+}
+.site-footer a { color: rgba(255,255,255,.65); }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+
+.page-top {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--dark); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: var(--shadow-md);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  cursor: pointer; z-index: 50; border: none;
+}
+.page-top.visible { opacity: 1; pointer-events: auto; }
+.page-top:hover { transform: translateY(-2px); }
+
+@media (max-width: 768px) {
+  :root { --header-h: 56px; }
+  .header-nav { display: none; }
+  .hamburger  { display: flex; }
+  .guide-grid { grid-template-columns: 1fr; }
+  .guide-section, .page-head { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     ヘッダー
+     ================================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <a href="/" style="display:flex;align-items:center;gap:12px;">
+        <div class="logo-mark">知</div>
+        <div class="logo-text-block">
+          <span class="logo-main">知働化コミュニティ</span>
+          <span class="logo-sub">chidouka-lab.com</span>
+        </div>
+      </a>
+    </div>
+    <nav class="header-nav" aria-label="メインナビゲーション">
+      <a class="nav-link" href="/#about">コミュニティについて</a>
+      <a class="nav-link" href="/#members">メンバーサイト</a>
+      <a class="nav-link" href="/#coc">連携コミュニティ</a>
+      <a class="nav-link" href="/#info">お知らせ</a>
+      <a class="nav-link" href="/members.html">交流</a>
+      <a class="nav-link current" href="/guide/">サブサイト案内</a>
+      <a class="nav-link cta" href="/contact/">お問い合わせ</a>
+    </nav>
+    <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-nav" aria-label="モバイルナビゲーション">
+  <a href="/#about">コミュニティについて</a>
+  <a href="/#members">メンバーサイト</a>
+  <a href="/#coc">連携コミュニティ</a>
+  <a href="/#info">お知らせ</a>
+  <a href="/members.html">交流</a>
+  <a href="/guide/">サブサイト案内</a>
+  <a href="/contact/" class="cta">お問い合わせ</a>
+</nav>
+
+<!-- ================================================================
+     パンくず
+     ================================================================ -->
+<p class="breadcrumb"><a href="/">トップ</a> ／ サブサイト案内</p>
+
+<!-- ================================================================
+     ページヘッダー
+     ================================================================ -->
+<section class="page-head">
+  <p class="page-eyebrow fade-in">GUIDE / chidouka-lab.com</p>
+  <h1 class="page-h1 fade-in">サブサイト案内</h1>
+  <p class="page-lead fade-in">
+    知働化コミュニティでは、知働化の探究・実践・啓蒙を支えるツールや教材を、独立したサブサイトとして公開しています。
+    それぞれの内容を簡単にご紹介しますので、関心のあるサイトへお進みください。
+  </p>
+</section>
+
+<!-- ================================================================
+     サブサイト一覧
+     ================================================================ -->
+<section class="guide-section">
+  <div class="guide-grid">
+
+    <!-- AI-COCOMO -->
+    <div class="guide-card fade-in" style="--card-color:var(--col-cocomo);">
+      <div class="guide-card-body">
+        <p class="guide-card-eyebrow">Cost Simulation</p>
+        <h2 class="guide-card-name">AI-COCOMO</h2>
+        <p class="guide-card-desc">
+          生成AI時代のソフトウェア開発コストを推定するシミュレータです。<br>
+          従来のCOCOMOモデルにAI活用による生産性変化を組み込み、工数やコストの試算を体験できます。<br>
+          パラメータの根拠や考え方も、あわせて確認できます。
+        </p>
+        <div class="guide-card-actions">
+          <a class="guide-btn" href="/AI-COCOMO/">サイトを開く →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- HI-Assess -->
+    <div class="guide-card fade-in" style="--card-color:var(--col-assess);">
+      <div class="guide-card-body">
+        <p class="guide-card-eyebrow">Self Assessment</p>
+        <h2 class="guide-card-name">HI-Assess</h2>
+        <p class="guide-card-desc">
+          ロバート・キーガンの成人発達理論にもとづくセルフアセスメントツールです。<br>
+          7つの問いに答えるだけで、現在の発達段階（第2〜第5段階）の傾向がわかります。<br>
+          自己理解や人材育成の対話のきっかけとしてご利用いただけます。
+        </p>
+        <div class="guide-card-actions">
+          <a class="guide-btn" href="/HI-Assess/">サイトを開く →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- hi-ancate -->
+    <div class="guide-card fade-in" style="--card-color:var(--col-ancate);">
+      <div class="guide-card-body">
+        <p class="guide-card-eyebrow">Survey</p>
+        <h2 class="guide-card-name">hi-ancate</h2>
+        <p class="guide-card-desc">
+          AI時代に求められる人材像を、学生・卒業生と企業の双方の視点から明らかにするアンケートです。<br>
+          20項目の設問への回答は集計され、結果はダッシュボードで公開されます。<br>
+          学生・卒業生、企業のどちらの立場からも回答いただけます。
+        </p>
+        <div class="guide-card-actions">
+          <a class="guide-btn" href="/hi-ancate/">サイトを開く →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 脱・Excel -->
+    <div class="guide-card fade-in" style="--card-color:var(--col-excel);">
+      <div class="guide-card-body">
+        <p class="guide-card-eyebrow">Learning Material</p>
+        <h2 class="guide-card-name">脱・Excel依存のロードマップ</h2>
+        <p class="guide-card-desc">
+          個人Excel（属人化）からデータベース化・Web入力・IoT・AI活用へと至る、8つのステップを学べる教材サイトです。<br>
+          品番マスタや受注表など、身近な事例データを使って一歩ずつ体験できます。<br>
+          続編では、データ中心設計からAI指向（オントロジー）システムへと発展する「知」のアーキテクチャを扱います。
+        </p>
+        <div class="guide-card-actions">
+          <a class="guide-btn" href="/ExcelToSystem/">サイトを開く →</a>
+          <a class="guide-btn sub" href="/ExcelToSystem2/">続編「知」のアーキテクチャへ →</a>
+        </div>
+        <p class="guide-card-note">
+          「脱・Excel依存のロードマップ」（Part 1）の先には、続編
+          <a href="/ExcelToSystem2/">「知」のアーキテクチャ（Part 2）</a>
+          があります。オントロジー・セマンティクス・エージェントの三層構造による、自己進化するシステムのあり方を学べます。
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     戻る導線
+     ================================================================ -->
+<section class="back-section fade-in">
+  <a class="back-link" href="/">← 知働化コミュニティ トップへ戻る</a>
+</section>
+
+<!-- ================================================================
+     フッター
+     ================================================================ -->
+<footer class="site-footer">
+  <p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">知働化メンバ</p>
+  <p>
+    <a href="/ichi_s_otsuki/">1_s_o</a>　｜
+    <a href="/carl/">t0rapa</a>　｜
+    <a href="/Hg/">Hg</a>　｜
+    <a href="/St/">St</a>
+  </p>
+  <p style="margin-top:12px;font-size:11px;opacity:.7;"><a href="/linkpage/">🗺 サイト リンク構成マップ</a></p>
+  <p style="margin-top:10px;font-size:10px;opacity:.5;">© 知働化コミュニティ</p>
+</footer>
+
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const hamburger = document.querySelector('.hamburger');
+  const mobileNav = document.querySelector('.mobile-nav');
+  hamburger?.addEventListener('click', () => {
+    mobileNav?.classList.toggle('open');
+    const spans = hamburger.querySelectorAll('span');
+    if (mobileNav?.classList.contains('open')) {
+      spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+      spans[1].style.opacity   = '0';
+      spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+    } else {
+      spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    }
+  });
+  mobileNav?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => mobileNav.classList.remove('open'));
+  });
+
+  const topBtn = document.querySelector('.page-top');
+  window.addEventListener('scroll', () => {
+    topBtn?.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+  topBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+});
+</script>
+</body>
+</html>
