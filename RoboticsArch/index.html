@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="生成AI時代のロボットシステムを設計するための技法を学ぶ教材サイト。意味の4層×時間の3層×予測の閉ループからなるロボティクス・アーキテクチャと8ステップのデザイン技法を、定食屋の料理ロボットを事例に丁寧に解説します。既知の課題と実践時の対処もあわせて学べます。">
+<meta property="og:title" content="ロボティクス・アーキテクチャ構築の技法｜料理ロボットで学ぶ教材">
+<meta property="og:description" content="AI活用と問題フレームに基づく知働化ロボットの設計技法。意味の4層と時間の3層、8ステップのデザイン技法を、定食屋の料理ロボットを事例に学べる教材サイト。">
+<meta property="og:type" content="website">
+<title>ロボティクス・アーキテクチャ構築の技法｜料理ロボットで学ぶ教材</title>
+
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+  --navy:       #16233F;   /* I. 分析（人間主導） */
+  --navy-2:     #2E4B7A;
+  --steel:      #6B7B9E;
+  --steel-lt:   #AEB9CE;
+  --orange:     #E8622A;   /* III. 行為の実装 */
+  --orange-dk:  #C64E1E;
+  --green:      #1E8E6B;   /* II. 知識化（AI協働） */
+  --green-dk:   #146B50;
+  --purple:     #7C6FCB;   /* IV. 進化（運用） */
+  --purple-dk:  #5F53AE;
+  --red:        #C0392B;   /* 反射層・安全 */
+  --gray-d:     #7C8798;
+  --ink:        #1D2532;
+  --ink-sub:    #4E5766;
+  --ink-light:  #8A93A2;
+  --bg:         #FFFFFF;
+  --paper:      #F4F5F2;
+  --gray:       #F1F3F6;
+  --line:       #E1E5EC;
+  --shadow-sm:  0 2px 12px rgba(22,35,63,.07);
+  --shadow-md:  0 10px 34px rgba(22,35,63,.12);
+  --radius:     14px;
+  --max-w:      1080px;
+}
+
+html{ scroll-behavior:smooth; font-size:16px; }
+body{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+em{ font-style:normal; }
+code{ font-family:'SF Mono',Menlo,monospace; }
+
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-track{ background:#fff; }
+::-webkit-scrollbar-thumb{ background:#c7ccd6; border-radius:4px; }
+
+.fade-in{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+.fade-in.visible{ opacity:1; transform:translateY(0); }
+
+/* ── アイコン ── */
+.icon{ width:22px; height:22px; display:block; }
+.icon-badge{
+  flex-shrink:0; width:42px; height:42px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+}
+.icon-badge.sm{ width:34px; height:34px; border-radius:9px; }
+.icon-badge.sm .icon{ width:18px; height:18px; }
+.icon-badge.lg{ width:52px; height:52px; border-radius:13px; }
+.icon-badge.lg .icon{ width:28px; height:28px; }
+.icon-badge.c-green{  background:rgba(30,142,107,.12);  color:var(--green); }
+.icon-badge.c-purple{ background:rgba(124,111,203,.14); color:var(--purple); }
+.icon-badge.c-orange{ background:rgba(232,98,42,.12);   color:var(--orange); }
+.icon-badge.c-gray{   background:rgba(124,135,152,.16); color:var(--gray-d); }
+.icon-badge.c-navy{   background:rgba(22,35,63,.08);    color:var(--navy); }
+.icon-badge.c-red{    background:rgba(192,57,43,.10);   color:var(--red); }
+
+/* ── コミュニティ トップバー ── */
+.community-bar{ background:var(--navy); padding:8px 20px; display:flex; align-items:center; justify-content:center; }
+.community-bar a{ display:flex; align-items:center; gap:9px; color:#fff; font-size:13px; font-weight:700; letter-spacing:.04em; opacity:.92; transition:opacity .15s; }
+.community-bar a:hover{ opacity:1; }
+.community-bar img{ height:20px; width:auto; }
+
+/* ── ヘッダー ── */
+.site-header{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.header-inner{ max-width:var(--max-w); margin:0 auto; padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:42px; height:42px; background:var(--navy); border-radius:9px;
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px; font-weight:900;
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+.brand-mark::after{ content:""; position:absolute; right:-6px; bottom:-6px; width:20px; height:20px; background:var(--orange); border-radius:50%; opacity:.92; }
+.brand-mark span{ position:relative; z-index:1; }
+.brand-text{ display:flex; flex-direction:column; line-height:1.25; }
+.brand-main{ font-size:15px; font-weight:800; color:var(--ink); }
+.brand-sub{ font-size:10px; color:var(--ink-light); letter-spacing:.06em; }
+.nav-links{ display:flex; gap:16px; }
+.nav-links a{ font-size:13px; font-weight:700; color:var(--ink-sub); transition:color .15s; white-space:nowrap; }
+.nav-links a:hover{ color:var(--orange); }
+@media(max-width:960px){ .nav-links{ display:none; } }
+
+/* ── ヒーロー ── */
+.hero{ position:relative; overflow:hidden; background:var(--navy); color:#fff; padding:78px 24px 84px; }
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(232,98,42,.30), transparent 44%),
+    radial-gradient(circle at 12% 100%, rgba(30,142,107,.28), transparent 46%);
+  pointer-events:none;
+}
+.hero::after{
+  content:""; position:absolute; inset:0; opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:30px 30px; pointer-events:none;
+}
+.hero-inner{ position:relative; max-width:var(--max-w); margin:0 auto; z-index:1; display:grid; grid-template-columns:1fr auto; gap:30px; align-items:center; }
+@media(max-width:860px){ .hero-inner{ grid-template-columns:1fr; } .hero-robot{ display:none; } }
+.hero-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:800; letter-spacing:.14em; color:#fff; background:var(--orange); padding:6px 15px; border-radius:999px; margin-bottom:24px; }
+.hero-title{ font-size:clamp(29px,5.2vw,54px); font-weight:900; line-height:1.18; letter-spacing:.01em; margin-bottom:14px; }
+.hero-title .ac{ color:#5BC49B; }
+.hero-title .ac2{ color:#F0895C; }
+.hero-sub{ font-size:clamp(15px,2.2vw,19px); font-weight:700; color:#D9DEE8; margin-bottom:26px; max-width:700px; }
+.hero-note{ display:inline-block; border:1px solid rgba(255,255,255,.24); border-radius:10px; padding:13px 20px; margin-bottom:30px; font-size:13.5px; line-height:1.75; color:#E6E9EF; max-width:720px; }
+.hero-note b{ color:#fff; }
+.hero-note a{ color:#5BC49B; font-weight:800; border-bottom:1px solid rgba(30,142,107,.5); }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:14px; }
+.btn{ display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:800; letter-spacing:.02em; padding:14px 26px; border-radius:999px; cursor:pointer; border:none; transition:transform .15s, box-shadow .2s, background .2s, border-color .2s; }
+.btn-primary{ background:var(--orange); color:#fff; }
+.btn-primary:hover{ background:var(--orange-dk); transform:translateY(-2px); box-shadow:0 10px 26px rgba(232,98,42,.42); }
+.btn-ghost{ background:transparent; color:#fff; border:1px solid rgba(255,255,255,.4); }
+.btn-ghost:hover{ border-color:#fff; transform:translateY(-2px); }
+.hero-robot svg{ width:220px; height:auto; }
+
+/* ── 共通セクション ── */
+.section{ padding:76px 24px; }
+.section.paper{ background:var(--paper); }
+.wrap{ max-width:var(--max-w); margin:0 auto; }
+.sec-head{ margin-bottom:38px; display:flex; align-items:flex-start; gap:16px; }
+.sec-label{ display:inline-block; font-size:12px; font-weight:800; letter-spacing:.16em; margin-bottom:10px; }
+.sec-label.green{ color:var(--green); } .sec-label.purple{ color:var(--purple); } .sec-label.orange{ color:var(--orange); } .sec-label.navy{ color:var(--navy-2); } .sec-label.red{ color:var(--red); }
+.sec-title{ font-size:clamp(22px,3.4vw,31px); font-weight:900; color:var(--navy); line-height:1.35; position:relative; padding-bottom:14px; }
+.sec-title::after{ content:""; position:absolute; left:0; bottom:0; width:54px; height:4px; background:var(--orange); border-radius:2px; }
+.lead{ font-size:16px; color:var(--ink-sub); margin-bottom:16px; }
+.lead strong{ color:var(--ink); font-weight:800; }
+.lead .ac{ color:var(--green); font-weight:800; }
+.lead .ac2{ color:var(--orange); font-weight:800; }
+.lead .ac3{ color:var(--purple); font-weight:800; }
+
+/* ── 課題カード（導入） ── */
+.prob-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px; }
+@media(max-width:820px){ .prob-grid{ grid-template-columns:1fr; } }
+.prob-card{ background:#fff; border:1px solid var(--line); border-top:4px solid var(--orange); border-radius:12px; padding:20px 22px; box-shadow:var(--shadow-sm); }
+.prob-card.g{ border-top-color:var(--green); }
+.prob-card.p{ border-top-color:var(--purple); }
+.prob-card h4{ font-size:15px; font-weight:900; color:var(--navy); margin:10px 0 6px; }
+.prob-card p{ font-size:13px; color:var(--ink-sub); line-height:1.7; }
+.prob-lead-box{ margin-top:26px; background:var(--navy); color:#fff; border-radius:12px; padding:22px 26px; font-size:15.5px; font-weight:700; line-height:1.8; }
+.prob-lead-box b{ color:#5BC49B; }
+.prob-lead-box .o{ color:#F0895C; }
+
+/* ── 事例紹介（定食屋） ── */
+.case-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:stretch; }
+@media(max-width:820px){ .case-grid{ grid-template-columns:1fr; } }
+.case-card{ background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:24px; }
+.case-card.trap{ border-left:5px solid var(--orange); background:#FEF6F1; }
+.case-card.mission{ border-left:5px solid var(--navy); }
+.case-card h4{ font-size:15px; font-weight:900; color:var(--navy); margin-bottom:10px; }
+.case-card p{ font-size:13.5px; color:var(--ink-sub); line-height:1.8; }
+.case-card p b{ color:var(--ink); }
+.case-arrow{ text-align:center; font-size:13px; font-weight:900; color:var(--orange); margin:2px 0; }
+.mission-3col{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+@media(max-width:760px){ .mission-3col{ grid-template-columns:1fr; } }
+.mcol{ background:#fff; border-radius:12px; padding:18px 20px; border:1.5px solid var(--line); }
+.mcol.navy{ border-top:4px solid var(--navy); }
+.mcol.green{ border-top:4px solid var(--green); }
+.mcol.orange{ border-top:4px solid var(--orange); }
+.mcol h5{ font-size:13.5px; font-weight:900; margin-bottom:6px; }
+.mcol.navy h5{ color:var(--navy); } .mcol.green h5{ color:var(--green); } .mcol.orange h5{ color:var(--orange); }
+.mcol p{ font-size:12.5px; color:var(--ink-sub); line-height:1.7; }
+
+/* ── フレームカード ── */
+.frame-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media(max-width:880px){ .frame-grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:620px){ .frame-grid{ grid-template-columns:1fr; } }
+.frame-card{ background:#fff; border:1.5px solid var(--line); border-radius:13px; padding:0 0 16px; overflow:hidden; box-shadow:var(--shadow-sm); }
+.frame-card .fc-head{ padding:10px 18px; color:#fff; font-size:13.5px; font-weight:900; letter-spacing:.03em; }
+.frame-card.a .fc-head{ background:var(--green); }
+.frame-card.b .fc-head, .frame-card.c .fc-head{ background:var(--purple); }
+.frame-card.d .fc-head, .frame-card.e .fc-head{ background:var(--gray-d); }
+.frame-card.f .fc-head{ background:var(--orange); }
+.frame-card .fc-body{ padding:14px 18px 0; font-size:13px; color:var(--ink-sub); line-height:1.7; }
+.frame-card .fc-ex{ margin:10px 18px 0; background:var(--paper); border-radius:8px; padding:9px 12px; font-size:12px; color:var(--ink-sub); }
+.frame-card .fc-ex b{ color:var(--green-dk); font-size:11px; letter-spacing:.06em; display:block; margin-bottom:2px; }
+.frame-band{ margin-top:22px; background:var(--paper); border-left:4px solid var(--navy-2); border-radius:8px; padding:14px 18px; font-size:14px; color:var(--ink-sub); }
+.frame-band b{ color:var(--navy); }
+
+/* テーブル */
+.tbl-wrap{ overflow-x:auto; margin-top:20px; }
+table.data{ border-collapse:collapse; width:100%; font-size:13px; background:#fff; min-width:620px; }
+table.data caption{ text-align:left; font-size:12.5px; font-weight:800; color:var(--navy); padding:0 0 7px; }
+table.data th, table.data td{ border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top; }
+table.data th{ background:var(--navy); color:#fff; font-weight:700; white-space:nowrap; }
+table.data tbody tr:nth-child(even){ background:var(--gray); }
+table.data td:first-child{ font-weight:800; color:var(--navy); white-space:nowrap; }
+.tbl-note{ font-size:12.5px; color:var(--ink-light); margin-top:8px; }
+
+/* ── 抽象山モデル ── */
+.mount-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:8px; }
+@media(max-width:780px){ .mount-wrap{ grid-template-columns:1fr; } }
+.mount-side{ background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:22px; }
+.mount-side.up{ border-top:5px solid var(--navy); }
+.mount-side.down{ border-top:5px solid var(--green); }
+.mount-side h4{ font-size:14.5px; font-weight:900; color:var(--navy); margin-bottom:8px; }
+.mount-side p{ font-size:13px; color:var(--ink-sub); line-height:1.75; }
+.mount-svg{ margin:18px auto 6px; max-width:640px; }
+.role3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px; }
+@media(max-width:760px){ .role3{ grid-template-columns:1fr; } }
+.role-card{ background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:18px 20px; }
+.role-card.h{ border-top:4px solid var(--navy); }
+.role-card.f{ border-top:4px solid var(--steel); }
+.role-card.a{ border-top:4px solid var(--green); }
+.role-card h5{ font-size:13.5px; font-weight:900; color:var(--navy); margin:8px 0 6px; }
+.role-card p{ font-size:12.5px; color:var(--ink-sub); line-height:1.7; }
+
+/* ── 4層アーキテクチャ ── */
+.layer-stack{ display:flex; flex-direction:column; gap:4px; margin:22px 0 14px; }
+.layer{ display:flex; align-items:center; gap:16px; padding:17px 22px; border-radius:11px; color:#fff; }
+.layer h4{ font-size:15px; font-weight:900; margin-bottom:3px; }
+.layer p{ font-size:12.5px; opacity:.94; line-height:1.65; }
+.layer.agent{ background:var(--orange); }
+.layer.semantic{ background:var(--purple); }
+.layer.ontology{ background:var(--green); }
+.layer.data{ background:var(--gray-d); }
+.arch-flow-note{ text-align:center; font-size:13px; color:var(--ink-sub); margin-bottom:16px; }
+.arch-flow-note b{ color:var(--navy); }
+.arch-band{ margin-top:14px; background:var(--navy); color:#fff; border-radius:8px; padding:14px 18px; font-size:13.5px; font-weight:700; text-align:center; line-height:1.7; }
+.arch-band b{ color:#F0895C; }
+.pitfall{ margin-top:18px; background:#FEF6F1; border:1.5px solid var(--orange); border-radius:12px; padding:18px 22px; font-size:13.5px; color:var(--ink-sub); line-height:1.8; }
+.pitfall b{ color:var(--orange-dk); }
+
+/* ── 3層制御 ── */
+.time-stack{ display:flex; flex-direction:column; gap:10px; margin:20px 0 6px; }
+.time-layer{ display:flex; gap:16px; align-items:flex-start; background:#fff; border:2px solid var(--line); border-radius:13px; padding:18px 22px; }
+.time-layer.slow{ border-color:var(--purple); }
+.time-layer.mid{ border-color:var(--orange); }
+.time-layer.fast{ border-color:var(--green); }
+.time-tag{ flex-shrink:0; color:#fff; font-size:12px; font-weight:900; border-radius:7px; padding:5px 12px; margin-top:2px; white-space:nowrap; }
+.time-layer.slow .time-tag{ background:var(--purple); }
+.time-layer.mid .time-tag{ background:var(--orange); }
+.time-layer.fast .time-tag{ background:var(--green); }
+.time-layer h4{ font-size:15px; font-weight:900; color:var(--navy); margin-bottom:3px; }
+.time-layer p{ font-size:13px; color:var(--ink-sub); line-height:1.7; }
+.time-sep{ text-align:center; color:var(--steel); font-size:15px; line-height:1; }
+.why-box{ margin-top:20px; background:var(--paper); border-left:4px solid var(--red); border-radius:8px; padding:16px 20px; font-size:14px; color:var(--ink-sub); line-height:1.8; }
+.why-box b{ color:var(--red); }
+
+/* 反射タイムライン */
+.reflex-line{ display:flex; flex-direction:column; gap:0; max-width:640px; margin:20px auto 0; }
+.rl-row{ display:flex; gap:16px; align-items:flex-start; position:relative; padding-bottom:18px; }
+.rl-row::before{ content:""; position:absolute; left:29px; top:26px; bottom:0; width:2px; background:var(--line); }
+.rl-row:last-child::before{ display:none; }
+.rl-time{ flex-shrink:0; width:60px; text-align:center; background:var(--red); color:#fff; font-size:11.5px; font-weight:900; border-radius:999px; padding:4px 0; position:relative; z-index:1; }
+.rl-row.gray .rl-time{ background:var(--gray-d); }
+.rl-row p{ font-size:13.5px; color:var(--ink-sub); padding-top:2px; }
+.rl-row p b{ color:var(--navy); }
+
+/* ── 閉ループ・写像 ── */
+.map3{ display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:10px; align-items:stretch; margin-top:8px; }
+@media(max-width:820px){ .map3{ grid-template-columns:1fr; } .map3 .m-arrow{ transform:rotate(90deg); margin:0 auto; } }
+.m-box{ background:#fff; border:1.5px solid var(--line); border-radius:13px; padding:20px; }
+.m-box.onto{ border-top:5px solid var(--green); }
+.m-box.latent{ border-top:5px solid var(--purple); background:#F7F5FC; }
+.m-box.world{ border-top:5px solid var(--navy-2); }
+.m-box h4{ font-size:14px; font-weight:900; color:var(--navy); margin-bottom:8px; }
+.m-box p{ font-size:12.5px; color:var(--ink-sub); line-height:1.75; }
+.m-arrow{ display:flex; align-items:center; color:var(--steel); font-size:22px; font-weight:900; }
+.map5-band{ margin-top:16px; background:var(--navy); color:#fff; border-radius:10px; padding:14px 20px; font-size:13px; font-weight:700; line-height:1.9; }
+.map5-band b{ color:#5BC49B; }
+.sensor-fusion{ display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:center; margin-top:24px; }
+@media(max-width:720px){ .sensor-fusion{ grid-template-columns:1fr; } }
+.sensor-list{ display:flex; flex-direction:column; gap:8px; }
+.sensor-item{ background:#fff; border:1px solid var(--line); border-radius:9px; padding:9px 14px; font-size:12.5px; color:var(--ink-sub); }
+.sensor-item b{ color:var(--navy); }
+.board-box{ background:#fff; border:2px solid var(--green); border-radius:13px; padding:20px 22px; }
+.board-box h4{ font-size:14.5px; font-weight:900; color:var(--green-dk); margin-bottom:10px; }
+.board-box p{ font-size:13px; color:var(--ink-sub); line-height:1.85; }
+.board-box p b{ color:var(--ink); }
+
+/* FEP */
+.fe-flow{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:20px 0; }
+.fe-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; width:100%; }
+.fe-box{ flex:1; min-width:200px; max-width:340px; background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:16px 18px; text-align:center; }
+.fe-box.surprise{ background:var(--orange); color:#fff; border:none; max-width:460px; }
+.fe-box.assim{ border-top:4px solid var(--green); } .fe-box.accom{ border-top:4px solid var(--purple); }
+.fe-box h5{ font-size:13.5px; font-weight:900; margin-bottom:5px; }
+.fe-box p{ font-size:12px; opacity:.94; line-height:1.7; }
+.fe-box.assim h5{ color:var(--green-dk); } .fe-box.accom h5{ color:var(--purple-dk); }
+.signal-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:18px; }
+.signal-card{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; border-top:4px solid var(--purple); }
+.signal-card h4{ font-size:13.5px; font-weight:900; color:var(--navy); margin-bottom:6px; }
+.signal-card p{ font-size:12px; color:var(--ink-sub); line-height:1.65; }
+.signal-card .ex{ margin-top:8px; font-size:11.5px; color:var(--green-dk); font-weight:700; }
+
+/* ── 8ステップ ── */
+.phase-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:34px; }
+@media(max-width:760px){ .phase-strip{ grid-template-columns:repeat(2,1fr); } }
+.phase-cell{ border-radius:11px; color:#fff; padding:14px 16px; }
+.phase-cell .ph{ font-size:11px; font-weight:900; letter-spacing:.08em; opacity:.85; }
+.phase-cell h4{ font-size:14px; font-weight:900; margin:3px 0 4px; }
+.phase-cell p{ font-size:11.5px; opacity:.92; line-height:1.6; }
+.phase-cell.p1{ background:var(--navy); }
+.phase-cell.p2{ background:var(--green); }
+.phase-cell.p3{ background:var(--orange); }
+.phase-cell.p4{ background:var(--purple); }
+
+.step-block{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:30px 30px 32px; margin-bottom:26px; box-shadow:var(--shadow-sm); scroll-margin-top:80px; border-top:6px solid var(--navy); }
+.step-block.ph2{ border-top-color:var(--green); }
+.step-block.ph3{ border-top-color:var(--orange); }
+.step-block.ph4{ border-top-color:var(--purple); }
+@media(max-width:620px){ .step-block{ padding:24px 20px 26px; } }
+.step-head{ display:flex; align-items:center; gap:16px; margin-bottom:8px; }
+.step-num{ flex-shrink:0; width:48px; height:48px; border-radius:12px; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; }
+.step-block.ph2 .step-num{ background:var(--green); }
+.step-block.ph3 .step-num{ background:var(--orange); }
+.step-block.ph4 .step-num{ background:var(--purple); }
+.step-titles h3{ font-size:19px; font-weight:900; color:var(--navy); line-height:1.3; }
+.step-titles .phase{ font-size:11.5px; font-weight:800; letter-spacing:.06em; color:var(--ink-light); }
+.step-goal{ background:var(--paper); border-left:4px solid var(--steel); border-radius:8px; padding:12px 16px; margin:14px 0 18px; font-size:14px; color:var(--ink-sub); }
+.step-goal b{ color:var(--navy); font-weight:800; }
+.step-body{ font-size:15px; color:var(--ink-sub); }
+.step-body p{ margin-bottom:12px; }
+.step-body strong{ color:var(--ink); font-weight:800; }
+.step-body .ac{ color:var(--green); font-weight:800; }
+.step-body .ac2{ color:var(--orange); font-weight:800; }
+.step-body .ac3{ color:var(--purple); font-weight:800; }
+
+.demo{ margin-top:18px; background:var(--paper); border:1px dashed var(--steel-lt); border-radius:12px; padding:18px 18px 20px; }
+.demo-label{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.1em; color:var(--orange-dk); margin-bottom:14px; }
+.demo-label::before{ content:"▶"; font-size:9px; }
+.demo p{ font-size:13.5px; color:var(--ink-sub); margin-bottom:10px; line-height:1.8; }
+.demo p:last-child{ margin-bottom:0; }
+.demo p b{ color:var(--ink); }
+.demo .kv{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.demo .kv > div{ flex:1; min-width:180px; background:#fff; border:1px solid var(--line); border-radius:9px; padding:11px 14px; font-size:12.5px; color:var(--ink-sub); line-height:1.65; }
+.demo .kv b{ display:block; font-size:11.5px; color:var(--navy); margin-bottom:3px; }
+.branch-box{ margin-top:14px; background:var(--navy); color:#fff; border-radius:10px; padding:14px 18px; font-size:13px; font-weight:700; line-height:1.8; }
+.branch-box b{ color:#F0895C; }
+
+/* トリプル図 */
+.triple-list{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.triple{ display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+.tp-node{ background:#fff; border:1.5px solid var(--line); border-radius:9px; padding:8px 16px; font-size:13px; font-weight:800; color:var(--navy); }
+.tp-edge{ position:relative; min-width:110px; text-align:center; font-size:11.5px; font-weight:800; color:var(--green-dk); padding:0 8px 14px; }
+.tp-edge::after{ content:""; position:absolute; left:6px; right:6px; bottom:8px; height:2px; background:var(--green); }
+.tp-edge::before{ content:""; position:absolute; right:6px; bottom:4.5px; border:5px solid transparent; border-left:7px solid var(--green); }
+
+/* 内省ループ */
+.loop-flow{ display:flex; flex-direction:column; gap:4px; max-width:520px; margin:6px auto 0; }
+.loop-step{ display:flex; align-items:center; gap:14px; background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:11px 16px; }
+.loop-step .ls-tag{ font-size:12.5px; font-weight:900; color:var(--navy); min-width:52px; }
+.loop-step p{ font-size:12.5px; color:var(--ink-sub); margin:0; }
+.loop-arrow-down{ text-align:center; color:var(--steel); font-size:15px; margin:0; line-height:1.2; }
+.loop-branch{ background:var(--orange); color:#fff; border-radius:10px; padding:11px 16px; font-size:12.5px; margin-top:6px; line-height:1.7; }
+.loop-branch b{ display:block; margin-bottom:2px; }
+
+/* 段階の階段 */
+.stairs{ display:flex; align-items:flex-end; gap:8px; overflow-x:auto; padding:16px 4px 8px; }
+.stair{ flex:1 0 130px; text-align:center; }
+.stair-bar{ border-radius:10px 10px 4px 4px; margin-bottom:10px; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:12px; box-shadow:var(--shadow-sm); }
+.stair-bar .sn{ font-size:11px; font-weight:900; opacity:.85; }
+.stair-bar h5{ font-size:13px; font-weight:900; margin-top:2px; }
+.stair:nth-child(1) .stair-bar{ background:var(--gray-d); height:74px; }
+.stair:nth-child(2) .stair-bar{ background:var(--steel); height:104px; }
+.stair:nth-child(3) .stair-bar{ background:var(--green); height:134px; }
+.stair:nth-child(4) .stair-bar{ background:var(--orange); height:164px; }
+.stair:nth-child(5) .stair-bar{ background:var(--purple); height:194px; }
+.stair-note{ font-size:11.5px; font-weight:700; color:var(--ink-sub); line-height:1.55; }
+
+/* ── 厨房の場面 ── */
+.scene-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:860px){ .scene-grid{ grid-template-columns:1fr; } }
+.scene-card{ background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow-sm); }
+.scene-card h4{ font-size:15px; font-weight:900; color:var(--navy); margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+.scene-card .sc-no{ flex-shrink:0; background:var(--navy); color:#fff; font-size:11px; font-weight:900; border-radius:999px; padding:3px 11px; }
+.scene-card p{ font-size:13px; color:var(--ink-sub); line-height:1.8; }
+.scene-card p b{ color:var(--ink); }
+.scene-fig{ margin:14px 0 12px; background:var(--paper); border-radius:10px; padding:10px; }
+.scene-fig svg{ width:100%; height:auto; display:block; }
+.balloon{ margin:12px 0 0; display:flex; gap:10px; flex-wrap:wrap; }
+.balloon span{ background:var(--paper); border:1.5px solid var(--steel-lt); border-radius:12px 12px 12px 3px; padding:8px 14px; font-size:12.5px; font-weight:700; color:var(--ink); }
+.balloon span.r{ border-color:var(--orange); border-radius:12px 12px 3px 12px; }
+
+/* ── 課題と対処 ── */
+.limit3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:8px; }
+@media(max-width:820px){ .limit3{ grid-template-columns:1fr; } }
+.limit-card{ background:#fff; border:1.5px solid var(--line); border-left:5px solid var(--red); border-radius:12px; padding:18px 20px; }
+.limit-card h5{ font-size:13.5px; font-weight:900; color:var(--navy); margin-bottom:6px; }
+.limit-card p{ font-size:12.5px; color:var(--ink-sub); line-height:1.7; }
+.issue-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px; }
+@media(max-width:820px){ .issue-grid{ grid-template-columns:1fr; } }
+.issue-card{ background:#fff; border:1.5px solid var(--line); border-radius:14px; overflow:hidden; }
+.issue-card .ih{ color:#fff; font-size:13.5px; font-weight:900; padding:10px 20px; }
+.issue-card.i1 .ih{ background:var(--navy); }
+.issue-card.i2 .ih{ background:var(--green); }
+.issue-card.i3 .ih{ background:var(--orange); }
+.issue-card.i4 .ih{ background:var(--purple); }
+.issue-card ul{ list-style:none; padding:14px 20px 16px; }
+.issue-card li{ font-size:13px; color:var(--ink-sub); line-height:1.7; padding:7px 0 7px 20px; position:relative; border-bottom:1px dashed var(--line); }
+.issue-card li:last-child{ border-bottom:none; }
+.issue-card li::before{ content:"▸"; position:absolute; left:2px; color:var(--steel); }
+.issue-card li b{ color:var(--ink); }
+.coping{ margin-top:26px; background:var(--navy); color:#fff; border-radius:16px; padding:28px 30px; }
+.coping h4{ font-size:16px; font-weight:900; margin-bottom:14px; color:#F0895C; }
+.coping p{ font-size:14px; line-height:1.95; color:#E6E9EF; margin-bottom:12px; }
+.coping p:last-child{ margin-bottom:0; }
+.coping b{ color:#5BC49B; }
+
+/* ── まとめ ── */
+.closing{ background:var(--navy); color:#fff; border-radius:18px; padding:40px 36px; position:relative; overflow:hidden; }
+.closing::before{ content:""; position:absolute; inset:0; opacity:.4; background:radial-gradient(circle at 88% 12%, rgba(232,98,42,.5), transparent 46%); }
+.closing-q{ position:relative; font-size:clamp(18px,2.4vw,22px); font-weight:800; line-height:1.7; margin-bottom:8px; }
+.closing-q .ac{ color:#5BC49B; }
+.closing-q .ac2{ color:#F0895C; }
+.closing-sub{ position:relative; font-size:14px; color:#C9CFDB; margin-bottom:26px; line-height:1.9; }
+.closing-cards{ position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media(max-width:720px){ .closing-cards{ grid-template-columns:1fr; } }
+.cc{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:18px 20px; }
+.cc .n{ font-size:12px; font-weight:900; color:#F0895C; margin-bottom:6px; }
+.cc h4{ font-size:15px; font-weight:800; margin-bottom:6px; }
+.cc p{ font-size:12.5px; color:#C9CFDB; line-height:1.7; }
+
+/* 参考文献 */
+.refs{ margin-top:40px; background:var(--paper); border-radius:14px; padding:24px 28px; }
+.refs h4{ font-size:14px; font-weight:900; color:var(--navy); margin-bottom:12px; }
+.refs ol{ list-style:none; }
+.refs li{ font-size:12.5px; color:var(--ink-sub); line-height:1.75; padding:4px 0 4px 44px; position:relative; }
+.refs li .rn{ position:absolute; left:0; font-weight:800; color:var(--navy-2); }
+.refs a{ color:var(--green-dk); font-weight:700; border-bottom:1px solid rgba(30,142,107,.35); }
+
+/* ── フッター ── */
+.site-footer{ background:var(--navy); color:#C9CFDB; padding:46px 24px 40px; text-align:center; }
+.footer-back{ display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:12px 24px; font-size:14px; font-weight:700; color:#fff; transition:background .2s, transform .15s; margin:0 8px 24px; }
+.footer-back:hover{ background:rgba(232,98,42,.92); border-color:transparent; transform:translateY(-2px); }
+.footer-meta{ font-size:13px; line-height:1.9; }
+.footer-meta strong{ color:#fff; }
+.footer-copy{ font-size:11px; opacity:.55; margin-top:18px; }
+
+.page-top{ position:fixed; right:22px; bottom:22px; width:46px; height:46px; background:var(--orange); color:#fff; border:none; border-radius:50%; font-size:20px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity .25s, transform .15s; box-shadow:0 6px 18px rgba(232,98,42,.4); z-index:90; }
+.page-top.show{ opacity:1; pointer-events:auto; }
+.page-top:hover{ transform:translateY(-3px); }
+</style>
+</head>
+<body>
+
+<!-- アイコンスプライト -->
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="ic-robot" viewBox="0 0 48 48"><rect x="12" y="14" width="24" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="19" cy="22" r="2.6" fill="currentColor"/><circle cx="29" cy="22" r="2.6" fill="currentColor"/><line x1="24" y1="14" x2="24" y2="8" stroke="currentColor" stroke-width="2.4"/><circle cx="24" cy="6.5" r="2.2" fill="currentColor"/><path d="M12 20H7M36 20h5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M17 38h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+<symbol id="ic-target" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="24" cy="24" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="24" cy="24" r="2.6" fill="currentColor"/></symbol>
+<symbol id="ic-frame" viewBox="0 0 48 48"><rect x="7" y="7" width="15" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="26" y="7" width="15" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="7" y="26" width="15" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="26" y="26" width="15" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/></symbol>
+<symbol id="ic-layers" viewBox="0 0 48 48"><path d="M24 6l18 9-18 9L6 15z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 24l18 9 18-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 33l18 9 18-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+<symbol id="ic-clock" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M24 13v11l8 5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ic-loop" viewBox="0 0 48 48"><path d="M38 24a14 14 0 1 1-4.1-9.9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M34 6v9h-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ic-steps" viewBox="0 0 48 48"><path d="M6 40h9v-8h9v-8h9v-8h9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M37 10l5 6-7 2z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ic-kitchen" viewBox="0 0 48 48"><path d="M8 20h32v20H8z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="17" cy="30" r="4.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="31" cy="30" r="4.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 20v-6M24 20v-9M34 20v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="ic-alert" viewBox="0 0 48 48"><path d="M24 7L44 41H4z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><line x1="24" y1="19" x2="24" y2="29" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><circle cx="24" cy="35" r="2" fill="currentColor"/></symbol>
+<symbol id="ic-flag" viewBox="0 0 48 48"><line x1="12" y1="6" x2="12" y2="42" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M12 9h24l-6 7 6 7H12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+<symbol id="ic-people" viewBox="0 0 48 48"><circle cx="17" cy="16" r="6" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M6 40c0-7 5-11 11-11s11 4 11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="18" r="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M31 28c6 0 11 4 11 10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="ic-conclusion" viewBox="0 0 48 48"><rect x="6" y="16" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M20 24h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M26 19l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="14" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="42" cy="24" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="36" cy="34" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M36 17v14M39 15l3 7-3 7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+</defs>
+</svg>
+
+<!-- コミュニティ トップバー -->
+<div class="community-bar">
+  <a href="/">
+    <img src="/assets/images/ParadigmIcon.png" alt="知働化コミュニティ">
+    ← 知働化コミュニティ トップへ（chidouka-lab.com）
+  </a>
+</div>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark"><span>知<br>働</span></span>
+      <span class="brand-text">
+        <span class="brand-main">Robotics Architecture</span>
+        <span class="brand-sub">ロボティクス・アーキテクチャ構築の技法 教材</span>
+      </span>
+    </a>
+    <nav class="nav-links">
+      <a href="#why">なぜ技法か</a>
+      <a href="#case">料理ロボット</a>
+      <a href="#frames">6フレーム</a>
+      <a href="#arch">アーキテクチャ</a>
+      <a href="#steps">8ステップ</a>
+      <a href="#scenes">厨房の場面</a>
+      <a href="#issues">課題と対処</a>
+      <a href="#closing">まとめ</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div>
+      <span class="hero-eyebrow">学習教材 Part 3：ロボティクス・アーキテクチャ</span>
+      <h1 class="hero-title">ロボティクス・<br><span class="ac">アーキテクチャ</span>構築の<span class="ac2">技法</span></h1>
+      <p class="hero-sub">
+        AI活用と〈問題フレーム〉に基づく、知働化ロボットの設計技法。意味の4層×時間の3層×予測の閉ループからなるアーキテクチャと、8ステップのデザイン技法を、定食屋の〈料理ロボット〉を事例に一歩ずつ学びます。
+      </p>
+      <div class="hero-note">
+        <b>この教材の位置づけ</b>：論文『ロボティクス・アーキテクチャの構想 — AI活用と問題フレームに基づく知働化ロボットの設計技法』（大槻 繁, 2026, 第3改訂版）に基づく教材サイトです。前作 <a href="/ExcelToSystem/">Part 1「脱・Excel依存のロードマップ」</a> と <a href="/ExcelToSystem2/">Part 2「知」のアーキテクチャ</a> で学んだ〈段階的進化〉と〈意味をあつかう層の分離〉が、本教材では物理的身体をもつロボットへと展開されます。
+      </div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#steps">8ステップのデザイン技法を見る →</a>
+        <a class="btn btn-ghost" href="#why">まず背景から読む</a>
+      </div>
+    </div>
+    <div class="hero-robot" aria-hidden="true">
+      <svg viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="126" y="8" width="86" height="30" rx="8" fill="none" stroke="#F0895C" stroke-width="2.5"/>
+        <text x="169" y="28" text-anchor="middle" font-size="13" font-weight="bold" fill="#F0895C">本日も営業中!</text>
+        <line x1="105" y1="52" x2="105" y2="66" stroke="#E8622A" stroke-width="4"/>
+        <circle cx="105" cy="48" r="7" fill="#E8622A"/>
+        <rect x="65" y="66" width="80" height="58" rx="10" fill="#8A99B5"/>
+        <circle cx="90" cy="94" r="10" fill="#fff"/><circle cx="120" cy="94" r="10" fill="#fff"/>
+        <circle cx="90" cy="94" r="4.5" fill="#16233F"/><circle cx="120" cy="94" r="4.5" fill="#16233F"/>
+        <rect x="52" y="132" width="106" height="76" rx="12" fill="#6B7B9E"/>
+        <circle cx="105" cy="168" r="12" fill="#5BC49B"/>
+        <path d="M52 148 L24 128" stroke="#8A99B5" stroke-width="11" stroke-linecap="round"/>
+        <path d="M158 148 L186 128" stroke="#8A99B5" stroke-width="11" stroke-linecap="round"/>
+        <ellipse cx="105" cy="226" rx="40" ry="12" fill="#16233F"/>
+        <circle cx="88" cy="246" r="5" fill="#E8622A"/><circle cx="105" cy="248" r="5" fill="#F0A97A"/><circle cx="122" cy="246" r="5" fill="#E8622A"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- なぜ技法か -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-target"></use></svg></div>
+      <div>
+        <span class="sec-label navy">Why Architecture ?</span>
+        <h2 class="sec-title">機構や制御コードの手前には「何のために、誰のために動くのか」がある</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      ITシステムの開発プロセスは、ウォーターフォールモデル、スパイラルモデル、アジャイルプロセスと変遷してきましたが、一貫して言えるのは、<strong>開発の重視すべき点がシステムそのものから遠ざかり、利用者の世界すなわち〈問題領域〉へと移ってきた</strong>ということです。ロボットシステムにおいても事情は同じであり、機構や制御コードの手前には「何のために、誰のために動くのか」という問題領域が広がっています。
+    </p>
+    <p class="lead fade-in">
+      その一方で、生成AIの実用化により、設計・実装といった「下流」の工程は急速に自動化されつつあります。人間の役割は問題領域の分析と〈意図〉の付与という「上流」に集中していきます。この状況でロボットを設計するには、次の三つが必要になるということになります。
+    </p>
+    <div class="prob-grid">
+      <div class="prob-card fade-in">
+        <div class="icon-badge c-orange"><svg class="icon"><use href="#ic-frame"></use></svg></div>
+        <h4>① AI活用と問題フレームの関係を明確にする</h4>
+        <p>AIの〈フレーム問題〉——関連性のない余分な情報まで分析対象にしてしまい収拾がつかなくなる問題——への処方箋として、「意図で限定したビュー＝問題フレーム」を位置づけます。</p>
+      </div>
+      <div class="prob-card g fade-in">
+        <div class="icon-badge c-green"><svg class="icon"><use href="#ic-layers"></use></svg></div>
+        <h4>② AIと物理的身体を統合するアーキテクチャを定める</h4>
+        <p>意味をあつかう4層と、時間スケールによる3層制御、それらを貫く予測・観察・行為の閉ループ——後から変更できない全体設計の分岐点を、最初期に固定します。</p>
+      </div>
+      <div class="prob-card p fade-in">
+        <div class="icon-badge c-purple"><svg class="icon"><use href="#ic-steps"></use></svg></div>
+        <h4>③ 設計の手順を再利用可能な技法として構成する</h4>
+        <p>意図の定義から段階的進化に至る〈8ステップのデザイン技法〉として構成し、各ステップにおける問題フレーム・AI活用・人間の役割の対応を示します。</p>
+      </div>
+    </div>
+    <p class="lead fade-in" style="margin-top:26px;">
+      ここで考えなくてはならないことは、ロボットはまさに実世界に置かれる存在であり、フレーム問題を正面から受けるということです。処方箋は、何でもかんでも考察対象とするのではなく、<strong>対応したい意図を考慮した限定的な見方、すなわち〈フレーム〉を採ること</strong>です。ドメイン分析とは、この観点から言えば、意図に応じてフレームを選び、実世界を射影する営みにほかなりません。
+    </p>
+    <div class="prob-lead-box fade-in">
+      製造業の現場システム化の検討（Part 1・Part 2）で得られた経験則——<b>一足飛びを避け、段階を踏んで進化させる</b>——は、ロボットの自律化にもそのまま適用できます。重要なのは、データベースに蓄積された「データ」はAIにとって「意味」を持たないという点であり、AIを駆動させるには、<span class="o">データの背後にある存在の構造と意味を明示するアーキテクチャ</span>が不可欠なのです。
+    </div>
+  </div>
+</section>
+
+<!-- 料理ロボット事例 -->
+<section class="section paper" id="case">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-orange"><svg class="icon"><use href="#ic-kitchen"></use></svg></div>
+      <div>
+        <span class="sec-label orange">Case Study</span>
+        <h2 class="sec-title">本教材の主役：定食屋の〈料理ロボット〉</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      技法は抽象論だけでは身につきません。本教材では、<strong>町の定食屋に調理補助ロボットを導入する</strong>という事例を最初から最後まで一貫して使い、各ステップを具体的に追いかけます。まず、この事例の出発点を確認しておくことにしましょう。
+    </p>
+    <div class="case-grid fade-in">
+      <div class="case-card trap">
+        <h4>罠：万能料理ロボット</h4>
+        <p>「何でも作れる」を目指した瞬間、考慮すべきことが無限に膨らみます。これは<b>AIのフレーム問題を自ら招き入れる行為</b>です。無論、それは設計の失敗として最初に断たなければなりません。</p>
+      </div>
+      <div class="case-card mission">
+        <h4>定食屋の主人の困りごと</h4>
+        <p>「昼のピーク時、単純調理に手を取られ、接客と味の仕上げに集中できない」——ここから導かれるミッションは、<b>定番メニューの下ごしらえと加熱調理を代行し、提供時間を短縮する</b>こと。〈意図〉で対象を限定するのです。</p>
+      </div>
+    </div>
+    <div class="mission-3col fade-in">
+      <div class="mcol navy">
+        <h5>やらないことリスト</h5>
+        <p>新メニュー考案・盛り付けの美観・刺身は扱わない。これは最重要の成果物です。</p>
+      </div>
+      <div class="mcol green">
+        <h5>価値基準</h5>
+        <p>提供時間・味の安定・食材廃棄の少なさ。後の評価ルーブリックの源泉になります。</p>
+      </div>
+      <div class="mcol orange">
+        <h5>安全要件</h5>
+        <p>人が近づいたら停止。刃物は専用区画から出さない。安全は最初に決めます。</p>
+      </div>
+    </div>
+    <div class="prob-lead-box fade-in" style="margin-top:22px;">
+      ロボットの存在意義は「料理をすること」ではなく、<b>「主人が人にしかできない仕事に集中できるようにすること」</b>です。この一文が、以降のすべての設計判断の原点になります。
+    </div>
+  </div>
+</section>
+
+<!-- 知働化AIフレーム -->
+<section class="section" id="frames">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-frame"></use></svg></div>
+      <div>
+        <span class="sec-label green">Problem Frames</span>
+        <h2 class="sec-title">〈知働化AIフレーム〉——「料理」を一枚岩にしない</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      Jacksonは、ソフトウェア開発問題を分析・構造化する枠組みとして〈問題フレーム〉を提案しました [Jackson2001]。実世界とマシン（計算機）の関係に着目し、(1)動作制御、(2)操作命令、(3)情報表示、(4)単純編集、(5)変換という基本フレームを定め、これらの組み合わせによって複雑な問題領域を定式化できるとしたのです。フレームとは、対応したい〈意図〉を考慮して対象を限定的に見るためのビュー（見方）です。
+    </p>
+    <p class="lead fade-in">
+      生成AIの時代には、分析の型そのものが「実行可能（Executable）」になります。筆者はJacksonの5フレームを拡張し、<strong>6つの実行可能フレームからなる〈知働化AIフレーム〉</strong>を提案しています。料理ロボットの「料理」という仕事も、この6つのフレームで分解すると、性質の違う問題の集まりであることが見えてきます。
+    </p>
+    <div class="frame-grid fade-in">
+      <div class="frame-card a">
+        <div class="fc-head">（A）制御フレーム</div>
+        <div class="fc-body">センサー・アクチュエータ・計算からなる制御モデル。Jacksonの(1)(2)(3)を包含します。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>火加減の制御、アームによる食材操作、鍋振り。センサーで観測しアクチュエータで働きかけます。</div>
+      </div>
+      <div class="frame-card b">
+        <div class="fc-head">（B）模擬フレーム</div>
+        <div class="fc-body">実世界をシミュレートし、動的な変化を並行プロセスモデルでとらえます（新設）。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>加熱による状態変化（生→半熟→焦げ）の予測モデル、昼の混雑予測。</div>
+      </div>
+      <div class="frame-card c">
+        <div class="fc-head">（C）算法フレーム</div>
+        <div class="fc-body">定式化された問題をアルゴリズムとして解きます（新設）。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>限られたコンロと時間で複数の注文を最短で仕上げる調理スケジューリング。</div>
+      </div>
+      <div class="frame-card d">
+        <div class="fc-head">（D）編集フレーム</div>
+        <div class="fc-body">システム内で文書やコードを編集します。Jacksonの(4)単純編集に対応します。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>レシピ・作業手順書の作成と修正。</div>
+      </div>
+      <div class="frame-card e">
+        <div class="fc-head">（E）変換フレーム</div>
+        <div class="fc-body">入力を規則に従い出力へ変換します。Jacksonの(5)変換に対応します。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>客の注文→調理指示への変換。手書きレシピ→構造化データへの変換。</div>
+      </div>
+      <div class="frame-card f">
+        <div class="fc-head">（F）メタフレーム</div>
+        <div class="fc-body">システムの状況を見てコード自体を変換します（新設）。</div>
+        <div class="fc-ex"><b>料理ロボットでは</b>失敗履歴を見て、レシピや手順そのものを改訂します。</div>
+      </div>
+    </div>
+    <div class="frame-band fade-in">
+      <b>この分解が後工程の配置図になります</b>：（A）→反射・実行層、（B）（C）→世界モデル・熟慮層、（D）（E）→知識構築、（F）→学習へと流れ込みます。複数のフレームによる射影の中心には対象が漠然とあるのみであり、フレーム間をつなぐのは共通の〈セマンティクス〉（家族的類似性）です。
+    </div>
+    <div class="tbl-wrap fade-in">
+      <table class="data">
+        <caption>表：問題フレームの系譜とロボットでの例</caption>
+        <thead><tr><th>ジャクソンの問題フレーム</th><th>知働化AIフレーム（実行可能フレーム）</th><th>ロボットでの例</th></tr></thead>
+        <tbody>
+          <tr><td>(1) 動作制御</td><td>（A）制御フレーム（(1)(2)(3)を包含）</td><td>姿勢制御・モータ制御・障害物回避</td></tr>
+          <tr><td>(2) 操作命令</td><td>（A）制御フレームの一部</td><td>遠隔操縦・音声/ジェスチャ指示</td></tr>
+          <tr><td>(3) 情報表示</td><td>（A）制御フレームの一部</td><td>監視・テレメトリ・状態可視化</td></tr>
+          <tr><td>—（新設）</td><td>（B）模擬フレーム</td><td>シミュレータ・デジタルツイン</td></tr>
+          <tr><td>—（新設）</td><td>（C）算法フレーム</td><td>経路計画・動作最適化</td></tr>
+          <tr><td>(4) 単純編集</td><td>（D）編集フレーム</td><td>タスク定義・設定・コード編集</td></tr>
+          <tr><td>(5) 変換</td><td>（E）変換フレーム</td><td>ログ処理・地図/データ変換</td></tr>
+          <tr><td>—（新設）</td><td>（F）メタフレーム</td><td>自己修正・スキル自動獲得</td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">状況に応じて生成AIとのやりとりのプロンプトを蓄積していくことにより、分析自体が再利用可能な資産となっていきます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 三者関係 -->
+<section class="section paper" id="sanmi">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-people"></use></svg></div>
+      <div>
+        <span class="sec-label navy">Human × Frame × AI</span>
+        <h2 class="sec-title">抽象山モデル——人間の価値は「上り」側に移っていく</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      実世界からシステムに至る開発の過程は、抽象度を縦軸にとると山型に描けます（〈抽象山モデル〉）。左の斜面は実世界から定式化（モデル・フレーム）へと抽象度を上げる<strong>「上り」</strong>であり、問題分析・要求定義に相当します。右の斜面は定式化から実装へと具体化する<strong>「下り」</strong>であり、設計・実装に相当します。
+    </p>
+    <div class="mount-svg fade-in">
+      <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="抽象山モデル：左斜面が問題分析の上り、右斜面が設計・実装の下り">
+        <polygon points="60,200 320,50 580,200" fill="#EAEDF3" stroke="#AEB9CE" stroke-width="2"/>
+        <text x="320" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="#16233F">定式化（モデル・フレーム）</text>
+        <text x="150" y="130" text-anchor="middle" font-size="13" font-weight="bold" fill="#16233F" transform="rotate(-30 150 130)">上り＝問題分析・要求定義</text>
+        <text x="152" y="152" text-anchor="middle" font-size="11.5" fill="#C0392B" transform="rotate(-30 152 152)">人間特有の思考——自動化は困難</text>
+        <text x="492" y="130" text-anchor="middle" font-size="13" font-weight="bold" fill="#146B50" transform="rotate(30 492 130)">下り＝設計・実装</text>
+        <text x="490" y="152" text-anchor="middle" font-size="11.5" fill="#1E8E6B" transform="rotate(30 490 152)">生成AIでほぼ自動化の水準へ</text>
+        <text x="70" y="222" font-size="12" fill="#4E5766">実世界（問題領域）</text>
+        <text x="470" y="222" font-size="12" fill="#4E5766">実装（ロボットシステム）</text>
+      </svg>
+    </div>
+    <p class="lead fade-in">
+      生成AIにより、下りはほぼ自動化と言える水準に達しつつあります。その一方で、上りは、抽象度を上げ〈意図〉を込める人間特有の思考であり、自動化は困難です。〈問題フレーム〉は、この上りにおいて人間の思考を支える型であり、AIは対話による支援者として働きます。つまり、<strong>人間の価値は上り側、すなわち問題領域に移っていく</strong>ということになります。
+    </p>
+    <div class="role3 fade-in">
+      <div class="role-card h">
+        <div class="icon-badge sm c-navy"><svg class="icon"><use href="#ic-people"></use></svg></div>
+        <h5>人間＝意図の主体</h5>
+        <p>スコープを限定し、要求・価値・安全の判断を下し、AIの成果物を検証します。抽出された知識の採否をはじめ、意味の正しさに基づく判断は一貫して人間が担います。</p>
+      </div>
+      <div class="role-card f">
+        <div class="icon-badge sm c-gray"><svg class="icon"><use href="#ic-frame"></use></svg></div>
+        <h5>問題フレーム＝思考の型</h5>
+        <p>問題領域を分解する定型のビューとして関心を限定し、AIのフレーム問題を回避するとともに、人間とAIの共通言語となります。</p>
+      </div>
+      <div class="role-card a">
+        <div class="icon-badge sm c-green"><svg class="icon"><use href="#ic-robot"></use></svg></div>
+        <h5>AI＝実行と増幅の担い手</h5>
+        <p>知識抽出の候補生成、LLMによる解釈と文脈統合、計画・ツール実行・内省の支援、コード生成によって人間の作業を加速します。</p>
+      </div>
+    </div>
+    <div class="prob-lead-box fade-in" style="margin-top:22px;">
+      三者は代替関係ではなく<b>役割分担の関係</b>にあります。すなわち、ドメイン分析とは、<b>人間の意図でフレームを選び、フレームで実世界を射影し、AIで分析と知識化を加速する営み</b>である、ということになります。
+    </div>
+  </div>
+</section>
+
+<!-- アーキテクチャ：意味の4層 -->
+<section class="section" id="arch">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-layers"></use></svg></div>
+      <div>
+        <span class="sec-label green">Architecture 1/3</span>
+        <h2 class="sec-title">意味をあつかう4層——AI指向アーキテクチャ</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      AIを中核に据えるシステムは、意味をあつかう層の分離と連結によって構成します。この4層は、Part 2「知」のアーキテクチャで学んだ三層構造（オントロジー・セマンティクス・エージェント）にデータ層を加えたものであり、LLM単独の弱点（一貫性の欠如・幻覚）を下の〈オントロジー〉が補い、上の〈エージェント〉が行為に変える、いわゆる<strong>ニューロシンボリック統合</strong>の構成です。
+    </p>
+    <p class="arch-flow-note fade-in">下から上へは<b>統合・知識化（Integration）</b>、上から下へは<b>根拠づけ（Grounding）</b>の流れが通ります。</p>
+    <div class="layer-stack fade-in">
+      <div class="layer agent">
+        <div><h4>エージェント層 — 行為主体</h4><p>計画・ツール使用・記憶・内省によって「知覚→推論→行為」のループを回す動的な動力。料理ロボットでは、注文を工程に分解し器具を使う「料理長の頭」に相当します。</p></div>
+      </div>
+      <div class="layer semantic">
+        <div><h4>セマンティクス層 — 柔軟な「解釈」</h4><p>LLM・RAG・エンベディングによる解釈のはたらきを担い、記号と対象を結びます。「卵は柔らかめにね」という自然言語を、調理条件へと解釈します。</p></div>
+      </div>
+      <div class="layer ontology">
+        <div><h4>オントロジー層 — 静的な「意味の骨格」</h4><p>知識グラフ・概念・制約からなる骨格であり、AIの幻覚（ハルシネーション）を防ぐ基盤。「味醂は酒＋砂糖で代替可」といった厨房の知識がここに住みます。</p></div>
+      </div>
+      <div class="layer data">
+        <div><h4>データ層 — 源泉</h4><p>文書・信号・センサーデータなどの源泉。レシピ本、口伝のメモ、カメラや温度センサーの生データです。</p></div>
+      </div>
+    </div>
+    <div class="pitfall fade-in">
+      <b>変更不能な分岐点（層間カプセル化の設計原則）</b>：知識グラフをはじめとする知識の物理表現は、オントロジー層・セマンティクス層の内部実装として隠蔽（カプセル化）し、エージェントには直接公開しません。エージェントがアクセスできるのは、セマンティクス層が提供する安定した<b>照会・検証インタフェース</b>（何を尋ねられ、何が返るかの契約）のみです。エージェントに知識グラフを直接扱わせる構成は研究例には多いものの、小規模なドメインでしか成立しません。単一ノード構成で扱えるのはおおむね10万ノード程度までであり、現実の業務規模（数千万〜数億ノード）ではベクトル索引（RAG）等との併用が必須になります。4層の分離は概念整理であると同時に、<b>変更容易性とスケーラビリティのための工学的境界</b>なのです。この設計判断は後からの変更が困難な全体設計の分岐点であるため、最初期に固定します。
+    </div>
+
+    <div class="tbl-wrap fade-in">
+      <table class="data">
+        <caption>表：知覚・認識のリファレンスモデル（人間の認識段階とAI技術の対称性）</caption>
+        <thead><tr><th>段階</th><th>人間の認識</th><th>対応するAI技術</th><th>ロボットでの実装</th></tr></thead>
+        <tbody>
+          <tr><td>L0–L1</td><td>刺激・感覚</td><td>センサー生データ・信号処理</td><td>カメラ / LiDAR / IMU / 触覚</td></tr>
+          <tr><td>L2–L3</td><td>知覚・認識（パターン化）</td><td>パターン認識・CNN・エンベディング</td><td>物体検出・自己位置推定（SLAM）</td></tr>
+          <tr><td>L4</td><td>概念（抽象化）</td><td>〈オントロジー〉知識グラフ</td><td>世界モデル（意味づけされた地図）</td></tr>
+          <tr><td>L5</td><td>意味（文脈）</td><td>〈セマンティクス〉LLM</td><td>状況理解・自然言語指示の解釈</td></tr>
+          <tr><td>L6</td><td>判断（推論）</td><td>〈エージェント〉推論・プランニング</td><td>タスク計画・経路計画</td></tr>
+          <tr><td>L7</td><td>行為（行動）</td><td>ツール実行</td><td>アクチュエータ制御</td></tr>
+          <tr><td>横断</td><td>メタ認知（自己の監視）</td><td>内省・自己評価ループ</td><td>異常検知・自己診断・安全停止</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="arch-band fade-in">
+      カントの「直観なき概念は空虚であり、概念なき直観は盲目である」という言葉になぞらえれば、<b>オントロジー（概念）なきLLM（直観）は暴走します</b>。閉世界・安全側は規則と決定論、開世界・解釈側はLLM、という使い分けが原則です。
+    </div>
+  </div>
+</section>
+
+<!-- 時間の3層制御 -->
+<section class="section paper" id="time">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-orange"><svg class="icon"><use href="#ic-clock"></use></svg></div>
+      <div>
+        <span class="sec-label orange">Architecture 2/3</span>
+        <h2 class="sec-title">時間スケールによる3層制御——献立を考えている間に鍋を焦がさない</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      物理世界（身体）への実装では、意味の4層に加えて<strong>時間スケールによる分離</strong>が必須となります。分離の理由は明快で、全部を一緒にすると、遅い経路計画のために速い姿勢制御が間に合わず、ロボットが転ぶからです。厨房で言えば、段取りを考えている数秒の間に、鍋が焦げるのです。下の層ほど速く、単純に動きます。
+    </p>
+    <div class="time-stack fade-in">
+      <div class="time-layer slow">
+        <span class="time-tag">秒〜分</span>
+        <div><h4>熟慮層</h4><p>目標推論・経路計画・地図作成といった「遅い思考」を担います。注文群から調理順序を計画し、在庫から作れる品を判断する——エージェント（LLM）が住む階です。エージェント層とオントロジー層に対応します。</p></div>
+      </div>
+      <div class="time-sep">▲▼</div>
+      <div class="time-layer mid">
+        <span class="time-tag">秒</span>
+        <div><h4>実行層</h4><p>タスク切替・行動調停を担う中間層です。「炒めの途中で揚げ物のタイマーが鳴った」——そのような工程の切替・調停を行い、停止条件や安全監視もここが受け持ちます。</p></div>
+      </div>
+      <div class="time-sep">▲▼</div>
+      <div class="time-layer fast">
+        <span class="time-tag">ミリ秒</span>
+        <div><h4>反射層</h4><p>リアルタイム制御・危険回避を担い、センサーから計算を経てアクチュエータへ直結するループです。手が加熱区画に入ったら即・全停止。吹きこぼれで火を絞る。確率的な解釈を挟まない<strong>決定論的ルール</strong>で作ります。</p></div>
+      </div>
+    </div>
+    <div class="why-box fade-in">
+      <b>安全をAIの賢さに依存させない</b>——反射層の停止命令は、どんな賢い計画よりも常に最優先です。これもまた、後から変えられない全体設計の分岐点です。この3層分離（反射層＝決定論的制御、熟慮層＝確率的解釈）は、前節の「閉世界は規則、開世界はLLM」という原則と対応しています。
+    </div>
+    <div class="reflex-line fade-in">
+      <div class="rl-row"><span class="rl-time">0ms</span><p><b>カメラが手を検知</b>——世界モデルの最優先更新。「人の手の位置」は他のどの情報よりも速く更新します。</p></div>
+      <div class="rl-row"><span class="rl-time">数ms</span><p><b>反射層が停止を発動</b>——熟慮層の計画より常に優先します。</p></div>
+      <div class="rl-row"><span class="rl-time">同時</span><p><b>火を絞り、アームを安全姿勢へ</b>移します。</p></div>
+      <div class="rl-row gray"><span class="rl-time">その後</span><p><b>実行層が中断を記録</b>し、再開手順を調停します。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 統合像：閉ループ -->
+<section class="section" id="loop">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-purple"><svg class="icon"><use href="#ic-loop"></use></svg></div>
+      <div>
+        <span class="sec-label purple">Architecture 3/3</span>
+        <h2 class="sec-title">統合像：フラクタルな閉ループと〈世界モデル〉</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      全体は「予測→観察→行為」の閉ループとして統合されます。実世界からの多様な入力（カメラ・LiDAR・IMU）は単独では不確実でノイズを含むため、カルマンフィルタ等により確からしさで融合（<strong>センサーフュージョン</strong>）され、同一座標系・同一時間軸で一元管理された<strong>「共有黒板」としての〈世界モデル〉</strong>に書き込まれます。熟慮層のエージェントは、セマンティクス層の照会・検証インタフェースを通じて世界モデルを参照し、計画を立てます。実行層が調停し、反射層が即応制御し、アクチュエータが実世界に作用する。その結果を再びセンサーが観測するのです。
+    </p>
+    <div class="sensor-fusion fade-in">
+      <div class="sensor-list">
+        <div class="sensor-item"><b>カメラ</b>：食材の色・焦げ・人の位置</div>
+        <div class="sensor-item"><b>温度センサー</b>：鍋・油の温度</div>
+        <div class="sensor-item"><b>重量センサー</b>：まな板・鍋の中身</div>
+        <div class="sensor-item"><b>マイク</b>：炒め音・沸騰音</div>
+      </div>
+      <div class="board-box">
+        <h4>共有黒板（世界モデル）＝厨房の「今」</h4>
+        <p>
+          共通座標系・共通時間軸で一元管理し、<b>確信度つき状態推定</b>（「フライパン185℃ ±5℃」）を保持します。
+          物理世界の名寄せは<b>トラッキング</b>——切られてバラバラになっても「同じ玉ねぎ」として同一性を維持します。
+          そして<b>部分予測</b>——卵焼き中は冷蔵庫の全予測は不要であり、いまの視点に関係する因子だけを取り出して予測します。
+        </p>
+      </div>
+    </div>
+    <p class="lead fade-in" style="margin-top:26px;">
+      ここで世界モデルは、<strong>オントロジー層が身体をもった形態</strong>と位置づけられます。この対応は比喩ではなく、構造と構築プロセスの同型性を指しています。文書世界におけるオントロジーの型と制約（TBox）には物体クラス・空間関係・物理制約が、インスタンス（ABox）には検出された物体・自己・他者の状態推定値が、それぞれ対応します。ただし両者は表現形式が異なる（記号的な知識と連続的な状態推定）ため、導出は中間表現としての<strong>〈潜在空間〉</strong>を介して行うことを原則とします。
+    </p>
+    <div class="map3 fade-in">
+      <div class="m-box onto">
+        <h4>オントロジー（厨房の一般知識）</h4>
+        <p>概念（焦げ・加熱）、属性と制約（「豚肉は75℃以上」）、因果関係（「強火は昇温を速める」）、観測器の定義（「焦げ色はカメラ」）。</p>
+      </div>
+      <div class="m-arrow">→</div>
+      <div class="m-box latent">
+        <h4>潜在空間（意味の翻訳層）</h4>
+        <p>記号の知識と連続なセンサー世界をつなぐ、圧縮された特徴の空間。色・水分・温度に対応する因子の軸を持ちます。</p>
+      </div>
+      <div class="m-arrow">→</div>
+      <div class="m-box world">
+        <h4>世界モデル（厨房の「今」）</h4>
+        <p>エンベディング、遷移関数（鍋の状態変化の法則）、観測モデル（真の状態→センサー像）、事前分布（prior）。</p>
+      </div>
+    </div>
+    <div class="map5-band fade-in">
+      <b>潜在空間を介した5つの写像</b>：（1）意味的な対応関係の導出　（2）属性と制約の埋め込み　（3）遷移関数の動的構成　（4）観測モデルへの写像　（5）推論結果の逆反映——「この鍋は予想より早く焦げる」を履歴に記録し、priorを動的に更新します。この構成により、オントロジーの状態に合わせて世界モデルが動的に作られ、人が観測結果に合わせて予測モデルを組み替えることが機構として再現されます。
+    </div>
+    <p class="lead fade-in" style="margin-top:26px;">
+      この「予測→観察→行為」の輪を単一の目的に束ねるのが<strong>〈自由エネルギー原理〉（FEP）</strong>です [Friston2010]。自由エネルギー原理は「適応的な系は驚き（サプライズ）を最小化するように振る舞う」と要約され、自由エネルギーFは近似的に「複雑性−正確性」と表されます。Fの最小化とは、観測をよく説明しつつ信念の変更を最小限に抑えることであり（オッカムの剃刀）、知識グラフの無用な肥大化を防ぐブレーキとして働きます。重要なのは、この閉ループが時間スケールを変えて何層も入れ子（フラクタル）に回っているという描像であり、これが本アーキテクチャの中核的な統一原理です。
+    </p>
+    <div class="fe-flow fade-in">
+      <div class="fe-row">
+        <div class="fe-box surprise"><h5>驚き＝予測誤差</h5><p>「レシピ通りに炒めたのに、予想より焦げ色が濃い」</p></div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-box assim"><h5>誤差小 → 同化</h5><p>写像(5)priorの動的更新。モデルは保ったまま「この鍋はやや強め」という経験値を蓄積。日々自動で回ります。</p></div>
+        <div class="fe-box accom"><h5>誤差大・持続 → 調節</h5><p>写像(3)遷移関数の再構成。「中央だけ熱い」という法則レベルの改修。改修要求を層内管理機能へ出し、採否は人間が決めます。</p></div>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      アーキテクチャへの評価の実装は、次の5つの信号に集約されます。料理ロボットの厨房のことばで確認しておくことにしましょう。
+    </p>
+    <div class="signal-grid fade-in">
+      <div class="signal-card"><h4>① 驚きを引き金に</h4><p>驚き（予測誤差）を調節の引き金とします。</p><div class="ex">焦げ予測が外れ続ける箇所こそ改訂のサイン</div></div>
+      <div class="signal-card"><h4>② 不確実なら動くな</h4><p>信念の不確実性が高い場合は行動せず情報を集めます。</p><div class="ex">見たことのない食材はまず人に聞く</div></div>
+      <div class="signal-card"><h4>③ 情報利得で探索</h4><p>期待情報利得で探索を方向づけます。</p><div class="ex">新食材は学びが最大になるよう少量で試す</div></div>
+      <div class="signal-card"><h4>④ 複雑性で正則化</h4><p>複雑性−正確性で改訂を正則化します。</p><div class="ex">例外だらけのレシピ知識にしない</div></div>
+      <div class="signal-card"><h4>⑤ 学習進度で配分</h4><p>学習進度で努力を配分します。</p><div class="ex">安定した炒飯より、まだ下手な卵焼きへ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8ステップ -->
+<section class="section paper" id="steps">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-orange"><svg class="icon"><use href="#ic-steps"></use></svg></div>
+      <div>
+        <span class="sec-label orange">Design Method</span>
+        <h2 class="sec-title">ロボット・デザイン技法：8ステップ</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      以上の整理に基づき、ロボットをデザインする手順を<strong>8ステップ</strong>として構成します。全体は、Ⅰ.分析（人間主導）、Ⅱ.知識化（AI協働）、Ⅲ.行為の実装、Ⅳ.進化（運用）の4フェーズからなります。どのステップでも構図は同一であり、<strong>人間が意図と基準を与え、フレームが思考の型を与え、AIが実行を担います</strong>。また、この手順は一方通行ではなく、ステップ7〜8で観測される予測誤差が、ステップ1〜2の意図の見直しへと還流します。
+    </p>
+    <div class="phase-strip fade-in">
+      <div class="phase-cell p1"><span class="ph">PHASE Ⅰ</span><h4>分析（人間主導）</h4><p>Step 1 意図・ミッション定義<br>Step 2 問題フレーム分析</p></div>
+      <div class="phase-cell p2"><span class="ph">PHASE Ⅱ</span><h4>知識化（AI協働）</h4><p>Step 3 オントロジー構築<br>Step 4 世界モデル設計</p></div>
+      <div class="phase-cell p3"><span class="ph">PHASE Ⅲ</span><h4>行為の実装</h4><p>Step 5 3層制御の設計<br>Step 6 エージェント実装</p></div>
+      <div class="phase-cell p4"><span class="ph">PHASE Ⅳ</span><h4>進化（運用）</h4><p>Step 7 評価・学習の設計<br>Step 8 段階的進化と検証</p></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-block fade-in" id="step1">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅰ 分析｜主なフレーム：（F）メタ</span><h3>意図・ミッション定義 — 「何でもできる」の罠を断つ</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：誰の・どんな問いに応えるロボットかを定め、スコープと価値・安全要件を人間が決定する。</div>
+      <div class="step-body">
+        <p>すべての出発点は〈意図〉です。AIは対話による意図の言語化を支援しますが、<strong>意図の決定・価値と安全の判断は人間の役割</strong>です。ここで決める「やらないことリスト」が、フレーム問題への最初にして最大の防壁になります。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <p>「万能料理ロボット」ではなく、主人の困りごと——「昼のピーク時、単純調理に手を取られ、接客と味の仕上げに集中できない」——から出発します。ミッションは<b>「定番メニューの下ごしらえと加熱調理を代行し、提供時間を短縮する」</b>。やらないこと（新メニュー考案・盛り付けの美観・刺身）、価値基準（提供時間・味の安定・食材廃棄の少なさ）、安全要件（人が近づいたら停止、刃物は専用区画から出さない）をここで文書化します。意図とは、潜在空間から見れば、見るべき因子の大元の絞り込みでもあります。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-block fade-in" id="step2">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅰ 分析｜主なフレーム：（A）〜（F）全体</span><h3>問題フレーム分析 — 仕事を性質の違う問題に分解する</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：〈知働化AIフレーム〉（A〜F）を用いて問題領域を分解・定式化する。</div>
+      <div class="step-body">
+        <p>「料理」を一枚岩にせず、<a href="#frames" class="ac">6つのフレーム</a>で分解します。AIはフレーム適用の分析支援とプロンプト資産の蓄積を担い、<strong>フレームの選定・組合せの判断は人間</strong>が行います。フレームは分析の道具であると同時に、実行時には視点切替のスイッチにもなります。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <p>火加減とアーム操作は（A）制御、焦げの予測は（B）模擬、調理スケジューリングは（C）算法、レシピの作成・修正は（D）編集、注文→調理指示は（E）変換、レシピ自体の改訂は（F）メタ。<b>この分解が、そのまま後工程の配置図になります</b>——（A）→反射・実行層、（B）（C）→世界モデル・熟慮層、（D）（E）→知識構築、（F）→学習。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-block ph2 fade-in" id="step3">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅱ 知識化｜主なフレーム：（E）変換</span><h3>ドメインオントロジー構築 — 厨房の暗黙知を骨組みに外化する</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：スコープ定義、スキーマ設計（TBoxとABoxの分離）、LLMによるトリプル抽出、名寄せ、格納、人手による矛盾検証の6作業。</div>
+      <div class="step-body">
+        <p>オントロジー構築は6つの作業からなります。①スコープ定義（「この注文を今の在庫で何分で作れるか」に答えられる範囲）、②スキーマ設計（TBox：食材・器具・工程・レシピの型。後の写像を見越し、<strong>制約・因果・観測器も明示的に書く</strong>）、③抽出（レシピ本・口伝からLLMでトリプル〈主語―述語―目的語〉候補を大量生成）、④名寄せ（「ねぎ」「長ネギ」「白ねぎ」を統合）、⑤格納（JSON等で身軽に管理）、⑥検証（<strong>正しさの確認は人間</strong>——ここは主人の仕事です）。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践：トリプルの例</span>
+          <div class="triple-list">
+            <div class="triple"><span class="tp-node">味醂</span><span class="tp-edge">代替可</span><span class="tp-node">酒＋砂糖</span></div>
+            <div class="triple"><span class="tp-node">野菜炒め</span><span class="tp-edge">必要とする</span><span class="tp-node">強火</span></div>
+            <div class="triple"><span class="tp-node">玉ねぎ（生）</span><span class="tp-edge">「切る」で遷移</span><span class="tp-node">玉ねぎ（切済）</span></div>
+          </div>
+          <p style="margin-top:12px;">TBox＝型の定義（「工程は食材の状態を変える」）、ABox＝今日の事実（「品番A001の在庫は3個」）です。</p>
+        </div>
+        <div class="branch-box"><b>変更不能な分岐点</b>：この知識グラフはエージェントに直接見せません。「この食材の代替は？」という照会インタフェースを最初から設計します。</div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-block ph2 fade-in" id="step4">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅱ 知識化｜主なフレーム：（B）模擬</span><h3>世界モデル・センサーフュージョン設計 — 潜在空間を介して「今」を組み立てる</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：共通座標系・共通時間軸の共有黒板を設計する。AIはシミュレーション・予測モデルの生成を担い、人間はモデル化要求（意図）を付与する。</div>
+      <div class="step-body">
+        <p>カメラ・温度・重量・マイクの各センサーをカルマンフィルタ等で融合し、確信度つきの状態推定を<a href="#loop" class="ac">共有黒板（世界モデル）</a>に一元化します。オントロジーの記号的知識は直接コピーせず、<strong>潜在空間を介した5つの写像</strong>で動的に結びます。写像(5)の逆反映——「この鍋は予想より早く焦げる」——が、後の学習（Step 7）の入り口になります。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <p><b>更新の速さが生命線</b>です。「人の手の位置」は他のどの情報よりも速く更新します——反射層が見る黒板が古くては意味がないからです。また部分予測により、卵焼き中は冷蔵庫の全予測はせず、いまの視点に関係する因子だけを取り出して予測します。フレーム（意図で限定したビュー）による関心の限定が、潜在空間における関連因子の抽出として実装されるのです。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-block ph3 fade-in" id="step5">
+      <div class="step-head">
+        <div class="step-num">5</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅲ 実装｜主なフレーム：（A）制御</span><h3>3層制御アーキテクチャ設計 — 速さの違う仕事は階を分ける</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：反射・実行・熟慮を時間スケールで分離する。AIは制御パラメータの探索・コード生成を担い、人間は安全要件・リアルタイム制約を決定する。</div>
+      <div class="step-body">
+        <p><a href="#time" class="ac2">時間の3層</a>をここで実装に落とします。反射層は決定論的ルールで作り、確率的な解釈を挟みません。<strong>反射層の停止命令はどんな賢い計画よりも常に最優先</strong>——安全をAIの賢さに依存させないことが、後から変えられない設計の序列です。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <p>熟慮層は注文群から調理順序を計画し（秒〜分）、実行層は「炒めの途中で揚げ物のタイマーが鳴った」の切替・調停を行い（秒）、反射層は手が加熱区画に入ったら即・全停止します（ミリ秒）。ロボットが「転ぶ」のと同じ構造で、段取りを考えている数秒の間に鍋が焦げる——だから階を分けるのです。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-block ph3 fade-in" id="step6">
+      <div class="step-head">
+        <div class="step-num">6</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅲ 実装｜主なフレーム：（C）算法・（D）編集</span><h3>エージェント実装 — 視点を切り替える「料理長の頭」</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：内省ループを停止条件・ルーブリック・記憶二層化とともに実装する。LLMによる計画・ツール実行・内省をAIが担い、停止条件とルーブリックの定義は人間が行う。</div>
+      <div class="step-body">
+        <p>エージェントの工学的実装は「計画→実行→観察→評価→内省」のループとして構成します。評価が基準を満たせば完了し、満たさなければ内省（原因分析と教訓の記憶）を経て再試行します。実装の絶対条件は次の三つです。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <div class="loop-flow">
+            <div class="loop-step"><span class="ls-tag">計画</span><p>注文を工程に分解する</p></div>
+            <div class="loop-arrow-down">↓</div>
+            <div class="loop-step"><span class="ls-tag">実行</span><p>器具ツールを使う</p></div>
+            <div class="loop-arrow-down">↓</div>
+            <div class="loop-step"><span class="ls-tag">観察</span><p>世界モデル（共有黒板）を見る</p></div>
+            <div class="loop-arrow-down">↓</div>
+            <div class="loop-step"><span class="ls-tag">評価</span><p>基準と照合——満たす→完了／満たさない→内省→再試行</p></div>
+            <div class="loop-branch"><b>内省</b>原因分析と教訓の記憶。「左のコンロは火が強い」が長期記憶に残ります。</div>
+          </div>
+          <div class="kv">
+            <div><b>① 停止条件の明示</b>同じ工程で3回失敗したら人を呼ぶ。廃棄が上限を超えたら止まる。無限に試行するロボットは厨房では許されません。</div>
+            <div><b>② ルーブリックの具体化</b>「おいしいか？」と問わない。「中心温度75℃で1分以上」「提供12分以内」「焦げ色は見本の範囲内」——Step 1の価値基準から導出します。</div>
+            <div><b>③ 記憶の二層化</b>短期：「この注文はどこまで進んだか」。長期：「左のコンロは火が強い」という教訓。</div>
+          </div>
+        </div>
+        <div class="branch-box"><b>視点の動的識別</b>：「親子丼2つ」というクエリーから視点を識別し、オントロジーの現在状態とFEP信号でコンテキストパックを選びます。知識グラフには照会インタフェース越しにアクセスします。</div>
+      </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step-block ph4 fade-in" id="step7">
+      <div class="step-head">
+        <div class="step-num">7</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅳ 進化｜主なフレーム：（F）メタ</span><h3>評価・学習の設計 — 「驚き」を上達に変える</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：FEPの5信号を実装し、同化と調節を使い分ける。AIはFEP信号による自己評価・同化/調節の自動化を担い、人間は評価基準の承認と調節（大改修）の判断を行う。</div>
+      <div class="step-body">
+        <p>理論的には、評価とは<strong>予測誤差の測定</strong>であり、学習とは<strong>誤差の使い分け</strong>です。予測誤差が小さければ既存スキーマに取り込む〈同化〉で信念のみを更新し、誤差が大きく持続するならば知識や型自体を改修する〈調節〉を行います。ここでもエージェントが知識グラフを直接書き換えるのではなく、層内の管理機能に対する改修要求として発行し、オントロジー層・セマンティクス層の内部で検証のうえ適用します。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践</span>
+          <p>驚き＝「レシピ通りに炒めたのに、予想より焦げ色が濃い」。誤差が小さければ同化——priorの動的更新として「この鍋はやや強め」という経験値を日々自動で蓄積します。誤差が大きく持続するなら調節——「中央だけ熱い」という法則レベルの改修要求を発行し、<b>採否は主人が決めます</b>。<a href="#loop" class="ac3">5つの信号</a>（驚きを引き金に／不確実なら動くな／情報利得で探索／複雑性で正則化／学習進度で配分）を厨房のことばで具体化しておくことが肝要です。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="step-block ph4 fade-in" id="step8">
+      <div class="step-head">
+        <div class="step-num">8</div>
+        <div class="step-titles"><span class="phase">PHASE Ⅳ 進化｜主なフレーム：（E）変換・（F）メタ</span><h3>段階的進化と検証 — いきなり厨房を任せない</h3></div>
+      </div>
+      <div class="step-goal"><b>ねらい</b>：模擬（シミュレーション）→遠隔操作→半自律→自律へと階段を上り、人間の検証を継続する。受入検証・投資判断・倫理的責任は人間が担う。</div>
+      <div class="step-body">
+        <p>脱Excelのロードマップが示したように、自律化は一足飛びには達成されず、模擬から自律へと階段状に進みます。各段階に人間の検証を挟むことは、安全の要請であると同時に、<strong>調節（モデルの大改修）の判断を人間が握るというガバナンスの要請</strong>でもあります。</p>
+        <div class="demo">
+          <span class="demo-label">料理ロボットでの実践：自律への階段</span>
+          <div class="stairs">
+            <div class="stair"><div class="stair-bar"><span class="sn">第1段</span><h5>模擬</h5></div><p class="stair-note">デジタルツインの厨房で計画と制御を検証</p></div>
+            <div class="stair"><div class="stair-bar"><span class="sn">第2段</span><h5>教示・遠隔</h5></div><p class="stair-note">人が操作、ロボットは観察と記録に徹する</p></div>
+            <div class="stair"><div class="stair-bar"><span class="sn">第3段</span><h5>半自律</h5></div><p class="stair-note">切る・炒めるのみ。味見と仕上げは主人</p></div>
+            <div class="stair"><div class="stair-bar"><span class="sn">第4段</span><h5>限定自律</h5></div><p class="stair-note">定番3品のみ・ピーク時間帯のみ自律調理</p></div>
+            <div class="stair"><div class="stair-bar"><span class="sn">第5段</span><h5>漸進的拡大</h5></div><p class="stair-note">実績を見ながらメニューを一品ずつ広げる</p></div>
+          </div>
+          <p><b>各段に検証可能な受入基準</b>を置きます。例えば「半自律で1週間、安全停止の誤作動ゼロ・廃棄率3%未満」。次の段へ進む判定は必ず人間が行い、味と安全の最終検証は最後まで人間に残ります。降りる（ロールバック）設計も忘れずに。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap fade-in">
+      <table class="data">
+        <caption>表：ステップ別 問題フレーム×AI活用×人間の役割</caption>
+        <thead><tr><th>ステップ</th><th>主な問題フレーム</th><th>AI活用</th><th>人間の役割</th></tr></thead>
+        <tbody>
+          <tr><td>1. 意図・ミッション定義</td><td>（F）メタ</td><td>対話による意図の言語化支援</td><td>意図の決定・価値と安全の判断</td></tr>
+          <tr><td>2. 問題フレーム分析</td><td>（A）〜（F）全体</td><td>フレーム適用の分析支援・プロンプト資産の蓄積</td><td>フレームの選定・組合せの判断</td></tr>
+          <tr><td>3. オントロジー構築</td><td>（E）変換</td><td>原資料からのトリプル抽出・名寄せ候補提示</td><td>スコープ定義・スキーマ設計・矛盾の検証</td></tr>
+          <tr><td>4. 世界モデル/融合設計</td><td>（B）模擬</td><td>シミュレーション・予測モデルの生成</td><td>モデル化要求（意図）の付与</td></tr>
+          <tr><td>5. 3層制御の設計</td><td>（A）制御</td><td>制御パラメータの探索・コード生成</td><td>安全要件・リアルタイム制約の決定</td></tr>
+          <tr><td>6. エージェント実装</td><td>（C）算法・（D）編集</td><td>LLMによる計画・ツール実行・内省</td><td>停止条件とルーブリックの定義</td></tr>
+          <tr><td>7. 評価・学習の設計</td><td>（F）メタ</td><td>FEP信号による自己評価・同化/調節の自動化</td><td>評価基準の承認・調節（大改修）の判断</td></tr>
+          <tr><td>8. 段階的進化と検証</td><td>（E）変換・（F）メタ</td><td>自動テスト・コード変換・スキル獲得</td><td>受入検証・投資判断・倫理的責任</td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">骨格は搬送ロボットでも検査ロボットでも同じです。変わるのはStep 1で見つめる「誰の困りごとか」だけ、ということになります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 厨房の場面 -->
+<section class="section" id="scenes">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-navy"><svg class="icon"><use href="#ic-kitchen"></use></svg></div>
+      <div>
+        <span class="sec-label navy">Illustrated Scenes</span>
+        <h2 class="sec-title">イラストで見る：料理ロボットのいる厨房</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      抽象的な設計論が、厨房の一日の中でどう動くのか。人間とロボットの協調をイメージする場面で確認しておくことにしましょう。
+    </p>
+    <div class="scene-grid">
+      <div class="scene-card fade-in">
+        <h4><span class="sc-no">場面 1</span>厨房の全景——区画とセンサーの配置</h4>
+        <div class="scene-fig">
+          <svg viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="厨房の俯瞰図：加熱区画・刃物専用区画・冷蔵庫・受け渡しカウンター">
+            <rect x="8" y="8" width="444" height="234" rx="10" fill="#fff" stroke="#E1E5EC"/>
+            <rect x="22" y="26" width="150" height="110" rx="6" fill="#FDEDE4" stroke="#C0392B" stroke-width="2" stroke-dasharray="7 5"/>
+            <text x="30" y="45" font-size="12.5" font-weight="bold" fill="#C0392B">加熱区画</text>
+            <circle cx="65" cy="90" r="24" fill="#16233F"/><circle cx="65" cy="90" r="16" fill="#7C8798"/>
+            <circle cx="128" cy="90" r="24" fill="#16233F"/><circle cx="128" cy="90" r="16" fill="#7C8798"/>
+            <text x="30" y="128" font-size="9.5" fill="#8A93A2">左コンロ（火が強め）</text>
+            <rect x="192" y="26" width="130" height="110" rx="6" fill="#EFF2F8" stroke="#2E4B7A" stroke-width="2" stroke-dasharray="7 5"/>
+            <text x="200" y="45" font-size="12.5" font-weight="bold" fill="#2E4B7A">刃物専用区画</text>
+            <rect x="210" y="62" width="94" height="48" rx="4" fill="#E8DCC8"/>
+            <rect x="228" y="80" width="58" height="8" rx="4" fill="#8A99B5" transform="rotate(-12 257 84)"/>
+            <rect x="342" y="26" width="96" height="110" rx="6" fill="#F1F3F6" stroke="#AEB9CE"/>
+            <text x="352" y="48" font-size="12" font-weight="bold" fill="#4E5766">冷蔵庫</text>
+            <text x="352" y="66" font-size="10" fill="#8A93A2">（在庫＝ABox）</text>
+            <circle cx="428" cy="38" r="8" fill="#5BC49B"/>
+            <text x="332" y="22" font-size="9.5" fill="#8A93A2">天井カメラ・マイク</text>
+            <g><rect x="52" y="152" width="34" height="30" rx="6" fill="#8A99B5"/><circle cx="61" cy="164" r="4" fill="#fff"/><circle cx="76" cy="164" r="4" fill="#fff"/><text x="42" y="200" font-size="10.5" fill="#4E5766">ロボット</text></g>
+            <g><circle cx="255" cy="160" r="9" fill="#EAC9A8"/><rect x="242" y="170" width="26" height="20" rx="5" fill="#16233F"/><text x="240" y="204" font-size="10.5" fill="#4E5766">主人</text></g>
+            <rect x="22" y="212" width="416" height="22" rx="5" fill="#E4F2EC" stroke="#1E8E6B" stroke-width="1.5"/>
+            <text x="230" y="227" text-anchor="middle" font-size="11" font-weight="bold" fill="#146B50">受け渡しカウンター（状態は共有黒板に反映）</text>
+          </svg>
+        </div>
+        <p>厨房そのものが〈問題領域〉です。破線＝反射層の監視ゾーンであり、人の手が入れば即・全停止（ミリ秒）。受け渡しカウンターが人とロボットの境界であり、仕掛品はここで手渡します。センサー（カメラ・温度・重量・音）は共有黒板＝世界モデルに集約されます。<b>区画の線引きは、Step 1の安全要件がそのまま床に描かれた姿</b>です。「左コンロは火が強め」——こうした癖も知識として蓄積されます。</p>
+      </div>
+      <div class="scene-card fade-in">
+        <h4><span class="sc-no">場面 2</span>ロボットの解剖図——センサーは感覚器、アームは筋肉</h4>
+        <div class="scene-fig">
+          <svg viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ロボットの解剖図：頭の中は熟慮層・実行層・反射層の3階建て">
+            <line x1="230" y1="46" x2="230" y2="60" stroke="#E8622A" stroke-width="4"/><circle cx="230" cy="42" r="6" fill="#E8622A"/>
+            <rect x="192" y="60" width="76" height="52" rx="9" fill="#8A99B5"/>
+            <circle cx="214" cy="84" r="9" fill="#fff"/><circle cx="246" cy="84" r="9" fill="#fff"/>
+            <circle cx="214" cy="84" r="4" fill="#16233F"/><circle cx="246" cy="84" r="4" fill="#16233F"/>
+            <rect x="180" y="118" width="100" height="72" rx="11" fill="#6B7B9E"/>
+            <circle cx="230" cy="152" r="11" fill="#5BC49B"/>
+            <path d="M180 132 L150 114" stroke="#8A99B5" stroke-width="10" stroke-linecap="round"/>
+            <path d="M280 132 L310 114" stroke="#8A99B5" stroke-width="10" stroke-linecap="round"/>
+            <ellipse cx="230" cy="206" rx="38" ry="11" fill="#16233F"/>
+            <rect x="300" y="56" width="146" height="20" rx="5" fill="#7C6FCB"/><text x="308" y="70" font-size="10.5" fill="#fff" font-weight="bold">熟慮層：調理計画（秒〜分）</text>
+            <rect x="300" y="80" width="146" height="20" rx="5" fill="#E8622A"/><text x="308" y="94" font-size="10.5" fill="#fff" font-weight="bold">実行層：工程の調停（秒）</text>
+            <rect x="300" y="104" width="146" height="20" rx="5" fill="#1E8E6B"/><text x="308" y="118" font-size="10.5" fill="#fff" font-weight="bold">反射層：危険回避（ミリ秒）</text>
+            <path d="M300 84 Q278 76 262 74" stroke="#AEB9CE" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+            <text x="14" y="76" font-size="11" font-weight="bold" fill="#16233F">カメラ（目）</text><text x="14" y="90" font-size="9.5" fill="#8A93A2">食材の色・焦げ・人の位置</text>
+            <text x="14" y="118" font-size="11" font-weight="bold" fill="#16233F">マイク（耳）</text><text x="14" y="132" font-size="9.5" fill="#8A93A2">炒め音・沸騰音を聴く</text>
+            <text x="14" y="160" font-size="11" font-weight="bold" fill="#16233F">温度・重量センサー</text><text x="14" y="174" font-size="9.5" fill="#8A93A2">鍋の温度、まな板の上の量</text>
+            <text x="300" y="152" font-size="11" font-weight="bold" fill="#C64E1E">アーム（筋肉）</text><text x="300" y="166" font-size="9.5" fill="#8A93A2">切る・炒める・運ぶ。アクチュエータ</text>
+            <text x="300" y="192" font-size="11" font-weight="bold" fill="#C0392B">非常停止（赤ボタン）</text><text x="300" y="206" font-size="9.5" fill="#8A93A2">誰でも押せる。AIに頼らない最後の砦</text>
+          </svg>
+        </div>
+        <p>頭の中は3階建て——熟慮層・実行層・反射層です。センサーの生データ（L0）から行為（L7）まで、<b>知覚・認識のリファレンスモデルがこの身体の上で動きます</b>。非常停止の赤ボタンは誰でも押せる、AIの賢さに頼らない最後の砦です。</p>
+      </div>
+      <div class="scene-card fade-in">
+        <h4><span class="sc-no">場面 3</span>昼のピーク——役割分担で回る協調作業</h4>
+        <div class="balloon">
+          <span>ロボット「親子丼2つ、承知。8分で仕上げます」</span>
+          <span class="r">主人「卵は柔らかめにね」——この一言も教訓として記憶</span>
+        </div>
+        <p style="margin-top:12px;">ロボットは下ごしらえ・加熱調理・配膳準備を担い、視点はクエリー（注文）から識別します。主人は味見・仕上げ・接客——<b>価値と安全の判断は人間の仕事</b>です。共有黒板には鍋の温度も進行状況も一元管理され、<b>二人は同じ「今」を見て働きます</b>。</p>
+      </div>
+      <div class="scene-card fade-in">
+        <h4><span class="sc-no">場面 4</span>閉店後の振り返り——驚きを知識に変える時間</h4>
+        <div class="balloon">
+          <span>ロボット「左コンロ、今日も昇温が速い → prior（経験値）を更新【同化】」</span>
+          <span>ロボット「フライパン中央だけ焦げが集中？ → 遷移関数の改修要求を発行【調節】→ 主人の承認待ち」</span>
+          <span class="r">主人「その改修、承認。明日から試そう」</span>
+        </div>
+        <p style="margin-top:12px;"><b>同化は日々自動で回り、調節（法則レベルの改修）は人間の承認を経て適用される</b>——半自動の学習ループです。厨房の一日は、閉店後のこの振り返りまで含めて設計されています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 課題と対処 -->
+<section class="section paper" id="issues">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-red"><svg class="icon"><use href="#ic-alert"></use></svg></div>
+      <div>
+        <span class="sec-label red">Known Issues & Practice</span>
+        <h2 class="sec-title">既に明らかになっている課題と、実践時に対処すべきこと</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      本技法は万能ではありません。むしろ、<strong>どこに限界があり、実践の場で何に備えるべきか</strong>をあらかじめ知っておくことこそが、技法を使いこなす条件です。ここでは、原論文の考察とケーススタディで既に明らかになっている課題を、包み隠さず提示しておくことにしましょう。
+    </p>
+    <div class="limit3 fade-in">
+      <div class="limit-card">
+        <h5>限界① 概念設計の水準にとどまる</h5>
+        <p>本構想は概念設計の水準にあり、実機やシミュレータによる検証を経ていません。適用の際は、第1段（デジタルツイン）での検証から着手すべきです。</p>
+      </div>
+      <div class="limit-card">
+        <h5>限界② フレーム適用には習熟が必要</h5>
+        <p>知働化AIフレームの適用には相応の習熟が必要であり、生成AIに問題フレームを十分に学習させる方法は今後の課題です。</p>
+      </div>
+      <div class="limit-card">
+        <h5>限界③ FEP信号の実装方式は未確定</h5>
+        <p>5信号の具体的な実装方式（誤差の閾値設定、情報利得の推定など）は、対象ドメインごとに詰める必要があります。</p>
+      </div>
+    </div>
+    <div class="issue-grid">
+      <div class="issue-card i1 fade-in">
+        <div class="ih">フェーズⅠ 分析（Step 1〜2）の課題</div>
+        <ul>
+          <li><b>「おいしさ」の基準化</b>と官能評価の線引き——定量化できる基準と、人間に残す評価の境界をどう引くか。</li>
+          <li><b>複数の意図の調停</b>——主人・客・保健所など、複数のステークホルダーの意図が衝突したときの優先順位づけ。</li>
+          <li><b>フレーム選定の習熟</b>とプロンプト資産化——選定の判断を組織の資産としてどう蓄積するか。</li>
+        </ul>
+      </div>
+      <div class="issue-card i2 fade-in">
+        <div class="ih">フェーズⅡ 知識化（Step 3〜4）の課題</div>
+        <ul>
+          <li><b>オントロジー構築の費用対効果</b>——一軒の店なら小規模で済むが、業種別の雛形整備が普及の鍵になる。</li>
+          <li><b>潜在空間の設計</b>——次元の選定・学習方法・再学習のタイミング、オントロジーとの整合の維持。</li>
+          <li><b>写像(1)意味対応の解釈可能性</b>——概念と因子の対応づけを人間が検証できる形に保てるか。</li>
+        </ul>
+      </div>
+      <div class="issue-card i3 fade-in">
+        <div class="ih">フェーズⅢ 実装（Step 5〜6）の課題</div>
+        <ul>
+          <li><b>安全と可用性のトレードオフ</b>——過剰停止でピーク時に使い物にならなくなる事態をどう防ぐか。</li>
+          <li><b>ルーブリックの完全性</b>——基準の網羅から漏れた劣化（基準外の劣化）をどう検出するか。</li>
+          <li><b>視点誤りの検出</b>と安全側への縮退、記憶の棚卸し——間違ったコンテキストで動き続けない仕組み。</li>
+        </ul>
+      </div>
+      <div class="issue-card i4 fade-in">
+        <div class="ih">フェーズⅣ 進化（Step 7〜8）の課題</div>
+        <ul>
+          <li><b>同化/調節を分ける閾値の定量化</b>——「誤差が大きく持続する」をどの数値で切るか。</li>
+          <li><b>人間承認のボトルネック化</b>——承認の粒度を誤ると、主人が承認作業に忙殺される。</li>
+          <li><b>段階後退（ロールバック）の設計</b>——階段は上るだけでなく、安全に降りられなければならない。</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead fade-in" style="margin-top:26px;">
+      さらに、フェーズを横断する課題が三つあります。第一に<strong>スケールの検証</strong>です。一軒の定食屋の知識は小規模で済みますが、チェーン展開すれば数千万ノード級になり、RAG併用と層内検証が現実の試練を受けます——規模を上げながら確かめるほかありません。第二に<strong>実装知見の継続的な取り込み</strong>です。「後から変更できない設計分岐点」は実装経験からしか見えず、本技法の改訂史そのものがその証左です。概念設計と実装者の対話を制度化することが求められます。第三に、<strong>次の一歩はデジタルツイン厨房</strong>だということです。本ケーススタディは紙上の適用にとどまっており、第1段の模擬厨房を実際に構築し、5つの写像・部分予測・視点選択を「動くもの」で確かめる——ここからが本番です。
+    </p>
+    <div class="coping fade-in">
+      <h4>実践時の対処の原則</h4>
+      <p><b>① 変更不能な分岐点を最初期に固定する</b>——知識グラフのカプセル化、反射層の決定論的設計と停止命令の最優先、潜在空間を介した結合。これらは後から変更が効かない全体設計の分岐点であり、概念設計の段階から実装者の知見を取り込み、早期に洗い出して固定することを運用上の原則とします。</p>
+      <p><b>② 未知の文脈は自動化しない</b>——未知の文脈の発見は自動化せず、調節の一種として人間との協働で新設します。不確実なら動かず、情報を集めるのが原則です。</p>
+      <p><b>③ 人間の検証を各段に挟む</b>——受入基準を検証可能な形で定義し、次の段へ進む判定は必ず人間が行います。これは安全の要請であると同時に、大改修の判断を人間が握るというガバナンスの要請でもあります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- まとめ -->
+<section class="section" id="closing">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div class="icon-badge lg c-green"><svg class="icon"><use href="#ic-conclusion"></use></svg></div>
+      <div>
+        <span class="sec-label green">Conclusion</span>
+        <h2 class="sec-title">まとめ：人働説から知働説へ——役割分担の明確化から始まる</h2>
+      </div>
+    </div>
+    <p class="lead fade-in">
+      本教材では、AI活用とドメイン分析・問題フレームの関係を整理した上で、<strong>意味の4層×時間の3層×予測の閉ループ</strong>からなるロボティクス・アーキテクチャを提示し、8ステップのデザイン技法を料理ロボットの事例で確認してきました。理論だけでなく実際に使える「実行可能知識」へ——〈人働説〉から〈知働説〉へのパラダイムシフトは、<strong>意図を人間が与え、意味をAIが担い、行為をロボットが返す</strong>という役割分担の明確化から始まります。
+    </p>
+    <div class="closing fade-in">
+      <p class="closing-q">この厨房で起きていることは、<span class="ac">知識が予測を作り</span>、<span class="ac2">驚きが知識を鍛え</span>、意図と検証は人間に残る——という循環です。</p>
+      <p class="closing-sub">骨格は搬送ロボットでも検査ロボットでも同じです。変わるのは、Step 1で見つめる「誰の困りごとか」だけなのです。</p>
+      <div class="closing-cards">
+        <div class="cc"><div class="n">01</div><h4>知識が予測を作る</h4><p>オントロジーに書いた「強火は昇温を速める」が、潜在空間を介して鍋の未来の予測になります。</p></div>
+        <div class="cc"><div class="n">02</div><h4>驚きが知識を鍛える</h4><p>「予想より早く焦げた」という予測誤差が、priorの更新（同化）と法則の改修（調節）に振り分けられます。</p></div>
+        <div class="cc"><div class="n">03</div><h4>意図と検証は人間に残る</h4><p>何を作るか、おいしいか、安全か——上りの判断は最後まで主人の仕事。ロボットはそれ以外を引き受けます。</p></div>
+      </div>
+    </div>
+    <div class="refs fade-in">
+      <h4>参考文献</h4>
+      <ol>
+        <li><span class="rn">[1]</span>Michael Jackson: Problem Frames: Analyzing and structuring software development problems, Addison-Wesley (2001).（マイケル・ジャクソン『プロブレムフレーム—ソフトウェア開発問題の分析と構造化』翔泳社 (2006)）</li>
+        <li><span class="rn">[2]</span>大槻繁: 実行可能知識のデザインプロセス—創造的ソフトウェア開発プロセス ΛVモデル, 日本デザイン学会 デザイン学研究特集号 デザイン思考, Vol.19-4, No.76 (2012).</li>
+        <li><span class="rn">[3]</span>大槻繁: 思考の技法, 第7章 トピックス(2) 7.2 知働化AIフレーム, Ichi Corporation (2022).</li>
+        <li><span class="rn">[4]</span>大槻繁: 思考の技法 2.0—AI・哲学・ロボットを貫く「知」のアーキテクチャ, Ichi Corporation (2026).</li>
+        <li><span class="rn">[5]</span>知働化研究会: 脱・Excel依存のロードマップ—ファイル中心からデータ中心へ, <a href="/ExcelToSystem/">chidouka-lab.com/ExcelToSystem/</a> (2026).</li>
+        <li><span class="rn">[6]</span>知働化研究会: エクセル依存からの脱却と「知」のアーキテクチャ, <a href="/ExcelToSystem2/">chidouka-lab.com/ExcelToSystem2/</a> (2026).</li>
+        <li><span class="rn">[7]</span>Karl Friston: The free-energy principle: a unified brain theory?, Nature Reviews Neuroscience, Vol.11, pp.127–138 (2010).</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <a class="footer-back" href="/">← 知働化コミュニティ トップへ戻る</a>
+  <a class="footer-back" href="/guide/">← ちょっと実験室へ戻る</a>
+  <p class="footer-meta">
+    <strong>ロボティクス・アーキテクチャ構築の技法 — 料理ロボットで学ぶ教材</strong><br>
+    原論文：大槻 繁『ロボティクス・アーキテクチャの構想—AI活用と問題フレームに基づく知働化ロボットの設計技法』（2026, 第3改訂版）
+  </p>
+  <p class="footer-copy">© 知働化研究会 / Ichi Corporation　|　chidouka-lab.com/RoboticsArch/</p>
+</footer>
+
+<button class="page-top" aria-label="ページトップへ戻る">↑</button>
+
+<script>
+/* ── フェードイン ── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+},{ threshold:.1 });
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+/* ── ページトップ ── */
+const pt = document.querySelector('.page-top');
+window.addEventListener('scroll',()=>{ pt.classList.toggle('show', window.scrollY>600); });
+pt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+
+</body>
+</html>
