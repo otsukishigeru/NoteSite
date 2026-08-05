@@ -217,6 +217,38 @@ em{ font-style:normal; }
 .tl-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .tl-tag{ font-size:12px; font-weight:700; color:var(--red); background:rgba(228,44,44,.08); padding:4px 12px; border-radius:999px; }
 
+/* ── トラックカード（13時セッション） ── */
+.track-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:18px; }
+@media(max-width:720px){ .track-grid{ grid-template-columns:1fr; } }
+.track-card{
+  background:#fff; border:1px solid var(--gray-line); border-radius:var(--radius);
+  padding:20px 22px; box-shadow:var(--shadow-sm);
+  display:flex; flex-direction:column; gap:9px;
+  transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.track-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--red); }
+.track-card.tutorial{ background:#FFF7F7; border-color:#F3C9C9; }
+.track-card-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.track-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:36px; height:36px; padding:0 10px; border-radius:9px; flex-shrink:0;
+  background:var(--red); color:#fff; font-size:17px; font-weight:900; letter-spacing:.02em;
+}
+.track-card.tutorial .track-badge{ background:var(--black); font-size:12.5px; border-radius:999px; }
+.track-venue{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:800; color:var(--ink-sub);
+  background:var(--gray); border-radius:999px; padding:5px 12px;
+}
+.track-timebadge{
+  font-size:11px; font-weight:800; color:#fff; background:#1a9e57;
+  border-radius:999px; padding:5px 11px; letter-spacing:.02em;
+}
+.track-theme{ font-size:17px; font-weight:900; color:var(--ink); line-height:1.4; }
+.track-coord{ font-size:13px; font-weight:800; color:var(--red); }
+.track-coord span{ color:var(--ink-light); font-weight:700; margin-right:4px; }
+.track-desc{ font-size:13.5px; color:var(--ink-sub); line-height:1.75; }
+
 /* ── シリーズ（過去シンポジウム） ── */
 .series-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
 @media(max-width:720px){ .series-grid{ grid-template-columns:1fr; } }
@@ -437,14 +469,73 @@ em{ font-style:normal; }
         <div class="tl-time">13:00<small>〜</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
-          <p class="tl-title">トラック（複数並行）</p>
-          <p class="tl-desc">位野木研究室 学生によるポスター展示も行います。</p>
-          <div class="tl-tags">
-            <span class="tl-tag">トラックＡ（A-0611）：連想情報学の未來（仮）</span>
-            <span class="tl-tag">トラックＢ（A-0473）：要求工学（仮）</span>
-            <span class="tl-tag">トラックＣ（A-0475）：知働経営（仮）</span>
-            <span class="tl-tag">トラックＤ（A-0477）：ＡＩと実践哲学（仮）</span>
-            <span class="tl-tag">チュートリアル（A-0615）：思考の技法</span>
+          <p class="tl-title">トラックセッション（複数並行）</p>
+          <p class="tl-desc">5つのトラック（Ａ〜Ｅ）とチュートリアルを並行開催します。位野木研究室 学生によるポスター展示も行います。<br>
+            <small style="color:var(--ink-light);">※ トラックＥ（A-0471）のみ 14:00 開始／テーマはいずれも仮題です。</small></p>
+
+          <div class="track-grid">
+
+            <div class="track-card">
+              <div class="track-card-head">
+                <span class="track-badge">Ａ</span>
+                <span class="track-venue">📍 会場 A-0611</span>
+              </div>
+              <p class="track-theme">意味の構造〔仮〕</p>
+              <p class="track-coord"><span>コーディネータ</span>萩原 正義</p>
+              <p class="track-desc">AIを考慮した「意味」「コミュニケーション（認識の非対称性）」「因果推論」等の概念を再定義し、オントロジー、コンテクスト、追加学習等（進化の仕組み）の実践的構造を明確にする。我々の身の丈に合った対応について討論する。</p>
+            </div>
+
+            <div class="track-card">
+              <div class="track-card-head">
+                <span class="track-badge">Ｂ</span>
+                <span class="track-venue">📍 会場 A-0473</span>
+              </div>
+              <p class="track-theme">要求工学（仮）</p>
+              <p class="track-coord"><span>コーディネータ</span>位野木 万里</p>
+              <p class="track-desc">REBOKシリーズ5、AI時代の要求定義、問題発見や価値創出のためのモデリング技術、AIの利活用で直面する課題について解説する。</p>
+            </div>
+
+            <div class="track-card">
+              <div class="track-card-head">
+                <span class="track-badge">Ｃ</span>
+                <span class="track-venue">📍 会場 A-0475</span>
+              </div>
+              <p class="track-theme">知働経営〔仮〕</p>
+              <p class="track-coord"><span>コーディネータ</span>濱 勝巳</p>
+              <p class="track-desc">認識の前提が異なる構造がある。メタウェア研究所では、この構造を、社会を設計するための使える道具にすることを研究している。新たな実践的経営について概説する。</p>
+            </div>
+
+            <div class="track-card">
+              <div class="track-card-head">
+                <span class="track-badge">Ｄ</span>
+                <span class="track-venue">📍 会場 A-0477</span>
+              </div>
+              <p class="track-theme">自由エネルギー原理の社会性と哲学（仮）</p>
+              <p class="track-coord"><span>コーディネータ</span>野村 一行</p>
+              <p class="track-desc">自由エネルギー原理（エントロピー指標）、能動的推論、情報量について紹介するとともに、このメトリクスを活用する評価手法やAIエージェントの振る舞い、ゆらぎとイノベーション、対話を通じた知識の段階的獲得などについて議論する。</p>
+            </div>
+
+            <div class="track-card">
+              <div class="track-card-head">
+                <span class="track-badge">Ｅ</span>
+                <span class="track-venue">📍 会場 A-0471</span>
+                <span class="track-timebadge">14:00 開始</span>
+              </div>
+              <p class="track-theme">トークン社会学</p>
+              <p class="track-coord"><span>コーディネータ</span>塩田 英二</p>
+              <p class="track-desc">組織間のやりとりや社会的活動における価値の交換、サプライチェーン、データ流通、トークン概念（計算量・能力・エコノミー）についての背景理論について探究する。</p>
+            </div>
+
+            <div class="track-card tutorial">
+              <div class="track-card-head">
+                <span class="track-badge">チュートリアル</span>
+                <span class="track-venue">📍 会場 A-0615</span>
+              </div>
+              <p class="track-theme">思考の技法</p>
+              <p class="track-coord"><span>コーディネータ</span>大槻 繁</p>
+              <p class="track-desc">思考の技法の取り組みを概観するとともに、アジャイルプロセス協議会から独立した「知働化コミュニティ（アライアンス）」としての今後の活動の展望について述べる。</p>
+            </div>
+
           </div>
         </div>
       </div>
