@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>管理画面 ｜ inoki-ken</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<!-- ============ 管理者ログイン ============ -->
+<div id="login-view" class="auth-wrap">
+  <div class="auth-card">
+    <h1>管理画面</h1>
+    <p class="sub">inoki-ken の ID／SubID を管理します</p>
+    <div id="login-msg" class="msg err" style="display:none"></div>
+    <form id="login-form" autocomplete="off">
+      <div class="field">
+        <label for="pass">管理パスワード</label>
+        <input type="password" id="pass" name="pass" required autofocus>
+      </div>
+      <button type="submit" id="login-btn" class="btn">ログイン</button>
+    </form>
+    <p class="auth-foot quiet"><a href="../">サイトに戻る</a></p>
+  </div>
+</div>
+
+<!-- ============ 管理パネル ============ -->
+<div id="panel-view" style="display:none">
+
+<div class="admin-bar">
+  <div class="wrap">
+    <span><strong>inoki-ken</strong> 管理画面</span>
+    <span>
+      <a href="../">サイトを見る</a>
+      <a href="#" id="logout-link">管理画面からログアウト</a>
+    </span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">admin</p>
+    <h1>ID・SubID の管理</h1>
+    <p class="sub">ここで登録した組み合わせで、サイトにログインできるようになります</p>
+  </div>
+
+  <div id="panel-msg" style="display:none"></div>
+
+  <h2 id="list">登録されている ID（<span id="user-count">0</span>件）</h2>
+
+  <div class="tbl-scroll">
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="width:18%">ID</th>
+        <th style="width:30%">SubID</th>
+        <th style="width:22%">メモ</th>
+        <th style="width:14%">登録日</th>
+        <th style="width:16%">操作</th>
+      </tr>
+    </thead>
+    <tbody id="user-list"></tbody>
+  </table>
+  </div>
+
+  <h2 id="add">新しい ID を追加する</h2>
+
+  <form id="add-form">
+    <div class="form-row">
+      <div class="field">
+        <label for="new-id">ID</label>
+        <input type="text" id="new-id" name="id" required
+               placeholder="例：kogakuin" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="new-subid">SubID</label>
+        <input type="text" id="new-subid" name="subid" required
+               placeholder="例：inoki-ken" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="new-note">メモ（任意）</label>
+        <input type="text" id="new-note" name="note" placeholder="例：研究室共通">
+      </div>
+      <button type="submit" class="btn mini">追加</button>
+    </div>
+  </form>
+
+  <div class="box">
+    <p class="box-title">入力の決まり</p>
+    <ul class="dots" style="margin-bottom:0">
+      <li>ID は半角の英数字・ハイフン・アンダースコア・ピリオドで、2〜40文字。</li>
+      <li>SubID は 4〜60文字。日本語も使えますが、伝えやすさを考えると半角がおすすめです。</li>
+      <li>同じ ID を二つ登録することはできません。</li>
+    </ul>
+  </div>
+
+  <div class="box warn">
+    <p class="box-title">管理パスワードについて</p>
+    <p style="margin-bottom:0">
+      このページの管理パスワードは、サイト全体で共通の環境変数 <code>ADMIN_PASSWORD</code>（Vercelのプロジェクト設定）です。
+      変更する場合はVercelのダッシュボードから行ってください。
+    </p>
+  </div>
+
+</div>
+
+<footer class="site-foot">
+  <div class="wrap"><p>inoki-ken 管理画面</p></div>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var loginView  = document.getElementById('login-view');
+  var panelView  = document.getElementById('panel-view');
+  var loginForm  = document.getElementById('login-form');
+  var loginBtn   = document.getElementById('login-btn');
+  var loginMsg   = document.getElementById('login-msg');
+  var passInput  = document.getElementById('pass');
+  var logoutLink = document.getElementById('logout-link');
+  var panelMsg   = document.getElementById('panel-msg');
+  var userList   = document.getElementById('user-list');
+  var userCount  = document.getElementById('user-count');
+  var addForm    = document.getElementById('add-form');
+
+  var adminPassword = null; // ページ滞在中のみメモリに保持（保存はしない）
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function call(action, extra, cb) {
+    var body = Object.assign({ action: action, adminPassword: adminPassword }, extra || {});
+    fetch('/api/inoki-ken', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(cb)
+      .catch(function (e) { cb({ ok: false, error: e.message }); });
+  }
+
+  function showMsg(text, ok) {
+    panelMsg.className = 'msg ' + (ok ? 'ok' : 'err');
+    panelMsg.textContent = text;
+    panelMsg.style.display = '';
+  }
+
+  function renderUsers(users) {
+    userCount.textContent = users.length;
+    userList.innerHTML = '';
+    users.forEach(function (u) {
+      var tr = document.createElement('tr');
+
+      var tdId = document.createElement('td');
+      tdId.innerHTML = '<strong>' + escapeHtml(u.id) + '</strong>';
+
+      var tdSub = document.createElement('td');
+      var subForm = document.createElement('form');
+      subForm.className = 'form-row';
+      subForm.style.gap = '6px';
+      subForm.innerHTML =
+        '<div class="field" style="min-width:120px">' +
+        '<input type="text" value="' + escapeHtml(u.subid) + '" required autocapitalize="off" spellcheck="false">' +
+        '</div>' +
+        '<button type="submit" class="btn mini sub">変更</button>';
+      subForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var newSub = subForm.querySelector('input').value.trim();
+        call('editUser', { id: u.id, subid: newSub }, function (d) {
+          if (d.ok) { showMsg('ID「' + u.id + '」の SubID を変更しました。', true); renderUsers(d.users); }
+          else { showMsg(d.error || '変更に失敗しました。', false); }
+        });
+      });
+      tdSub.appendChild(subForm);
+
+      var tdNote = document.createElement('td');
+      tdNote.textContent = u.note || '';
+
+      var tdCreated = document.createElement('td');
+      tdCreated.className = 'quiet';
+      tdCreated.textContent = u.created || '';
+
+      var tdOp = document.createElement('td');
+      if (users.length > 1) {
+        var delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'btn mini danger';
+        delBtn.textContent = '削除';
+        delBtn.addEventListener('click', function () {
+          if (!confirm('ID「' + u.id + '」を削除します。よろしいですか。')) return;
+          call('removeUser', { id: u.id }, function (d) {
+            if (d.ok) { showMsg('ID「' + u.id + '」を削除しました。', true); renderUsers(d.users); }
+            else { showMsg(d.error || '削除に失敗しました。', false); }
+          });
+        });
+        tdOp.appendChild(delBtn);
+      } else {
+        var span = document.createElement('span');
+        span.className = 'quiet';
+        span.style.fontSize = '.82rem';
+        span.textContent = '最後の1件';
+        tdOp.appendChild(span);
+      }
+
+      tr.appendChild(tdId);
+      tr.appendChild(tdSub);
+      tr.appendChild(tdNote);
+      tr.appendChild(tdCreated);
+      tr.appendChild(tdOp);
+      userList.appendChild(tr);
+    });
+  }
+
+  function loadUsers() {
+    call('listUsers', {}, function (d) {
+      if (d.ok) renderUsers(d.users);
+      else showMsg(d.error || '一覧の取得に失敗しました。', false);
+    });
+  }
+
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var pass = passInput.value;
+    if (!pass) return;
+    loginBtn.disabled = true;
+    loginBtn.textContent = '確認中...';
+    call('adminLogin', { adminPassword: pass }, function (d) {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'ログイン';
+      if (!d.ok) {
+        loginMsg.textContent = d.error || 'パスワードが正しくありません。';
+        loginMsg.style.display = '';
+        return;
+      }
+      adminPassword = pass;
+      loginView.style.display = 'none';
+      panelView.style.display = '';
+      loadUsers();
+    });
+  });
+
+  logoutLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    adminPassword = null;
+    passInput.value = '';
+    panelView.style.display = 'none';
+    loginView.style.display = '';
+  });
+
+  addForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id    = document.getElementById('new-id').value.trim();
+    var subid = document.getElementById('new-subid').value.trim();
+    var note  = document.getElementById('new-note').value.trim();
+    call('addUser', { id: id, subid: subid, note: note }, function (d) {
+      if (d.ok) {
+        showMsg('ID「' + id + '」を追加しました。', true);
+        addForm.reset();
+        renderUsers(d.users);
+      } else {
+        showMsg(d.error || '追加に失敗しました。', false);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
