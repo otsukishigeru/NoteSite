@@ -529,10 +529,10 @@
     output.textContent = '回答を生成しています...';
 
     try {
-      const res = await fetch('/api/carl/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ message: message, persona: 'carl' })
       });
       if (!res.ok) throw new Error('API error ' + res.status);
       const data = await res.json();
