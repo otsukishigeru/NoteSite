@@ -19,12 +19,16 @@ notesite/                       ← リポジトリのルート
     │   └── index.html            ArtOfThought.docx の内容
     ├── hypo/
     │   └── index.html            Hypo.docx の内容（五つの仮説）
+    ├── guide/
+    │   └── index.html            AIReqThough2_Guide.docx の内容（参考・入門版）
     ├── admin/
     │   └── index.html            管理画面（ID・SubIDの追加/変更/削除）
     ├── assets/
     │   ├── style.css
     │   ├── site.js                絞り込み・理解チェックの動き
-    │   └── img/                   図（PNG 5点）
+    │   ├── img/                   図（PNG 5点）
+    │   └── pdfs/
+    │       └── AIReqThough2.pdf   「参考」からダウンロードさせる本格版
     └── robots.txt                 検索エンジン除け
 ```
 
@@ -75,6 +79,19 @@ ID/SubIDの一覧は、ファイルではなく Vercel の KV（Upstash Redis、
 （もとのPHP版は `hypo/data.php` にデータを分離していましたが、Node/静的HTML化にともない
 　`inoki-ken/hypo/index.html` に統合しています。件数が多いため、`.prop` ブロックの構造
 　（`data-h`・`data-new` 属性）を保ったまま追記すると、絞り込み機能がそのまま働きます。）
+
+### 「参考」の内容を直す・本格版PDFを差し替える
+
+`inoki-ken/guide/index.html` を直接編集してください。ふつうのHTMLです。
+
+本格版PDFを新しいものにするときは、`inoki-ken/assets/pdfs/AIReqThough2.pdf` を
+**同じファイル名のまま**上書きしてください。ページ側のリンクを直す必要はありません。
+`vercel.json` でこのディレクトリに `no-cache` を設定してあるため、
+差し替え後すぐに新しいPDFが配信されます。
+
+なお「参考」は、卒業論文（「概念」「仮説」）とは独立した資料という位置づけです。
+文面を変更する際も、この独立性の明記（ページ冒頭の橙色の囲みと、トップページの該当箇所）は
+残すようにしてください。
 
 ### 概念の説明を直す
 

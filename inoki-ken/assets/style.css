@@ -277,6 +277,22 @@ a.card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(31,78,121,.10);
 .msg.ok{background:#eaf6ef;color:#1f6144;border:1px solid #bfe0cd}
 .auth-foot{text-align:center;margin:1.4em 0 0;font-size:.82rem}
 
+/* ---------- ダウンロード ---------- */
+.dl{
+  border:1px solid var(--navy);border-left-width:5px;
+  background:var(--blue-pale);border-radius:var(--radius);
+  padding:20px 24px;margin:1.8em 0;
+}
+.dl .box-title{font-weight:700;color:var(--navy);margin:0 0 .5em}
+.dl p{margin:0 0 1em;font-size:.93rem;color:var(--ink-2)}
+.dl-btn{
+  display:inline-block;text-decoration:none;font-weight:700;font-size:.95rem;
+  background:var(--navy);color:#fff;border:1px solid var(--navy);
+  padding:11px 22px;border-radius:8px;
+}
+.dl-btn:hover{background:#17395a;color:#fff}
+.dl-meta{font-size:.8rem;color:var(--ink-3);margin:.7em 0 0}
+
 /* ---------- 管理画面 ---------- */
 .admin-bar{
   background:var(--navy);color:#fff;padding:9px 0;font-size:.85rem;
