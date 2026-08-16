@@ -318,7 +318,7 @@
         card.innerHTML =
           '<div class="file-card-header">' +
           '  <div>' +
-          '    <div class="file-no">No. ' + escapeHtml(f.no) + '</div>' +
+          '    <div class="file-no">No. ' + escapeHtml(normalizeNo(f.no)) + '</div>' +
           '    <div class="file-title">' + escapeHtml(f.title) + '</div>' +
           '  </div>' +
           '  ' + badge +
@@ -352,6 +352,11 @@
 
   function escapeHtml(str) {
     return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // 項目番号は表示側で「No. 」を付けるため、値に含まれる「No.」は取り除く
+  function normalizeNo(no) {
+    return String(no || '').replace(/^\s*(?:no|ｎｏ|Ｎｏ)\s*[.．]?\s*/i, '');
   }
 })();
 </script>

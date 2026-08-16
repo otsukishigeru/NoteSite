@@ -120,13 +120,17 @@ export default async function handler(req, res) {
   // ⑦ ファイル更新
   // ──────────────────────────────────────────────────────────
   if (action === 'updateFile') {
-    const { file } = body;
+    const { file, originalNo } = body;
     if (!file || !file.no || !file.title || !file.filename)
       return res.status(400).json({ ok: false, error: 'no・title・filenameは必須です' });
     const raw = await kvGet('lib:files');
     const files = raw ? JSON.parse(raw) : [];
-    const idx = files.findIndex(f => f.no === file.no);
+    // originalNo があれば項目番号の付け替えとして扱う
+    const key = originalNo || file.no;
+    const idx = files.findIndex(f => f.no === key);
     if (idx === -1) return res.status(404).json({ ok: false, error: '該当ファイルが見つかりません' });
+    if (file.no !== key && files.some((f, i) => i !== idx && f.no === file.no))
+      return res.status(400).json({ ok: false, error: '同じ項目番号が既に登録されています' });
     files[idx] = file;
     files.sort((a, b) => a.no.localeCompare(b.no));
     await kvSet('lib:files', JSON.stringify(files));
