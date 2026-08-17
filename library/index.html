@@ -285,7 +285,9 @@
         libStatus.textContent = 'ファイル情報の取得に失敗しました。';
         return;
       }
-      var files = d.files || [];
+      var files = (d.files || []).slice().sort(function (a, b) {
+        return normalizeNo(b.no).localeCompare(normalizeNo(a.no));
+      });
       if (files.length === 0) {
         libStatus.style.display = '';
         libStatus.textContent = 'ダウンロードファイルはまだありません。';
