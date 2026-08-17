@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>inoki-ken ｜ 生成AI時代の要求工学</title>
+<title>AI時代の要求工学 意識調査</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
 <!-- ============ ログイン画面 ============ -->
 <div id="login-view" class="auth-wrap">
   <div class="auth-card">
-    <h1>inoki-ken</h1>
-    <p class="sub">生成AI時代の要求工学</p>
+    <h1>AI時代の要求工学</h1>
+    <p class="sub">意識調査</p>
     <div id="login-msg" class="msg err" style="display:none"></div>
     <form id="login-form" autocomplete="off">
       <div class="field">
@@ -29,7 +29,7 @@
       <button type="submit" id="login-btn" class="btn">入る</button>
     </form>
     <p class="auth-foot quiet">
-      このページは限られた関係者向けの学習用サイトです。<br>
+      このページは、調査にご協力いただく方に向けた限定公開のサイトです。<br>
       IDをお持ちでない場合は管理者にお問い合わせください。
     </p>
   </div>
@@ -41,10 +41,12 @@
 <header class="site-head">
   <div class="wrap head-inner">
     <a class="brand" href="./">
-      <span class="brand-name">inoki-ken</span>
-      <span class="brand-sub">生成AI時代の要求工学</span>
+      <span class="brand-name">AI時代の要求工学</span>
+      <span class="brand-sub">意識調査</span>
     </a>
     <nav class="site-nav">
+      <a href="./" class="on">ホーム</a>
+      <a href="surveys/">アンケート</a>
       <a href="concept/">概念</a>
       <a href="hypo/">仮説</a>
       <a href="guide/">参考</a>
@@ -56,134 +58,190 @@
 <div class="wrap">
 
   <div class="page-head">
-    <p class="eyebrow">inoki-ken</p>
-    <h1>生成AI時代の要求工学</h1>
-    <p class="sub">卒業論文にむけた、概念の土台と仮説命題の整理</p>
+    <p class="eyebrow">survey site</p>
+    <h1>AI時代の要求工学 意識調査</h1>
+    <p class="sub">要求工学を、社会的な必要に応えるものにしていくために</p>
   </div>
 
   <p class="lead">
-    このサイトには、卒業論文にむけた二つの資料をWebで読める形にまとめてあります。
-    はじめての方は「概念」から読み進めると、「仮説」の記述が理解しやすくなります。
-  </p>
-
-  <div class="cards two">
-
-    <a class="card" href="concept/">
-      <h3>概念 ── 押さえておくとよい事項</h3>
-      <p>
-        『思考の技法 2.0』の三本柱（目的／抽象化・具体化／コミュニケーション）と、
-        その背景にある新実在論を、図と定義を追いながら学べます。
-      </p>
-      <p class="meta">7章／図4点／理解チェックつき</p>
-      <p class="go">読みはじめる →</p>
-    </a>
-
-    <a class="card" href="hypo/">
-      <h3>仮説 ── 五つの命題</h3>
-      <p>
-        分析の軸から立てられた五つの仮説を、附番つきの命題として並べています。
-        番号や語句で絞り込みながら参照できます。
-      </p>
-      <p class="meta">主命題5件／下位命題30件／一覧表つき</p>
-      <p class="go">読みはじめる →</p>
-    </a>
-
-  </div>
-
-  <p class="lead" style="margin-top:2.2em">
-    これとは別に、卒業論文とは独立した参考資料を一つ置いています。
-  </p>
-
-  <div class="cards">
-    <a class="card" href="guide/">
-      <h3>参考 ── AI・思考の技法による純粋要求定義法 入門</h3>
-      <p>
-        『思考の技法 2.0』から純粋に演繹して抽出された、それ自体で完結した一つの方法論です。
-        八つの原理、五つの局面、五つの技法を、演習とチェックリストつきで学べます。
-        <strong>卒業論文の仮説を前提とするものでも、その検証を目的とするものでもありません。</strong>
-      </p>
-      <p class="meta">8章／演習5題／本格版PDFのダウンロードつき</p>
-      <p class="go">読みはじめる →</p>
-    </a>
-  </div>
-
-  <h2 id="about">このサイトについて</h2>
-
-  <p>
-    「概念」と「仮説」のもとになっているのは、『小西さん卒論関連のまとめ』（2026年7月28日）という一つの資料です。
-    その前半にあたる概念の整理を「概念」に、後半にあたる分析の軸とそこから立てられた仮説を「仮説」に、
-    それぞれ独立させました。
+    このサイトは、生成AIが日常の道具となった時代において、要求工学がどのように受け止められ、
+    どのように使われ、そして何が足りないと感じられているのかを調べるためのものです。
+    調査によって集められた事実を手がかりに、要求工学を社会的な必要に応えるものへと組み替えていくこと。
+    それが、ここで行っている一連の調査の目的です。
   </p>
 
   <p>
-    「参考」だけは出自が異なります。
-    こちらは『AI 時代の要求定義 ──『思考の技法 2.0』からの演繹による方法論の提案　第 2 版』を
-    もとにした入門版であり、卒業論文とは独立した資料です。
-    依拠している概念は「概念」のページと共通していますので、あわせて読むと理解が進みます。
+    要求工学は長く体系化されてきた分野ですが、その体系が実際にどこまで届いているかは、
+    意外なほど分かっていません。無論、教科書に書かれていることと、現場で起きていることとが
+    一致しているという保証もありません。つまり、まず調べなければならないということになります。
+  </p>
+
+  <h2 id="surveys">アンケート</h2>
+
+  <p>
+    現在お答えいただけるアンケートを並べています。どれか一つだけにお答えいただいても構いませんし、
+    順序も問いません。それぞれ「回答する」に進むと、まずその調査の〈目的〉と実施条件、
+    そして結果をどのように検討するかの方針が示されます。
+    内容にご納得いただいたうえで、お答えいただければと思います。
+  </p>
+
+  <div id="sv-list" class="sv-cards">
+    <p class="empty-note">読み込んでいます…</p>
+  </div>
+
+  <p style="text-align:center;margin:1.6em 0 0">
+    <a class="sv-btn ghost" href="surveys/">アンケート一覧のページへ →</a>
+  </p>
+
+  <h2 id="about">この調査について</h2>
+
+  <p>
+    ここで行っている調査は、五つの視点から組み立てられています。
+    第一に、要求工学の中核概念がどこまで共有された知識になっているか。
+    第二に、要求を定める作業のどの局面で生成AIが実際に使われているか。
+    第三に、要求定義のどこに難所があるのか。
+    第四に、要求を考えるときの思考の傾向はどのようなものか。
+    第五に、求められる要求技術者像について、学ぶ側と実務の側とで認識がどれだけ隔たっているか。
+  </p>
+
+  <p>
+    これら五つは、それぞれ独立にお答えいただけますが、互いに関係しています。
+    たとえば、概念の理解度が低い層でAIの活用度が高いという結果が出たとすれば、
+    それは〈抽象化〉の負担をAIが肩代わりしていることを意味するのかもしれませんし、
+    逆に、理解がないままAIに委ねているということなのかもしれません。
+    いずれであるかは、複数の調査を重ね合わせてはじめて見えてきます。
   </p>
 
   <div class="box">
-    <p class="box-title">「概念」と「仮説」の関係</p>
+    <p class="box-title">お答えいただいた内容の扱い</p>
     <p>
-      「概念」は道具であり、「仮説」はその道具を使って書かれたものです。
-      仮説のページには、原文にはなかった命題が21件含まれています。
-      それらはすべて、概念のページで説明している三本柱から導かれたものです。
+      いずれの調査でも、氏名・所属機関名・連絡先といった、個人を特定しうる項目は一切採取しません。
+      採取するのは、立場・分野・要求工学の学習レベル・プログラミング経験・生成AIの活用経験という
+      五つのプロフィール項目と、設問へのお答えだけです。
     </p>
     <p style="margin-bottom:0">
-      したがって、仮説の記述に納得がいかないと感じたときは、概念のページに戻ってみてください。
-      多くの場合、どの概念をどう使ったかを確かめることで解決します。
+      送信された回答は匿名のまま統計的に集計されます。個々の回答が単独で公開されることはありません。
+      集計の結果は、各アンケートの「集計を見る」からどなたでもご覧いただけます。
     </p>
   </div>
 
-  <div class="box warn">
-    <p class="box-title">「参考」の位置づけ</p>
-    <p style="margin-bottom:0">
-      「参考」で扱う〈純粋要求定義法〉は、<strong>卒業論文とは独立した、それ自体で完結した一つの方法論です。</strong>
-      『思考の技法 2.0』から純粋に演繹して抽出された手法であり、仮説（H1〜H5）を前提とするものでも、
-      その検証を目的とするものでもありません。
-      つまり、そこに書かれていることの正しさは、卒論の仮説が正しいかどうかとは無関係に成り立ちます。
-      あくまでも参考資料として、独立に読める形で置いてあります。
-    </p>
-  </div>
+  <h2 id="how">調査の進め方</h2>
 
-  <h2 id="how">読み方の目安</h2>
+  <p>
+    それぞれの調査は、案内・プロフィール・設問・確認・送信という五つの段階で進みます。
+    設問は選択式を中心に構成してあり、記述式は各調査で多くても一問、しかも任意としています。
+    回答者の負担をできるだけ小さくし、そのぶん多くの方からお答えをいただくためです。
+  </p>
+
+  <p>
+    すべての設問にお答えいただいたあとには、内容を確認する画面が出ます。
+    そこで見直してから送信していただく形ですので、途中で誤ってお答えになっても心配は要りません。
+    また、画面から一問ずつお答えいただく代わりに、表計算ソフトで記入した表を
+    そのまま提出していただくこともできます。どちらの経路を選んでも、結果はまったく等価です。
+  </p>
 
   <div class="tbl-scroll">
     <table class="tbl">
       <thead>
-        <tr><th style="width:26%">目的</th><th>おすすめの順序</th></tr>
+        <tr><th style="width:26%">お立場</th><th>おすすめの順序</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>全体をつかみたい</td>
-          <td>概念の第1章（三本柱の全体像）→ 仮説の「五つの仮説の順序」→ 仮説の一覧表</td>
+          <td>要求工学を学んでいる方</td>
+          <td>要求工学リテラシー実態調査 →　要求思考の特性セルフチェック →　要求定義の困難度調査</td>
         </tr>
         <tr>
-          <td>卒論のテーマを選びたい</td>
-          <td>仮説の一覧表 → 気になった主命題の詳細 → その仮説が使っている概念</td>
+          <td>実務で要求を扱う方</td>
+          <td>要求定義の困難度調査 →　生成AI活用実態調査 →　期待される要求技術者像ギャップ調査</td>
         </tr>
         <tr>
-          <td>概念をきちんと理解したい</td>
-          <td>概念を第0章から順に。各章末の理解チェックで確認しながら</td>
+          <td>教える立場の方</td>
+          <td>期待される要求技術者像ギャップ調査 →　要求工学リテラシー実態調査 →　各調査の集計ページ</td>
         </tr>
         <tr>
-          <td>用語の意味を確かめたい</td>
-          <td>概念の第5章（新実在論の用語）と第6章（意味の場とドメイン）</td>
-        </tr>
-        <tr>
-          <td>要求定義の手順を知りたい</td>
-          <td>参考の第4章（五つの局面）と第5章（五つの技法）→ 第7章の演習</td>
+          <td>まず自分のことを知りたい方</td>
+          <td>要求思考の特性セルフチェック（送信直後に結果が表示されます）</td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <h2 id="sub">補足の資料</h2>
+
+  <p>
+    アンケートの背景にある考え方については、次の三つのページに整理してあります。
+    お答えいただくうえで必ずしも読む必要はありませんが、設問の意図をつかみたいときや、
+    答えに迷ったときの手がかりとしてお使いください。
+  </p>
+
+  <div class="cards">
+
+    <a class="card" href="concept/">
+      <h3>概念 ── 押さえておくとよい事項</h3>
+      <p>
+        〈目的〉〈抽象化・具体化〉〈コミュニケーション〉という三本柱と、
+        その背景にある新実在論を、図と定義を追いながら確かめられます。
+        設問の言葉づかいは、この枠組みに沿って選ばれています。
+      </p>
+      <p class="meta">7章／図4点／理解チェックつき</p>
+      <p class="go">読む →</p>
+    </a>
+
+    <a class="card" href="hypo/">
+      <h3>仮説 ── 五つの命題</h3>
+      <p>
+        調査の設計のもとになっている分析の軸と、そこから立てられた五つの仮説を、
+        附番つきの命題として並べています。番号や語句で絞り込みながら参照できます。
+      </p>
+      <p class="meta">主命題5件／下位命題30件／一覧表つき</p>
+      <p class="go">読む →</p>
+    </a>
+
+    <a class="card" href="guide/">
+      <h3>参考 ── AI・思考の技法による純粋要求定義法 入門</h3>
+      <p>
+        『思考の技法 2.0』から純粋に演繹して抽出された、それ自体で完結した一つの方法論です。
+        八つの原理、五つの局面、五つの技法を、演習とチェックリストつきで学べます。
+        <strong>アンケートの前提となるものでも、その検証を目的とするものでもありません。</strong>
+      </p>
+      <p class="meta">8章／演習5題／本格版PDFのダウンロードつき</p>
+      <p class="go">読む →</p>
+    </a>
+
+  </div>
+
   <div class="box warn">
-    <p class="box-title">このサイトが扱っていないこと</p>
+    <p class="box-title">「参考」の位置づけ</p>
     <p style="margin-bottom:0">
-      仮説をどう実証するか、どのような方法で検証するかについては、ここでは述べていません。
-      命題を先に確定させ、方法をあとから考えるという順序を守るためです。
-      検証の設計は、仮説ごとの研究計画として別に扱います。
+      「参考」で扱う〈純粋要求定義法〉は、<strong>この調査とは独立した、それ自体で完結した一つの方法論です。</strong>
+      『思考の技法 2.0』から純粋に演繹して抽出された手法であり、アンケートの仮説（H1〜H5）を前提とするものでも、
+      その検証を目的とするものでもありません。
+      つまり、そこに書かれていることの正しさは、調査の結果がどうであるかとは無関係に成り立ちます。
+      あくまでも参考資料として、独立に読める形で置いてあります。
+    </p>
+  </div>
+
+  <h2 id="policy">結果の公開について</h2>
+
+  <p>
+    集計の結果は、回答が集まりしだい、各アンケートの集計ページに反映されます。
+    ただし、回答数が10件に満たないうちは速報値として扱い、その旨を明示します。
+    件数が少ないうちは、一人の回答が平均を大きく動かしてしまうためです。
+  </p>
+
+  <p>
+    集計ページからは、もとになっている回答をCSV形式で書き出すこともできます。
+    Googleスプレッドシートや Dropbox に取り込んで、独自の分析を行っていただいて構いません。
+    調査の値打ちは、集めた者だけが抱え込むところにではなく、多くの目で読み直されるところにあります。
+  </p>
+
+  <div class="box plain">
+    <p class="box-title">設問は変わっていきます</p>
+    <p style="margin-bottom:0">
+      アンケートの設問は、調査を進めながら追加・変更されることがあります。
+      分かってきたことに応じて問いを立て直すのは、調査として当然の営みだからです。
+      設問が変わった場合も、それまでにお寄せいただいた回答は保持され、
+      共通する設問については引き続き集計の対象となります。
     </p>
   </div>
 
@@ -191,13 +249,14 @@
 </main>
 <footer class="site-foot">
   <div class="wrap">
-    <p>本サイトの内容は『思考の技法 2.0』および関連資料にもとづく学習用の整理です。</p>
-    <p class="quiet">出典：『小西さん卒論関連のまとめ』（S.Otsuki, 2026.7.28）／ArtOfThought.docx ／ Hypo.docx</p>
+    <p>本サイトは、AI時代の要求工学に関する意識調査を行い、要求工学を社会的な必要に応えるものにしていくことを目的としています。</p>
+    <p class="quiet">回答は匿名で集計され、統計的な分析にのみ用いられます。</p>
   </div>
 </footer>
 </div>
 
 <script src="assets/site.js"></script>
+<script src="assets/sv.js"></script>
 <script>
 (function () {
   'use strict';
@@ -208,20 +267,78 @@
   var loginBtn  = document.getElementById('login-btn');
   var loginMsg  = document.getElementById('login-msg');
   var logoutLink= document.getElementById('logout-link');
+  var listed    = false;
 
   function params() {
     return new URLSearchParams(location.search);
   }
 
   function safeBack(back) {
-    // 自サイト内の相対パスだけを許可する（外部サイトへ飛ばされないように）
-    if (typeof back === 'string' && /^\/(?!\/)[A-Za-z0-9_\-\/.]*$/.test(back)) return back;
+    // 自サイト内の相対パス（必要ならクエリつき）だけを許可する（外部サイトへ飛ばされないように）
+    if (typeof back === 'string' &&
+        /^\/(?!\/)[A-Za-z0-9_\-\/.]*(\?[A-Za-z0-9_\-=&.%]*)?$/.test(back)) return back;
     return null;
+  }
+
+  /* ---------- アンケートカードの読み込み ---------- */
+  function countQuestions(s) {
+    var n = 0, t = 0;
+    (s.sections || []).forEach(function (sec) {
+      (sec.questions || []).forEach(function (q) { n++; if (q.type === 'text') t++; });
+    });
+    return { total: n, text: t };
+  }
+
+  function statusBadge(s) {
+    if (s.status === 'closed') return '<span class="badge closed">受付終了</span>';
+    if (s.status === 'draft')  return '<span class="badge draft">準備中</span>';
+    return '<span class="badge open">受付中</span>';
+  }
+
+  function loadSurveys() {
+    if (listed) return;
+    listed = true;
+    var box = document.getElementById('sv-list');
+
+    Promise.all([
+      SV.api({ action: 'getSurveys' }),
+      SV.api({ action: 'getCounts' })
+    ]).then(function (r) {
+      var d = r[0], cn = (r[1] && r[1].counts) || {};
+      if (!d.ok) { box.innerHTML = '<p class="empty-note">' + SV.esc(d.error || '読み込みに失敗しました') + '</p>'; return; }
+      var surveys = (d.def.surveys || []);
+      if (!surveys.length) { box.innerHTML = '<p class="empty-note">公開中のアンケートはありません。</p>'; return; }
+
+      box.innerHTML = surveys.map(function (s) {
+        var c = countQuestions(s);
+        var open = s.status !== 'closed' && s.status !== 'draft';
+        var sid = encodeURIComponent(s.id);
+        var actions = open
+          ? '<a class="sv-btn" href="surveys/take.html?s=' + sid + '">回答する →</a>' +
+            '<a class="sv-btn ghost" href="surveys/report.html?s=' + sid + '">集計を見る</a>' +
+            '<a class="sv-btn ghost" href="surveys/sheet.html?s=' + sid + '">表形式で回答</a>'
+          : '<a class="sv-btn ghost" href="surveys/report.html?s=' + sid + '">集計を見る</a>';
+
+        return '<article class="sv-card" style="--c:' + SV.esc(s.color || '#2e74b5') + '">' +
+          '<p class="sv-eyebrow">' + SV.esc(s.eyebrow || 'Survey') + '</p>' +
+          '<h3>' + SV.esc(s.title) + '</h3>' +
+          '<p class="sv-summary">' + SV.esc(s.summary || '') + '</p>' +
+          '<div class="sv-actions">' + actions + '</div>' +
+          '<p class="sv-meta">' + statusBadge(s) +
+            '<span>約' + (s.minutes || 5) + '分</span>' +
+            '<span>設問' + c.total + '問' + (c.text ? '（記述' + c.text + '問）' : '') + '</span>' +
+            '<span>回答' + (cn[s.id] == null ? '—' : cn[s.id]) + '件</span>' +
+          '</p></article>';
+      }).join('');
+    }).catch(function () {
+      box.innerHTML = '<p class="empty-note">通信に失敗しました。時間をおいてお試しください。</p>';
+    });
   }
 
   function showSite() {
     loginView.style.display = 'none';
     siteView.style.display  = '';
+    loadSurveys();
   }
 
   function showLogin(msg) {

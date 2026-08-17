@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>アンケート一覧 ｜ AI時代の要求工学 意識調査</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+if (sessionStorage.getItem('inoki_ok') !== '1') {
+  location.replace('../?back=' + encodeURIComponent(location.pathname));
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">surveys</p>
+    <h1>アンケート一覧</h1>
+    <p class="sub">AI時代の要求工学について、五つの視点から意識を調べています</p>
+  </div>
+
+  <p class="lead">
+    このページには、現在お答えいただけるアンケートを並べてあります。
+    どれか一つだけにお答えいただいても構いませんし、順序も問いません。
+    それぞれのカードから「回答する」に進むと、まずその調査の〈目的〉と実施条件、
+    そして結果をどのように検討するかの方針が示されます。
+    内容にご納得いただいたうえで、お答えいただければと思います。
+  </p>
+
+  <div class="box">
+    <p class="box-title">お答えいただく前に</p>
+    <p>
+      いずれの調査でも、氏名・所属機関名・連絡先といった、個人を特定しうる項目は一切採取しません。
+      採取するのは、立場・分野・要求工学の学習レベル・プログラミング経験・生成AIの活用経験という五つのプロフィール項目だけです。
+      これらは、回答の傾向を層ごとに比べるために用います。
+    </p>
+    <p style="margin-bottom:0">
+      回答は、すべての設問にお答えいただいたあとで内容を確認する画面が出ます。
+      そこで見直してから送信していただく形ですので、途中で誤ってお答えになっても心配は要りません。
+    </p>
+  </div>
+
+  <div id="list" class="sv-cards">
+    <p class="empty-note">読み込んでいます…</p>
+  </div>
+
+  <h2 id="method">アンケートの進め方</h2>
+
+  <p>
+    それぞれの調査は、案内・プロフィール・設問・確認・送信という五つの段階で進みます。
+    設問は選択式を中心に構成してあり、記述式は各調査で多くても一問、しかも任意としています。
+    回答者の負担をできるだけ小さくし、そのぶん多くの方からお答えをいただくためです。
+  </p>
+
+  <p>
+    お答えいただいた内容は、その場で集計に加わります。
+    各カードの「集計を見る」からは、いま集まっている回答の分布と分析をご覧いただけます。
+    自分の回答が全体のどのあたりに位置しているのかを確かめながら読むと、
+    数字の意味がつかみやすくなります。
+  </p>
+
+  <div class="box plain">
+    <p class="box-title">表形式でお答えになりたい方へ</p>
+    <p style="margin-bottom:0">
+      各カードの「表形式で回答」からは、設問を一行にまとめた表（CSV）の雛形をダウンロードできます。
+      表計算ソフトで記入したものを貼り戻していただければ、画面からお答えいただいた場合とまったく同じ扱いになります。
+      複数の方の回答をまとめて提出したい場合や、手元に控えを残したい場合にお使いください。
+    </p>
+  </div>
+
+  <h2 id="sub">補足の資料</h2>
+
+  <p>
+    アンケートの背景にある考え方については、次の三つのページに整理してあります。
+    お答えいただくうえで必ずしも読む必要はありませんが、
+    設問の意図をつかみたいときや、答えに迷ったときの手がかりとしてお使いください。
+  </p>
+
+  <div class="cards">
+    <a class="card" href="../concept/">
+      <h3>概念 ── 押さえておくとよい事項</h3>
+      <p>〈目的〉〈抽象化・具体化〉〈コミュニケーション〉という三本柱と、その背景にある考え方を、図と定義を追いながら確かめられます。</p>
+      <p class="go">読む →</p>
+    </a>
+    <a class="card" href="../hypo/">
+      <h3>仮説 ── 五つの命題</h3>
+      <p>調査の設計のもとになっている分析の軸と、そこから立てられた命題を並べてあります。</p>
+      <p class="go">読む →</p>
+    </a>
+    <a class="card" href="../guide/">
+      <h3>参考 ── 純粋要求定義法 入門</h3>
+      <p>八つの原理、五つの局面、五つの技法からなる、独立した一つの方法論です。演習とチェックリストがついています。</p>
+      <p class="go">読む →</p>
+    </a>
+  </div>
+
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="../assets/sv.js"></script>
+<script>
+(function () {
+  'use strict';
+  if (!SV.guard()) return;
+  SV.mountChrome('surveys');
+
+  var list = document.getElementById('list');
+
+  function countQuestions(s) {
+    var n = 0, t = 0;
+    (s.sections || []).forEach(function (sec) {
+      (sec.questions || []).forEach(function (q) { n++; if (q.type === 'text') t++; });
+    });
+    return { total: n, text: t };
+  }
+
+  function statusBadge(s) {
+    if (s.status === 'closed') return '<span class="badge closed">受付終了</span>';
+    if (s.status === 'draft')  return '<span class="badge draft">準備中</span>';
+    return '<span class="badge open">受付中</span>';
+  }
+
+  function card(s, count) {
+    var c = countQuestions(s);
+    var open = s.status !== 'closed' && s.status !== 'draft';
+    var sid = encodeURIComponent(s.id);
+    var actions = open
+      ? '<a class="sv-btn" href="take.html?s=' + sid + '">回答する →</a>' +
+        '<a class="sv-btn ghost" href="report.html?s=' + sid + '">集計を見る</a>' +
+        '<a class="sv-btn ghost" href="sheet.html?s=' + sid + '">表形式で回答</a>'
+      : '<a class="sv-btn ghost" href="report.html?s=' + sid + '">集計を見る</a>';
+
+    return '<article class="sv-card" style="--c:' + SV.esc(s.color || '#2e74b5') + '">' +
+      '<p class="sv-eyebrow">' + SV.esc(s.eyebrow || 'Survey') + '</p>' +
+      '<h3>' + SV.esc(s.title) + '</h3>' +
+      '<p class="sv-summary">' + SV.esc(s.summary || '') + '</p>' +
+      '<div class="sv-actions">' + actions + '</div>' +
+      '<p class="sv-meta">' + statusBadge(s) +
+        '<span>約' + (s.minutes || 5) + '分</span>' +
+        '<span>設問' + c.total + '問' + (c.text ? '（記述' + c.text + '問）' : '') + '</span>' +
+        '<span>回答' + (count == null ? '—' : count) + '件</span>' +
+      '</p>' +
+    '</article>';
+  }
+
+  Promise.all([
+    SV.api({ action: 'getSurveys' }),
+    SV.api({ action: 'getCounts' })
+  ]).then(function (r) {
+    var d = r[0], cn = (r[1] && r[1].counts) || {};
+    if (!d.ok) { list.innerHTML = '<p class="empty-note">' + SV.esc(d.error || '読み込みに失敗しました') + '</p>'; return; }
+    var surveys = d.def.surveys || [];
+    if (!surveys.length) { list.innerHTML = '<p class="empty-note">公開中のアンケートはありません。</p>'; return; }
+    list.innerHTML = surveys.map(function (s) { return card(s, cn[s.id]); }).join('');
+  }).catch(function () {
+    list.innerHTML = '<p class="empty-note">通信に失敗しました。時間をおいてお試しください。</p>';
+  });
+})();
+</script>
+</body>
+</html>

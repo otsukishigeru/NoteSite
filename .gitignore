@@ -7,3 +7,6 @@ wireframes/
 .env.local
 .env
 .env.*.local
+
+# Claude Code の作業用ワークツリー（数百MBになるため除外）
+.claude/worktrees/

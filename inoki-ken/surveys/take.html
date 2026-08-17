@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>回答 ｜ AI時代の要求工学 意識調査</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+if (sessionStorage.getItem('inoki_ok') !== '1') {
+  location.replace('../?back=' + encodeURIComponent(location.pathname + location.search));
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+  <div id="stage"><p class="empty-note">読み込んでいます…</p></div>
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="../assets/sv.js"></script>
+<script>
+(function () {
+  'use strict';
+  if (!SV.guard()) return;
+  SV.mountChrome('surveys');
+
+  var stage = document.getElementById('stage');
+  var sid = SV.qs('s');
+  var DEF = null, SURVEY = null;
+  var state = { profile: {}, answers: {} };
+  var steps = [];      // {kind:'intro'|'profile'|'section'|'confirm'|'done', section?}
+  var cur = 0;
+
+  function fail(msg) {
+    stage.innerHTML = '<div class="page-head"><h1>アンケート</h1></div>' +
+      '<p class="empty-note">' + SV.esc(msg) + '</p>' +
+      '<p style="text-align:center"><a class="sv-btn ghost" href="./">一覧に戻る</a></p>';
+  }
+
+  /* ---------- 進み具合の表示 ---------- */
+  function stepsHTML() {
+    var labels = steps.map(function (st) {
+      if (st.kind === 'intro') return '案内';
+      if (st.kind === 'profile') return 'プロフィール';
+      if (st.kind === 'section') return st.section.label;
+      if (st.kind === 'confirm') return '確認';
+      return '送信';
+    });
+    return '<ol class="wiz-steps">' + labels.map(function (l, i) {
+      var cls = i === cur ? 'on' : (i < cur ? 'done' : '');
+      return '<li class="' + cls + '">' + SV.esc(l) + '</li>';
+    }).join('') + '</ol>';
+  }
+
+  function barHTML(backLabel, nextLabel, nextId) {
+    return '<div class="wiz-bar">' +
+      (backLabel ? '<button type="button" class="btn sub mini" id="wiz-back">' + SV.esc(backLabel) + '</button>' : '<span></span>') +
+      '<span class="progress">' + (cur + 1) + ' / ' + steps.length + '</span>' +
+      (nextLabel ? '<button type="button" class="btn mini" id="' + (nextId || 'wiz-next') + '">' + SV.esc(nextLabel) + '</button>' : '<span></span>') +
+      '</div>';
+  }
+
+  /* ---------- 各画面 ---------- */
+  function renderIntro() {
+    var s = SURVEY;
+    var closed = s.status === 'closed' || s.status === 'draft';
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">' + SV.esc(s.eyebrow || 'Survey') + '</p>' +
+      '<h1>' + SV.esc(s.title) + '</h1>' +
+      '<p class="sub">' + SV.esc(s.summary || '') + '</p></div>' +
+      stepsHTML() +
+      '<h2>この調査の目的</h2><p>' + SV.esc(s.purpose || '') + '</p>' +
+      '<h2>実施の条件</h2><ul class="dots">' +
+        (s.conditions || []).map(function (c) { return '<li>' + SV.esc(c) + '</li>'; }).join('') +
+      '</ul>' +
+      '<h2>結果の検討方針</h2><p>' + SV.esc(s.policy || '') + '</p>' +
+      '<div class="box plain"><p class="box-title">個人情報の取り扱い</p>' +
+      '<p style="margin-bottom:0">氏名・所属機関名・連絡先など、個人を特定しうる項目は一切採取しません。' +
+      '採取するのは、次の画面でお尋ねする五つのプロフィール項目と、設問へのお答えだけです。' +
+      '送信された回答は匿名のまま統計的に集計され、個々の回答が単独で公開されることはありません。</p></div>' +
+      (closed
+        ? '<p class="empty-note">このアンケートは現在お答えいただけません。</p>' +
+          '<p style="text-align:center"><a class="sv-btn ghost" href="report.html?s=' + encodeURIComponent(s.id) + '">集計を見る</a></p>'
+        : barHTML('', '回答をはじめる →'));
+    bind();
+  }
+
+  function renderProfile() {
+    var html = DEF.profile.map(function (f, i) { return SV.fieldHTML(f, i + 1); }).join('');
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">profile</p><h1>プロフィール</h1>' +
+      '<p class="sub">回答の傾向を層ごとに比べるためにお尋ねします</p></div>' +
+      stepsHTML() +
+      '<p class="lead">あてはまるものを一つずつお選びください。すべて必須です。' +
+      '当てはまるものがない場合は、最も近いものをお選びいただければ結構です。</p>' +
+      '<div id="qs">' + html + '</div>' +
+      barHTML('← 案内に戻る', '次へ →');
+    restoreProfile();
+    bind();
+  }
+
+  function renderSection(sec) {
+    var no = questionNumberBase(sec);
+    var html = (sec.questions || []).map(function (q, i) {
+      return SV.questionHTML(q, SURVEY, no + i + 1);
+    }).join('');
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">' + SV.esc(SURVEY.title) + '</p>' +
+      '<h1>' + SV.esc(sec.label) + '</h1></div>' +
+      stepsHTML() +
+      '<div class="sv-section-head" style="--c:' + SV.esc(sec.color || SURVEY.color || '#2e74b5') + '">' +
+        '<h2>' + SV.esc(sec.label) + '</h2>' +
+        (sec.note ? '<p class="note">' + SV.esc(sec.note) + '</p>' : '') +
+      '</div>' +
+      '<div id="qs">' + html + '</div>' +
+      barHTML('← 戻る', '次へ →');
+    restoreAnswers(sec);
+    bind();
+  }
+
+  function questionNumberBase(sec) {
+    var n = 0;
+    for (var i = 0; i < SURVEY.sections.length; i++) {
+      if (SURVEY.sections[i] === sec) break;
+      n += (SURVEY.sections[i].questions || []).length;
+    }
+    return n;
+  }
+
+  function renderConfirm() {
+    var blocks = '';
+
+    blocks += '<div class="confirm"><h3>プロフィール</h3><dl>' +
+      DEF.profile.map(function (f) {
+        var v = state.profile[f.id];
+        var text = f.type === 'multi'
+          ? (v || []).map(function (x) { return SV.labelOf(f, x); }).join('、')
+          : (f.type === 'text' ? v : SV.labelOf(f, v));
+        return '<dt>' + SV.esc(f.label) + '</dt><dd' + (text ? '' : ' class="empty"') + '>' +
+               SV.esc(text || '（未回答）') + '</dd>';
+      }).join('') + '</dl></div>';
+
+    SURVEY.sections.forEach(function (sec) {
+      blocks += '<div class="confirm"><h3>' + SV.esc(sec.label) + '</h3><dl>' +
+        (sec.questions || []).map(function (q) {
+          var v = state.answers[q.id];
+          var text;
+          if (q.type === 'likert') {
+            var sc = SV.scaleOf(q, SURVEY);
+            text = v == null ? '' : v + '（' + sc.min + '〜' + sc.max + 'の' + (sc.max - sc.min + 1) + '段階）';
+          } else if (q.type === 'multi') {
+            text = (v || []).map(function (x) { return SV.labelOf(q, x); }).join('、');
+          } else if (q.type === 'single') {
+            text = v == null ? '' : SV.labelOf(q, v);
+          } else {
+            text = v || '';
+          }
+          return '<dt>' + SV.esc(q.text) + '</dt><dd' + (text ? '' : ' class="empty"') + '>' +
+                 SV.esc(text || '（未回答）') + '</dd>';
+        }).join('') + '</dl></div>';
+    });
+
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">confirm</p><h1>回答内容の確認</h1>' +
+      '<p class="sub">この内容で送信してよろしければ、いちばん下の「送信する」を押してください</p></div>' +
+      stepsHTML() +
+      '<p class="lead">直したい箇所があれば「戻る」で該当の画面まで戻ってください。' +
+      '送信するまでは、内容はこの端末の中にとどまっており、どこにも送られていません。</p>' +
+      '<div id="submit-msg"></div>' +
+      blocks +
+      barHTML('← 戻る', '送信する', 'wiz-submit');
+    bind();
+  }
+
+  function renderDone(feedback) {
+    var fb = '';
+    if (feedback) {
+      fb = '<h2>あなたの回答の傾向</h2>' +
+        '<p>お答えいただいた内容から、柱ごとの平均を算出しました。' +
+        '優劣を示すものではなく、いまの重心がどこにあるかを表すものとしてご覧ください。</p>' +
+        '<div class="fb-grid">' + feedback.map(function (f) {
+          return '<div class="fb-row">' +
+            '<span class="fb-label">' + SV.esc(f.label) + '</span>' +
+            '<span class="bar-track"><span class="bar-fill" style="width:' + f.pct + '%;background:' + SV.esc(f.color) + '"></span></span>' +
+            '<span class="fb-val">' + SV.fmt(f.avg) + ' / ' + f.max + '</span>' +
+          '</div>';
+        }).join('') + '</div>' +
+        '<p class="report-note">全体の分布のなかでの位置は、集計ページでご確認いただけます。</p>';
+    }
+
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">thank you</p><h1>送信しました</h1>' +
+      '<p class="sub">ご協力をありがとうございました</p></div>' +
+      '<div class="box"><p class="box-title">受け付けました</p>' +
+      '<p style="margin-bottom:0">お答えいただいた内容は匿名のまま集計に加わりました。' +
+      'いま集まっている回答の分布は、下の「集計を見る」からご覧いただけます。</p></div>' +
+      fb +
+      '<div class="sv-actions" style="justify-content:center;margin-top:2em">' +
+      '<a class="sv-btn" href="report.html?s=' + encodeURIComponent(SURVEY.id) + '">集計を見る →</a>' +
+      '<a class="sv-btn ghost" href="./">ほかのアンケートを見る</a>' +
+      '</div>';
+  }
+
+  /* ---------- 入力の復元と取り込み ---------- */
+  function restoreProfile() {
+    DEF.profile.forEach(function (f) {
+      var v = state.profile[f.id];
+      if (v == null || v === '') return;
+      if (f.type === 'text') {
+        var ta = stage.querySelector('[name="p_' + f.id + '"]');
+        if (ta) ta.value = v;
+      } else {
+        (Array.isArray(v) ? v : [v]).forEach(function (x) {
+          var el = stage.querySelector('[name="p_' + f.id + '"][value="' + CSS.escape(String(x)) + '"]');
+          if (el) el.checked = true;
+        });
+      }
+    });
+  }
+
+  function restoreAnswers(sec) {
+    (sec.questions || []).forEach(function (q) {
+      var v = state.answers[q.id];
+      if (v == null || v === '') return;
+      if (q.type === 'text') {
+        var ta = stage.querySelector('[name="q_' + q.id + '"]');
+        if (ta) ta.value = v;
+      } else {
+        (Array.isArray(v) ? v : [v]).forEach(function (x) {
+          var el = stage.querySelector('[name="q_' + q.id + '"][value="' + CSS.escape(String(x)) + '"]');
+          if (el) el.checked = true;
+        });
+      }
+    });
+  }
+
+  function collectProfile() {
+    var missing = [];
+    DEF.profile.forEach(function (f) {
+      var v = SV.readBlock(stage, 'p_' + f.id, f.type);
+      state.profile[f.id] = v;
+      var empty = v == null || v === '' || (Array.isArray(v) && v.length === 0);
+      var block = stage.querySelector('[data-pid="' + f.id + '"]');
+      var need = empty && f.required !== false;
+      if (block) block.classList.toggle('need', need);
+      if (need) missing.push(block);
+    });
+    return missing;
+  }
+
+  function collectSection(sec) {
+    var missing = [];
+    (sec.questions || []).forEach(function (q) {
+      var v = SV.readBlock(stage, 'q_' + q.id, q.type);
+      if (q.type === 'multi' && q.max && v.length > q.max) v = v.slice(0, q.max);
+      state.answers[q.id] = v;
+      var empty = v == null || v === '' || (Array.isArray(v) && v.length === 0);
+      var block = stage.querySelector('[data-qid="' + q.id + '"]');
+      var need = empty && SV.isRequired(q);
+      if (block) block.classList.toggle('need', need);
+      if (need) missing.push(block);
+    });
+    return missing;
+  }
+
+  function warn(missing) {
+    var head = stage.querySelector('#qs');
+    var old = stage.querySelector('#need-msg');
+    if (old) old.remove();
+    var msg = document.createElement('div');
+    msg.id = 'need-msg';
+    msg.className = 'msg err';
+    msg.textContent = 'お答えいただいていない設問が ' + missing.length + ' 問あります（赤い枠の設問です）。';
+    head.parentNode.insertBefore(msg, head);
+    missing[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  /* ---------- 遷移 ---------- */
+  function go(i) {
+    cur = Math.max(0, Math.min(steps.length - 1, i));
+    var st = steps[cur];
+    if (st.kind === 'intro') renderIntro();
+    else if (st.kind === 'profile') renderProfile();
+    else if (st.kind === 'section') renderSection(st.section);
+    else if (st.kind === 'confirm') renderConfirm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function next() {
+    var st = steps[cur];
+    if (st.kind === 'profile') {
+      var m = collectProfile();
+      if (m.length) return warn(m);
+    } else if (st.kind === 'section') {
+      var m2 = collectSection(st.section);
+      if (m2.length) return warn(m2);
+    }
+    go(cur + 1);
+  }
+
+  function bind() {
+    var back = document.getElementById('wiz-back');
+    var nx = document.getElementById('wiz-next');
+    var sb = document.getElementById('wiz-submit');
+    if (back) back.addEventListener('click', function () { go(cur - 1); });
+    if (nx) nx.addEventListener('click', next);
+    if (sb) sb.addEventListener('click', submit);
+  }
+
+  /* ---------- 送信 ---------- */
+  function feedbackData() {
+    if (SURVEY.feedback !== 'sections') return null;
+    return SURVEY.sections.map(function (sec) {
+      var vals = [], max = 5;
+      (sec.questions || []).forEach(function (q) {
+        if (q.type !== 'likert') return;
+        var sc = SV.scaleOf(q, SURVEY);
+        max = sc.max;
+        var v = state.answers[q.id];
+        if (typeof v === 'number') vals.push(v);
+      });
+      var avg = SV.mean(vals);
+      return {
+        label: sec.label,
+        color: sec.color || SURVEY.color || '#2e74b5',
+        avg: avg, max: max,
+        pct: avg == null ? 0 : Math.round((avg / max) * 100)
+      };
+    }).filter(function (f) { return f.avg != null; });
+  }
+
+  function submit() {
+    var btn = document.getElementById('wiz-submit');
+    var msg = document.getElementById('submit-msg');
+    btn.disabled = true;
+    btn.textContent = '送信中…';
+    msg.innerHTML = '';
+
+    var fb = feedbackData();
+
+    SV.api({ action: 'submitSurvey', sid: SURVEY.id, profile: state.profile, answers: state.answers })
+      .then(function (d) {
+        if (!d.ok) {
+          btn.disabled = false;
+          btn.textContent = '送信する';
+          msg.innerHTML = '<div class="msg err">' + SV.esc(d.error || '送信に失敗しました') + '</div>';
+          return;
+        }
+        cur = steps.length - 1;
+        renderDone(fb);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = '送信する';
+        msg.innerHTML = '<div class="msg err">通信に失敗しました。もう一度お試しください。</div>';
+      });
+  }
+
+  /* ---------- 起動 ---------- */
+  if (!sid) { fail('アンケートが指定されていません。'); return; }
+
+  SV.api({ action: 'getSurveys' }).then(function (d) {
+    if (!d.ok) return fail(d.error || '読み込みに失敗しました');
+    DEF = d.def;
+    SURVEY = (DEF.surveys || []).filter(function (s) { return s.id === sid; })[0];
+    if (!SURVEY) return fail('該当するアンケートが見つかりませんでした。');
+
+    steps = [{ kind: 'intro' }, { kind: 'profile' }];
+    SURVEY.sections.forEach(function (sec) { steps.push({ kind: 'section', section: sec }); });
+    steps.push({ kind: 'confirm' }, { kind: 'done' });
+
+    document.title = SURVEY.title + ' ｜ AI時代の要求工学 意識調査';
+    go(0);
+  }).catch(function () {
+    fail('通信に失敗しました。時間をおいてお試しください。');
+  });
+})();
+</script>
+</body>
+</html>

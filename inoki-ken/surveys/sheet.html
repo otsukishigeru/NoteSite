@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>表形式で回答 ｜ AI時代の要求工学 意識調査</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+if (sessionStorage.getItem('inoki_ok') !== '1') {
+  location.replace('../?back=' + encodeURIComponent(location.pathname + location.search));
+}
+</script>
+</head>
+<body class="wide">
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+  <div id="stage"><p class="empty-note">読み込んでいます…</p></div>
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="../assets/sv.js"></script>
+<script>
+(function () {
+  'use strict';
+  if (!SV.guard()) return;
+  SV.mountChrome('surveys');
+
+  var stage = document.getElementById('stage');
+  var sid = SV.qs('s');
+  var DEF = null, SURVEY = null, COLS = null, PARSED = null;
+
+  var LABEL_KEY = 'key', LABEL_NAME = '項目', LABEL_HOW = '記入方法';
+
+  function fail(msg) {
+    stage.innerHTML = '<div class="page-head"><h1>表形式で回答</h1></div>' +
+      '<p class="empty-note">' + SV.esc(msg) + '</p>' +
+      '<p style="text-align:center"><a class="sv-btn ghost" href="./">一覧に戻る</a></p>';
+  }
+
+  /* ---------- 列の定義 ---------- */
+  function buildCols() {
+    var cols = [];
+    DEF.profile.forEach(function (f) {
+      cols.push({ key: 'p_' + f.id, kind: 'profile', def: f, name: f.label });
+    });
+    SV.allQuestions(SURVEY).forEach(function (q) {
+      cols.push({ key: 'q_' + q.id, kind: 'answer', def: q, name: q.text });
+    });
+    return cols;
+  }
+
+  function howTo(col) {
+    var d = col.def;
+    if (d.type === 'likert') {
+      var sc = SV.scaleOf(d, SURVEY);
+      return sc.min + '〜' + sc.max + 'の数字（' + sc.min + '＝' + (sc.low || '低') + '／' + sc.max + '＝' + (sc.high || '高') + '）';
+    }
+    if (d.type === 'text') return '自由記述（' + (d.maxlen || 200) + '字まで・任意）';
+    var list = (d.options || []).map(function (o, i) { return (i + 1) + '=' + o.label; }).join('／');
+    return (d.type === 'multi' ? '番号を｜（縦棒）で区切って複数：' : '番号を一つ：') + list;
+  }
+
+  /* ---------- 雛形の書き出し ---------- */
+  function template() {
+    var rows = [];
+    rows.push([LABEL_KEY].concat(COLS.map(function (c) { return c.key; })));
+    rows.push([LABEL_NAME].concat(COLS.map(function (c) { return c.name; })));
+    rows.push([LABEL_HOW].concat(COLS.map(howTo)));
+    for (var i = 1; i <= 3; i++) rows.push(['回答' + i].concat(COLS.map(function () { return ''; })));
+    return SV.toCsv(rows);
+  }
+
+  /* ---------- 読み取り ---------- */
+  function parseCsvText(text) {
+    // タブが含まれていれば表計算ソフトからの貼り付けとみなします
+    if (text.indexOf('\t') >= 0) {
+      return text.replace(/\r\n?/g, '\n').split('\n')
+        .filter(function (l) { return l.trim() !== ''; })
+        .map(function (l) { return l.split('\t'); });
+    }
+    var rows = [], row = [], cell = '', inQ = false;
+    text = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (inQ) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { cell += '"'; i++; }
+          else inQ = false;
+        } else cell += ch;
+      } else if (ch === '"') inQ = true;
+      else if (ch === ',') { row.push(cell); cell = ''; }
+      else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+      else cell += ch;
+    }
+    row.push(cell); rows.push(row);
+    return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ''; }); });
+  }
+
+  function coerce(col, raw) {
+    var d = col.def;
+    var s = String(raw == null ? '' : raw).trim();
+    if (s === '') return d.type === 'multi' ? [] : (d.type === 'text' ? '' : null);
+
+    if (d.type === 'likert') {
+      var n = Number(s.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }));
+      return Number.isFinite(n) ? Math.round(n) : null;
+    }
+    if (d.type === 'text') return s;
+
+    var pick = function (token) {
+      var t = token.trim();
+      if (t === '') return null;
+      var byVal = (d.options || []).filter(function (o) { return String(o.v) === t; })[0];
+      if (byVal) return String(byVal.v);
+      var byLabel = (d.options || []).filter(function (o) { return o.label === t; })[0];
+      if (byLabel) return String(byLabel.v);
+      var idx = Number(t.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }));
+      if (Number.isInteger(idx) && idx >= 1 && idx <= (d.options || []).length) return String(d.options[idx - 1].v);
+      return null;
+    };
+
+    if (d.type === 'multi') {
+      return s.split(/[｜|、,／\/]/).map(pick).filter(Boolean);
+    }
+    return pick(s);
+  }
+
+  function parse(text) {
+    var rows = parseCsvText(text);
+    if (!rows.length) return { error: '読み取れる行がありませんでした。' };
+
+    var keyRow = rows.filter(function (r) { return String(r[0]).trim() === LABEL_KEY; })[0];
+    if (!keyRow) return { error: '見出し行（先頭のセルが「key」の行）が見つかりません。雛形の1〜3行目は消さずにお使いください。' };
+
+    var keys = keyRow.slice(1).map(function (k) { return String(k).trim(); });
+    var byKey = {};
+    COLS.forEach(function (c) { byKey[c.key] = c; });
+
+    var unknown = keys.filter(function (k) { return k && !byKey[k]; });
+    var missing = COLS.filter(function (c) {
+      if (c.kind === 'answer' && c.def.required === false) return false;
+      if (c.kind === 'profile' && c.def.required === false) return false;
+      return keys.indexOf(c.key) < 0;
+    }).map(function (c) { return c.key; });
+
+    var dataRows = rows.filter(function (r) {
+      var head = String(r[0]).trim();
+      if (head === LABEL_KEY || head === LABEL_NAME || head === LABEL_HOW) return false;
+      return r.slice(1).some(function (c) { return String(c).trim() !== ''; });
+    });
+
+    var entries = dataRows.map(function (r, i) {
+      var profile = {}, answers = {};
+      keys.forEach(function (k, ci) {
+        var col = byKey[k];
+        if (!col) return;
+        var v = coerce(col, r[ci + 1]);
+        if (col.kind === 'profile') profile[col.def.id] = v;
+        else answers[col.def.id] = v;
+      });
+      return { line: String(r[0] || ('第' + (i + 1) + '行')), profile: profile, answers: answers };
+    });
+
+    return { entries: entries, unknown: unknown, missing: missing };
+  }
+
+  /* ---------- 確認表示 ---------- */
+  function previewHTML(p) {
+    var notes = '';
+    if (p.missing.length) {
+      notes += '<div class="msg err">雛形にあるはずの列が見つかりません：' + SV.esc(p.missing.join('、')) +
+               '。この列は未回答として扱われ、必須の設問であれば取り込めません。</div>';
+    }
+    if (p.unknown.length) {
+      notes += '<div class="msg err">見覚えのない列がありました（無視します）：' + SV.esc(p.unknown.join('、')) + '</div>';
+    }
+
+    var rows = p.entries.map(function (e, i) {
+      var filled = 0, total = 0;
+      COLS.forEach(function (c) {
+        var v = c.kind === 'profile' ? e.profile[c.def.id] : e.answers[c.def.id];
+        var req = c.def.required !== false;
+        if (!req) return;
+        total++;
+        if (!(v == null || v === '' || (Array.isArray(v) && v.length === 0))) filled++;
+      });
+      var ok = filled === total;
+      return '<tr><td>' + SV.esc(e.line) + '</td>' +
+        '<td>' + filled + ' / ' + total + '</td>' +
+        '<td>' + (ok ? '<span class="badge open">取り込めます</span>'
+                     : '<span class="badge draft">未記入があります</span>') + '</td></tr>';
+    }).join('');
+
+    return notes +
+      '<div class="tbl-scroll"><table class="tbl"><thead><tr>' +
+      '<th style="width:30%">行</th><th style="width:30%">必須項目の記入</th><th>判定</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<p class="report-note">「未記入があります」の行は送信時に取り込まれず、理由が下に表示されます。</p>' +
+      '<div class="sv-actions" style="margin-top:1.2em">' +
+      '<button type="button" class="sv-btn" id="do-submit">' + p.entries.length + '件を送信する</button>' +
+      '<button type="button" class="sv-btn ghost" id="do-reset">読み直す</button></div>';
+  }
+
+  /* ---------- 画面 ---------- */
+  function render() {
+    stage.innerHTML =
+      '<div class="page-head"><p class="eyebrow">spreadsheet</p>' +
+      '<h1>表形式で回答</h1>' +
+      '<p class="sub">' + SV.esc(SURVEY.title) + '</p></div>' +
+
+      '<p class="lead">画面から一問ずつお答えいただく代わりに、表計算ソフトで記入したものをそのまま提出できます。' +
+      '取り込まれた回答は、画面からお答えいただいた場合とまったく同じ検査を通り、同じ集計に加わります。' +
+      'つまり、どちらの経路を選んでも結果は等価だということになります。</p>' +
+
+      '<div class="box"><p class="box-title">この方法が向いている場面</p>' +
+      '<p style="margin-bottom:0">授業や研修でまとめて回答を集めた場合、手元に控えを残したい場合、' +
+      'あるいは通信環境が安定しない場所で先に記入しておきたい場合などにお使いください。' +
+      '一度に取り込めるのは300行までです。</p></div>' +
+
+      '<h2 id="step1">手順1　雛形をダウンロードします</h2>' +
+      '<p>下のボタンから雛形（CSV）を保存し、Excel・Numbers・Googleスプレッドシートなどで開いてください。' +
+      '1行目の「key」の行と、2行目・3行目の説明の行は、消さずにそのままお使いください。' +
+      '取り込むときの目印にしているためです。</p>' +
+
+      '<div class="dl"><p class="box-title">回答用の雛形（CSV）</p>' +
+      '<p>プロフィール' + DEF.profile.length + '項目・設問' + SV.allQuestions(SURVEY).length + '問。4行目以降が記入欄です。' +
+      '行を増やせば、その分だけまとめて提出できます。</p>' +
+      '<button type="button" class="dl-btn" id="dl-tpl">雛形をダウンロード</button></div>' +
+
+      '<h2 id="step2">手順2　記入します</h2>' +
+      '<p>選択式の設問は、3行目に示した番号（1、2、3…）でお答えください。選択肢の文言をそのまま書いても構いません。' +
+      '複数選べる設問は、番号を「｜」（縦棒）で区切ってください。段階評価の設問は数字だけをお書きください。</p>' +
+
+      '<h2 id="step3">手順3　貼り付けて確認します</h2>' +
+      '<p>記入した表を選択して丸ごとコピーし、下の枠に貼り付けてください。' +
+      'CSVファイルをそのまま読み込ませることもできます。' +
+      '貼り付けると内容が解析され、行ごとの判定が表示されます。' +
+      '内容を確かめてから送信していただく形ですので、貼り付けただけでは送信されません。</p>' +
+
+      '<div class="form-row" style="margin-bottom:1em">' +
+      '<label class="btn sub mini" style="width:auto;text-align:center;cursor:pointer">' +
+      'CSVファイルを選ぶ<input type="file" id="file" accept=".csv,.tsv,.txt" style="display:none"></label>' +
+      '<button type="button" class="btn mini" id="do-parse">貼り付けた内容を確認する</button>' +
+      '</div>' +
+      '<textarea class="sheet-area" id="paste" placeholder="ここに表を貼り付けてください（1行目が key ではじまる表）"></textarea>' +
+
+      '<div id="result" style="margin-top:1.4em"></div>' +
+
+      '<div class="sv-actions" style="justify-content:center;margin-top:2.4em">' +
+      '<a class="sv-btn ghost" href="take.html?s=' + encodeURIComponent(SURVEY.id) + '">画面から回答する</a>' +
+      '<a class="sv-btn ghost" href="report.html?s=' + encodeURIComponent(SURVEY.id) + '">集計を見る</a>' +
+      '<a class="sv-btn ghost" href="./">一覧に戻る</a></div>';
+
+    document.getElementById('dl-tpl').addEventListener('click', function () {
+      SV.download(SURVEY.id + '_template.csv', template());
+    });
+
+    document.getElementById('file').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        document.getElementById('paste').value = String(reader.result || '');
+        doParse();
+      };
+      reader.readAsText(f, 'UTF-8');
+    });
+
+    document.getElementById('do-parse').addEventListener('click', doParse);
+  }
+
+  function doParse() {
+    var text = document.getElementById('paste').value;
+    var box = document.getElementById('result');
+    if (!text.trim()) {
+      box.innerHTML = '<div class="msg err">枠が空です。表を貼り付けるか、CSVファイルをお選びください。</div>';
+      return;
+    }
+    var p = parse(text);
+    if (p.error) { box.innerHTML = '<div class="msg err">' + SV.esc(p.error) + '</div>'; return; }
+    if (!p.entries.length) {
+      box.innerHTML = '<div class="msg err">記入された行が見つかりませんでした。4行目以降にお答えをご記入ください。</div>';
+      return;
+    }
+    PARSED = p;
+    box.innerHTML = '<h3>読み取った内容の確認（' + p.entries.length + '行）</h3>' + previewHTML(p);
+    document.getElementById('do-submit').addEventListener('click', doSubmit);
+    document.getElementById('do-reset').addEventListener('click', function () {
+      PARSED = null;
+      box.innerHTML = '';
+      document.getElementById('paste').value = '';
+      document.getElementById('paste').focus();
+    });
+  }
+
+  function doSubmit() {
+    if (!PARSED) return;
+    var btn = document.getElementById('do-submit');
+    var box = document.getElementById('result');
+    btn.disabled = true;
+    btn.textContent = '送信中…';
+
+    SV.api({
+      action: 'submitSheet',
+      sid: SURVEY.id,
+      rows: PARSED.entries.map(function (e) { return { profile: e.profile, answers: e.answers }; })
+    }).then(function (d) {
+      var errs = (d.errors || []).map(function (x) {
+        var line = PARSED.entries[x.line - 1];
+        return '<li>' + SV.esc(line ? line.line : ('第' + x.line + '行')) + '：' + SV.esc(x.error) + '</li>';
+      }).join('');
+
+      if (!d.ok) {
+        btn.disabled = false;
+        btn.textContent = '送信する';
+        box.innerHTML = '<div class="msg err">' + SV.esc(d.error || '送信に失敗しました') + '</div>' +
+                        (errs ? '<ul class="dots">' + errs + '</ul>' : '');
+        return;
+      }
+
+      box.innerHTML = '<div class="msg ok">' + d.saved + '件を受け付けました。ご協力をありがとうございました。</div>' +
+        (errs ? '<p>次の行は取り込めませんでした。修正のうえ、もう一度お送りください。</p><ul class="dots">' + errs + '</ul>' : '') +
+        '<div class="sv-actions" style="margin-top:1.2em">' +
+        '<a class="sv-btn" href="report.html?s=' + encodeURIComponent(SURVEY.id) + '">集計を見る →</a></div>';
+      PARSED = null;
+      document.getElementById('paste').value = '';
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = '送信する';
+      box.innerHTML = '<div class="msg err">通信に失敗しました。もう一度お試しください。</div>';
+    });
+  }
+
+  /* ---------- 起動 ---------- */
+  if (!sid) { fail('アンケートが指定されていません。'); return; }
+
+  SV.api({ action: 'getSurveys' }).then(function (d) {
+    if (!d.ok) return fail(d.error || '読み込みに失敗しました');
+    DEF = d.def;
+    SURVEY = (DEF.surveys || []).filter(function (s) { return s.id === sid; })[0];
+    if (!SURVEY) return fail('該当するアンケートが見つかりませんでした。');
+    if (SURVEY.status === 'closed') return fail('このアンケートは受付を終了しています。');
+    COLS = buildCols();
+    document.title = SURVEY.title + '（表形式）｜ AI時代の要求工学 意識調査';
+    render();
+  }).catch(function () {
+    fail('通信に失敗しました。時間をおいてお試しください。');
+  });
+})();
+</script>
+</body>
+</html>
