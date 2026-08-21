@@ -217,37 +217,66 @@ em{ font-style:normal; }
 .tl-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .tl-tag{ font-size:12px; font-weight:700; color:var(--red); background:rgba(228,44,44,.08); padding:4px 12px; border-radius:999px; }
 
-/* ── トラックカード（13時セッション） ── */
-.track-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:18px; }
-@media(max-width:720px){ .track-grid{ grid-template-columns:1fr; } }
-.track-card{
-  background:#fff; border:1px solid var(--gray-line); border-radius:var(--radius);
-  padding:20px 22px; box-shadow:var(--shadow-sm);
-  display:flex; flex-direction:column; gap:9px;
-  transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+/* ── トラック（13時：２トラック並行） ── */
+.trk-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-top:20px; align-items:start; }
+@media(max-width:860px){ .trk-grid{ grid-template-columns:1fr; } }
+
+.trk-col{
+  --trk:var(--red);
+  background:#fff; border:1px solid var(--gray-line); border-top:4px solid var(--trk);
+  border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden;
 }
-.track-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--red); }
-.track-card.tutorial{ background:#FFF7F7; border-color:#F3C9C9; }
-.track-card-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.track-badge{
+.trk-col.is-b{ --trk:var(--black); }
+
+.trk-head{ padding:18px 20px 16px; border-bottom:1px solid var(--gray-line); background:#FCFCFC; }
+.trk-head-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.trk-badge{
   display:inline-flex; align-items:center; justify-content:center;
-  min-width:36px; height:36px; padding:0 10px; border-radius:9px; flex-shrink:0;
-  background:var(--red); color:#fff; font-size:17px; font-weight:900; letter-spacing:.02em;
+  min-width:34px; height:34px; padding:0 10px; border-radius:9px; flex-shrink:0;
+  background:var(--trk); color:#fff; font-size:16px; font-weight:900; letter-spacing:.02em;
 }
-.track-card.tutorial .track-badge{ background:var(--black); font-size:12.5px; border-radius:999px; }
-.track-venue{
+.trk-venue{
   display:inline-flex; align-items:center; gap:5px;
   font-size:12px; font-weight:800; color:var(--ink-sub);
   background:var(--gray); border-radius:999px; padding:5px 12px;
 }
-.track-timebadge{
-  font-size:11px; font-weight:800; color:#fff; background:#1a9e57;
-  border-radius:999px; padding:5px 11px; letter-spacing:.02em;
+.trk-title{ font-size:17px; font-weight:900; color:var(--ink); line-height:1.45; }
+.trk-sub{ font-size:13px; font-weight:700; color:var(--trk); line-height:1.65; margin-top:6px; }
+
+.trk-body{ padding:4px 20px 18px; }
+
+.sess{ padding:15px 0 14px; border-bottom:1px dashed var(--gray-line); }
+.sess-head{ display:flex; align-items:baseline; gap:9px; margin-bottom:5px; }
+.sess-no{
+  flex-shrink:0; font-size:11.5px; font-weight:900; letter-spacing:.04em;
+  color:#fff; background:var(--trk); border-radius:5px; padding:2px 8px; line-height:1.7;
 }
-.track-theme{ font-size:17px; font-weight:900; color:var(--ink); line-height:1.4; }
-.track-coord{ font-size:13px; font-weight:800; color:var(--red); }
-.track-coord span{ color:var(--ink-light); font-weight:700; margin-right:4px; }
-.track-desc{ font-size:13.5px; color:var(--ink-sub); line-height:1.75; }
+.sess-title{ font-size:15px; font-weight:900; color:var(--ink); line-height:1.5; }
+.sess-coord{ font-size:12.5px; font-weight:800; color:var(--trk); margin-bottom:7px; }
+.sess-coord span{ color:var(--ink-light); font-weight:700; margin-right:4px; }
+.sess-desc{ font-size:13px; color:var(--ink-sub); line-height:1.8; }
+.sess-talks{ margin-top:10px; list-style:none; display:grid; gap:7px; }
+.sess-talks li{
+  font-size:12.5px; color:var(--ink-sub); line-height:1.7;
+  background:var(--gray); border-radius:8px; padding:9px 12px;
+}
+.sess-talks b{ display:block; color:var(--ink); font-weight:800; }
+.sess-talks i{ font-style:normal; color:var(--ink-light); font-weight:700; }
+
+.sess.is-wrap{
+  border-bottom:0; border-top:1px solid var(--gray-line);
+  background:#FFF7F7; margin:10px -20px -18px; padding:16px 20px 18px;
+}
+.trk-col.is-b .sess.is-wrap{ background:#F6F6F7; }
+
+/* ── 研究マップ ── */
+.map-block{ margin-top:52px; padding-top:36px; border-top:1px solid var(--gray-line); }
+.map-head{ text-align:center; }
+.map-head h3{ font-size:21px; font-weight:900; color:var(--ink); line-height:1.5; }
+.map-head p{ font-size:13.5px; color:var(--ink-sub); margin-top:8px; }
+.map-fig{ margin:18px auto 0; max-width:940px; }
+.map-fig svg{ width:100%; height:auto; display:block; }
+.map-cap{ font-size:12px; color:var(--ink-light); text-align:center; margin-top:12px; line-height:1.9; }
 
 /* ── シリーズ（過去シンポジウム） ── */
 .series-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
@@ -469,71 +498,116 @@ em{ font-style:normal; }
         <div class="tl-time">13:00<small>〜</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
-          <p class="tl-title">トラックセッション（複数並行）</p>
-          <p class="tl-desc">5つのトラック（Ａ〜Ｅ）とチュートリアルを並行開催します。位野木研究室 学生によるポスター展示も行います。<br>
-            <small style="color:var(--ink-light);">※ トラックＥ（A-0471）のみ 14:00 開始／テーマはいずれも仮題です。</small></p>
+          <p class="tl-title">トラックセッション（２トラック並行）</p>
+          <p class="tl-desc">ＡとＢの２トラックを並行して開催します。どちらのトラックも、三つのセッションと、知働化コミュニティの取り組みを見渡す「まとめ」で構成されます。会場間の移動は自由です。位野木研究室 学生によるポスター展示も同時に行います。<br>
+            <small style="color:var(--ink-light);">※ テーマの一部は仮題です。セッションの時間割は決まりしだい掲載します。</small></p>
 
-          <div class="track-grid">
+          <div class="trk-grid">
 
-            <div class="track-card">
-              <div class="track-card-head">
-                <span class="track-badge">Ａ</span>
-                <span class="track-venue">📍 会場 A-0611</span>
+            <!-- ================= Ａトラック ================= -->
+            <div class="trk-col">
+              <div class="trk-head">
+                <div class="trk-head-top">
+                  <span class="trk-badge">Ａ</span>
+                  <span class="trk-venue">📍 会場 A-0611</span>
+                </div>
+                <p class="trk-title">AI活用の実践原理と哲学（仮）</p>
+                <p class="trk-sub">情報・意味・価値・経営の再構築と知働化パラダイムのゆくえ</p>
               </div>
-              <p class="track-theme">意味の構造</p>
-              <p class="track-coord"><span>コーディネータ</span>萩原 正義</p>
-              <p class="track-desc">AI活用での精度向上、説明責任を考える上で意味をどのように扱うか。意味の構造化の観点で、コンテキスト管理、オントロジー、digital twin、世界モデルを俯瞰し、具体的な事例や実現法を討論する。後半は、参加者に意味の構造化を体験してもらい、理解を深める。</p>
+              <div class="trk-body">
+
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ａ１</span>
+                    <p class="sess-title">意味の構造</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>萩原 正義</p>
+                  <p class="sess-desc">AI活用での精度向上、説明責任を考える上で意味をどのように扱うか。意味の構造化の観点で、コンテキスト管理、オントロジー、digital twin、世界モデルを俯瞰し、具体的な事例や実現法を討論する。後半は、参加者に意味の構造化を体験してもらい、理解を深める。</p>
+                </div>
+
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ａ２</span>
+                    <p class="sess-title">自由エネルギー原理から考える社会・心・AI</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>野村 一行</p>
+                  <p class="sess-desc">私たちは、周囲の状況を予測しながら理解し、必要に応じて行動を変えています。自由エネルギー原理と、そこから発展した能動的推論は、こうした知覚・学習・行動を一つの枠組みで捉えようとする考え方です。本セッションでは、その相手が「他者」だったら何が変わるのかを出発点に、対話でのすれ違いや相互理解、社会のルール、人間やAIどうしの協調を考えます。さらに、「心や自己の境界はどこにあるのか」という哲学的な問いや、複数のAIが異なる考えを持ちながら協力する可能性まで、研究例や仮説を交えながら議論します。</p>
+                </div>
+
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ａ３</span>
+                    <p class="sess-title">トークン社会学（仮）</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>塩田 英二</p>
+                  <p class="sess-desc">組織間のやりとりや社会的活動における価値の交換、サプライチェーン、データ流通、トークン概念（計算量・能力・エコノミー）についての背景理論について探究する。</p>
+                </div>
+
+                <div class="sess is-wrap">
+                  <div class="sess-head">
+                    <span class="sess-no">まとめ</span>
+                    <p class="sess-title">知働化パラダイムのゆくえ</p>
+                  </div>
+                  <p class="sess-coord"><span>進行</span>知働化コミュニティ</p>
+                  <p class="sess-desc">意味・予測・価値という三つの入口から見えてきたものを重ね合わせ、知働化パラダイムがどこへ向かうのかを描きます。アジャイルプロセス協議会から独立したアライアンスとしての取り組みと、その広がりについてもあわせてご紹介します。</p>
+                </div>
+
+              </div>
             </div>
 
-            <div class="track-card">
-              <div class="track-card-head">
-                <span class="track-badge">Ｂ</span>
-                <span class="track-venue">📍 会場 A-0473</span>
+            <!-- ================= Ｂトラック ================= -->
+            <div class="trk-col is-b">
+              <div class="trk-head">
+                <div class="trk-head-top">
+                  <span class="trk-badge">Ｂ</span>
+                  <span class="trk-venue">📍 会場 A-0615</span>
+                </div>
+                <p class="trk-title">要求工学新時代の人間の役割（仮）</p>
+                <p class="trk-sub">要求から意図へ、人間しかできないことは何か？</p>
               </div>
-              <p class="track-theme">要求工学（仮）</p>
-              <p class="track-coord"><span>コーディネータ</span>位野木 万里</p>
-              <p class="track-desc">REBOKシリーズ5、AI時代の要求定義、問題発見や価値創出のためのモデリング技術、AIの利活用で直面する課題について解説する。</p>
-            </div>
+              <div class="trk-body">
 
-            <div class="track-card">
-              <div class="track-card-head">
-                <span class="track-badge">Ｃ</span>
-                <span class="track-venue">📍 会場 A-0475</span>
-              </div>
-              <p class="track-theme">知働経営〔仮〕</p>
-              <p class="track-coord"><span>コーディネータ</span>濱 勝巳</p>
-              <p class="track-desc">認識の前提が異なる構造がある。メタウェア研究所では、この構造を、社会を設計するための使える道具にすることを研究している。新たな実践的経営について概説する。</p>
-            </div>
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ｂ１</span>
+                    <p class="sess-title">AI時代のソフトウェア技術者に求められる能力について考える<br><small style="font-size:12.5px;font-weight:700;color:var(--ink-light);">── 「書く」と「創る」の実践から</small></p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>位野木 万里（工学院大学）</p>
+                  <p class="sess-desc">AIによる自動化の範囲が広がるなかで、技術者に残るのは、発注者の意図をくみ取り、AIに指示し、その結果を評価する仕事です。本セッションでは、そのために要る力を「書く力」と「創る力」の二つに絞り、学生による実践の報告をもとに議論します。</p>
+                  <ul class="sess-talks">
+                    <li><b>１．書くこと：1600字チャレンジはどう役立つのか？</b><i>小西 渚月（工学院大学）</i></li>
+                    <li><b>２．創ること：ハッカソンを成功に導くには何が必要か？</b><i>戸上 晃希（工学院大学）</i></li>
+                  </ul>
+                </div>
 
-            <div class="track-card">
-              <div class="track-card-head">
-                <span class="track-badge">Ｄ</span>
-                <span class="track-venue">📍 会場 A-0477</span>
-              </div>
-              <p class="track-theme">自由エネルギー原理から考える社会・心・AI</p>
-              <p class="track-coord"><span>コーディネータ</span>野村 一行</p>
-              <p class="track-desc">私たちは、周囲の状況を予測しながら理解し、必要に応じて行動を変えています。自由エネルギー原理と、そこから発展した能動的推論は、こうした知覚・学習・行動を一つの枠組みで捉えようとする考え方です。本セッションでは、その相手が「他者」だったら何が変わるのかを出発点に、対話でのすれ違いや相互理解、社会のルール、人間やAIどうしの協調を考えます。さらに、「心や自己の境界はどこにあるのか」という哲学的な問いや、複数のAIが異なる考えを持ちながら協力する可能性まで、研究例や仮説を交えながら議論します。</p>
-            </div>
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ｂ２</span>
+                    <p class="sess-title">メタウェア構造学（仮）</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>濱 勝巳</p>
+                  <p class="sess-desc">「話が通じない」「説明しても理解されない」という現象を、知識の不足や価値観の違いではなく、思考構造そのものの差異として捉え直す。人間の思考を〈自己／社会〉×〈主観／客観〉の二軸で四つの相に分け、相のあいだには互いを認識できない非対称性があることを示す。この視座に立つと、全員が同じように理解することを前提とした設計から、理解の構造が異なることを前提とした設計へと、組織・教育・システム・制度の設計を組み替えることができる。</p>
+                </div>
 
-            <div class="track-card">
-              <div class="track-card-head">
-                <span class="track-badge">Ｅ</span>
-                <span class="track-venue">📍 会場 A-0471</span>
-                <span class="track-timebadge">14:00 開始</span>
-              </div>
-              <p class="track-theme">トークン社会学（仮）</p>
-              <p class="track-coord"><span>コーディネータ</span>塩田 英二</p>
-              <p class="track-desc">組織間のやりとりや社会的活動における価値の交換、サプライチェーン、データ流通、トークン概念（計算量・能力・エコノミー）についての背景理論について探究する。</p>
-            </div>
+                <div class="sess">
+                  <div class="sess-head">
+                    <span class="sess-no">Ｂ３</span>
+                    <p class="sess-title">これからの要求定義はひと味違う</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>大槻 繁</p>
+                  <p class="sess-desc">〈作ることは高い〉という前提が生成AIによって崩れたとき、要求定義の何が変わるのか。既存の要求工学が置いてきた八つの前提を棄て、〈目的〉〈抽象化〉〈コミュニケーション〉の三語から手順を組み立て直す。五つの局面と五つの技法、そしてAIに任せられることと人が持ち込むしかないことの境界を、演習を交えて確かめる。</p>
+                </div>
 
-            <div class="track-card tutorial">
-              <div class="track-card-head">
-                <span class="track-badge">チュートリアル</span>
-                <span class="track-venue">📍 会場 A-0615</span>
+                <div class="sess is-wrap">
+                  <div class="sess-head">
+                    <span class="sess-no">まとめ</span>
+                    <p class="sess-title">人間の役割をどこに置くか</p>
+                  </div>
+                  <p class="sess-coord"><span>進行</span>知働化コミュニティ</p>
+                  <p class="sess-desc">書く力と創る力、思考構造の非対称性、要求定義の組み替え。三つの議論を突き合わせ、AIに委ねられることと人にしかできないことの境界を引き直します。知働化コミュニティの活動が実践や教育の場へどう広がっているかも、あわせてご紹介します。</p>
+                </div>
+
               </div>
-              <p class="track-theme">思考の技法</p>
-              <p class="track-coord"><span>コーディネータ</span>大槻 繁</p>
-              <p class="track-desc">思考の技法の取り組みを概観するとともに、アジャイルプロセス協議会から独立した「知働化コミュニティ（アライアンス）」としての今後の活動の展望について述べる。</p>
             </div>
 
           </div>
@@ -548,6 +622,79 @@ em{ font-style:normal; }
         </div>
       </div>
     </div>
+
+    <div class="map-block fade-in" id="map">
+      <div class="map-head">
+        <h3>研究マップ ── 知働化コミュニティの今後</h3>
+        <p>二つのトラックで扱う六つの探究が、中心の〈知働化〉をどう囲み、どこへ広がっていくのかを一枚に示しました。</p>
+      </div>
+      <div class="map-fig">
+        <svg viewBox="0 0 900 680" role="img" aria-labelledby="mapttl mapdesc" xmlns="http://www.w3.org/2000/svg">
+        <title id="mapttl">知働化コミュニティ 研究マップ</title>
+        <desc id="mapdesc">中心に知働化を置き、Ａトラック系の三つの探究（意味の構造、自由エネルギー原理、トークン社会学）とＢトラック系の三つの探究（人間の役割、メタウェア構造学、要求定義の再構築）を配置し、その外側に産学の研究交流・教育・経営と社会制度・コミュニティという四つの広がりを示した図。</desc>
+        <circle cx="450" cy="310" r="195" fill="none" stroke="#E2E2E2" stroke-width="1" stroke-dasharray="4 6"/>
+        <path d="M 231.8 184.0 L 236.2 176.6 L 240.9 169.3 L 245.9 162.2 L 251.1 155.3 L 256.5 148.6 L 262.1 142.0 L 268.0 135.7 L 274.1 129.5 L 280.4 123.6 L 286.9 117.9 L 293.6 112.4 L 300.5 107.1 L 307.5 102.1 L 314.8 97.4 L 322.1 92.9 L 329.7 88.6 L 337.3 84.6 L 345.1 80.9 L 353.1 77.4 L 361.1 74.2 L 369.3 71.3 L 377.5 68.7 L 385.8 66.3 L 394.2 64.2 L 402.7 62.5 L 411.2 61.0 L 419.8 59.8 L 428.4 58.9 L 437.0 58.3 L 445.7 58.0 L 454.3 58.0 L 463.0 58.3 L 471.6 58.9 L 480.2 59.8 L 488.8 61.0 L 497.3 62.5 L 505.8 64.2 L 514.2 66.3 L 522.5 68.7 L 530.7 71.3 L 538.9 74.2 L 546.9 77.4 L 554.9 80.9 L 562.7 84.6 L 570.3 88.6 L 577.9 92.9 L 585.2 97.4 L 592.5 102.1 L 599.5 107.1 L 606.4 112.4 L 613.1 117.9 L 619.6 123.6 L 625.9 129.5 L 632.0 135.7 L 637.9 142.0 L 643.5 148.6 L 648.9 155.3 L 654.1 162.2 L 659.1 169.3 L 663.8 176.6 L 668.2 184.0" fill="none" stroke="#E42C2C" stroke-width="10" stroke-linecap="round" opacity=".16"/>
+        <path d="M 231.8 436.0 L 236.2 443.4 L 240.9 450.7 L 245.9 457.8 L 251.1 464.7 L 256.5 471.4 L 262.1 478.0 L 268.0 484.3 L 274.1 490.5 L 280.4 496.4 L 286.9 502.1 L 293.6 507.6 L 300.5 512.9 L 307.5 517.9 L 314.8 522.6 L 322.1 527.1 L 329.7 531.4 L 337.3 535.4 L 345.1 539.1 L 353.1 542.6 L 361.1 545.8 L 369.3 548.7 L 377.5 551.3 L 385.8 553.7 L 394.2 555.8 L 402.7 557.5 L 411.2 559.0 L 419.8 560.2 L 428.4 561.1 L 437.0 561.7 L 445.7 562.0 L 454.3 562.0 L 463.0 561.7 L 471.6 561.1 L 480.2 560.2 L 488.8 559.0 L 497.3 557.5 L 505.8 555.8 L 514.2 553.7 L 522.5 551.3 L 530.7 548.7 L 538.9 545.8 L 546.9 542.6 L 554.9 539.1 L 562.7 535.4 L 570.3 531.4 L 577.9 527.1 L 585.2 522.6 L 592.5 517.9 L 599.5 512.9 L 606.4 507.6 L 613.1 502.1 L 619.6 496.4 L 625.9 490.5 L 632.0 484.3 L 637.9 478.0 L 643.5 471.4 L 648.9 464.7 L 654.1 457.8 L 659.1 450.7 L 663.8 443.4 L 668.2 436.0" fill="none" stroke="#14151A" stroke-width="10" stroke-linecap="round" opacity=".12"/>
+        <line x1="370.3" y1="264.0" x2="281.1" y2="212.5" stroke="#E42C2C" stroke-width="2" opacity=".38"/>
+        <line x1="450.0" y1="218.0" x2="450.0" y2="115.0" stroke="#E42C2C" stroke-width="2" opacity=".38"/>
+        <line x1="529.7" y1="264.0" x2="618.9" y2="212.5" stroke="#E42C2C" stroke-width="2" opacity=".38"/>
+        <line x1="370.3" y1="356.0" x2="281.1" y2="407.5" stroke="#14151A" stroke-width="2" opacity=".38"/>
+        <line x1="450.0" y1="402.0" x2="450.0" y2="505.0" stroke="#14151A" stroke-width="2" opacity=".38"/>
+        <line x1="529.7" y1="356.0" x2="618.9" y2="407.5" stroke="#14151A" stroke-width="2" opacity=".38"/>
+        <circle cx="450" cy="310" r="86" fill="#14151A"/>
+        <circle cx="450" cy="310" r="95" fill="none" stroke="#E42C2C" stroke-width="3" opacity=".85"/>
+        <text x="450" y="308" text-anchor="middle" fill="#fff" font-size="24" font-weight="900" letter-spacing="1">知働化</text>
+        <text x="450" y="328" text-anchor="middle" fill="#B9BDC4" font-size="8.5" font-weight="700" letter-spacing=".5">Executable Knowledge</text>
+        <text x="450" y="341" text-anchor="middle" fill="#B9BDC4" font-size="8.5" font-weight="700" letter-spacing=".5">and Texture</text>
+        <rect x="181.1" y="180.5" width="200" height="64" rx="13" fill="#fff" stroke="#E42C2C" stroke-width="2"/>
+        <rect x="193.1" y="197.5" width="4" height="30" rx="2" fill="#E42C2C"/>
+        <text x="289.1" y="208.5" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">意味の構造</text>
+        <text x="289.1" y="228.5" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">文脈・オントロジー・世界モデル</text>
+        <rect x="350.0" y="83.0" width="200" height="64" rx="13" fill="#fff" stroke="#E42C2C" stroke-width="2"/>
+        <rect x="362.0" y="100.0" width="4" height="30" rx="2" fill="#E42C2C"/>
+        <text x="458.0" y="111.0" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">自由エネルギー原理</text>
+        <text x="458.0" y="131.0" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">予測・能動的推論・協調</text>
+        <rect x="518.9" y="180.5" width="200" height="64" rx="13" fill="#fff" stroke="#E42C2C" stroke-width="2"/>
+        <rect x="530.9" y="197.5" width="4" height="30" rx="2" fill="#E42C2C"/>
+        <text x="626.9" y="208.5" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">トークン社会学</text>
+        <text x="626.9" y="228.5" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">価値の交換とエコノミー</text>
+        <rect x="181.1" y="375.5" width="200" height="64" rx="13" fill="#fff" stroke="#14151A" stroke-width="2"/>
+        <rect x="193.1" y="392.5" width="4" height="30" rx="2" fill="#14151A"/>
+        <text x="289.1" y="403.5" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">人間の役割</text>
+        <text x="289.1" y="423.5" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">書く力・創る力の実践</text>
+        <rect x="350.0" y="473.0" width="200" height="64" rx="13" fill="#fff" stroke="#14151A" stroke-width="2"/>
+        <rect x="362.0" y="490.0" width="4" height="30" rx="2" fill="#14151A"/>
+        <text x="458.0" y="501.0" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">メタウェア構造学</text>
+        <text x="458.0" y="521.0" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">認識の非対称性と四つの相</text>
+        <rect x="518.9" y="375.5" width="200" height="64" rx="13" fill="#fff" stroke="#14151A" stroke-width="2"/>
+        <rect x="530.9" y="392.5" width="4" height="30" rx="2" fill="#14151A"/>
+        <text x="626.9" y="403.5" text-anchor="middle" fill="#16181D" font-size="14.5" font-weight="900">要求定義の再構築</text>
+        <text x="626.9" y="423.5" text-anchor="middle" fill="#8A9099" font-size="10.5" font-weight="700">要求から意図へ</text>
+        <rect x="28" y="14" width="238" height="32" rx="16" fill="#FFF1F1"/>
+        <circle cx="48" cy="30" r="5.5" fill="#E42C2C"/>
+        <text x="62" y="35" fill="#E42C2C" font-size="12.5" font-weight="800">Ａトラック系の探究</text>
+        <rect x="634" y="14" width="238" height="32" rx="16" fill="#F1F1F3"/>
+        <circle cx="654" cy="30" r="5.5" fill="#14151A"/>
+        <text x="668" y="35" fill="#14151A" font-size="12.5" font-weight="800">Ｂトラック系の探究</text>
+        <text x="450" y="586" text-anchor="middle" fill="#16181D" font-size="13" font-weight="900" letter-spacing="1">知働化コミュニティのひろがり</text>
+        <rect x="30" y="602" width="186" height="50" rx="12" fill="#F2F2F2" stroke="#E2E2E2" stroke-width="1"/>
+        <text x="123" y="624" text-anchor="middle" fill="#16181D" font-size="12.5" font-weight="800">産学の研究交流</text>
+        <text x="123" y="641" text-anchor="middle" fill="#8A9099" font-size="10" font-weight="700">シンポジウム・研究会</text>
+        <rect x="248" y="602" width="186" height="50" rx="12" fill="#F2F2F2" stroke="#E2E2E2" stroke-width="1"/>
+        <text x="341" y="624" text-anchor="middle" fill="#16181D" font-size="12.5" font-weight="800">教育・人材育成</text>
+        <text x="341" y="641" text-anchor="middle" fill="#8A9099" font-size="10" font-weight="700">大学と実務をつなぐ</text>
+        <rect x="466" y="602" width="186" height="50" rx="12" fill="#F2F2F2" stroke="#E2E2E2" stroke-width="1"/>
+        <text x="559" y="624" text-anchor="middle" fill="#16181D" font-size="12.5" font-weight="800">経営と社会制度</text>
+        <text x="559" y="641" text-anchor="middle" fill="#8A9099" font-size="10" font-weight="700">知働経営・制度の設計</text>
+        <rect x="684" y="602" width="186" height="50" rx="12" fill="#F2F2F2" stroke="#E2E2E2" stroke-width="1"/>
+        <text x="777" y="624" text-anchor="middle" fill="#16181D" font-size="12.5" font-weight="800">コミュニティ</text>
+        <text x="777" y="641" text-anchor="middle" fill="#8A9099" font-size="10" font-weight="700">アライアンスとしての活動</text>
+        </svg>
+      </div>
+      <p class="map-cap">上半分がＡトラック系の探究、下半分がＢトラック系の探究にあたります。<br>
+        六つは別々の主題に見えますが、いずれも「知が働く仕組みをどう設計するか」という一つの問いに連なっています。</p>
+    </div>
+
   </div>
 </section>
 
