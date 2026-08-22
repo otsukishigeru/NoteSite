@@ -305,13 +305,13 @@
         var dlBtn;
         if (!f.isPaid) {
           // 無料ファイルは全員ダウンロード可
-          dlBtn = '<a class="btn-download" href="/library/assets/pdfs/' +
-            escapeHtml(f.filename) + '" download="' + escapeHtml(f.filename) + '">' +
+          dlBtn = '<a class="btn-download" href="' + escapeHtml(fileUrl(f.filename)) +
+            '" download="' + escapeHtml(f.filename) + '">' +
             '⬇ ダウンロード</a>';
         } else if (accessMode === 'library') {
           // 有料ファイルはライブラリメンバのみ
-          dlBtn = '<a class="btn-download" href="/library/assets/pdfs/' +
-            escapeHtml(f.filename) + '" download="' + escapeHtml(f.filename) + '">' +
+          dlBtn = '<a class="btn-download" href="' + escapeHtml(fileUrl(f.filename)) +
+            '" download="' + escapeHtml(f.filename) + '">' +
             '⬇ ダウンロード</a>';
         } else {
           dlBtn = '<span class="btn-disabled">🔒 ダウンロード不可</span>';
@@ -357,6 +357,14 @@
   }
 
   // 項目番号は表示側で「No. 」を付けるため、値に含まれる「No.」は取り除く
+  // 動画・音声は assets/media/、それ以外は assets/pdfs/ に置いている
+  function fileUrl(filename) {
+    var name = String(filename || '');
+    var ext  = name.slice(name.lastIndexOf('.') + 1).toLowerCase();
+    var dir  = /^(mp4|mov|m4v|webm|ogv|mp3|m4a|wav)$/.test(ext) ? 'media' : 'pdfs';
+    return '/library/assets/' + dir + '/' + encodeURIComponent(name);
+  }
+
   function normalizeNo(no) {
     return String(no || '').replace(/^\s*(?:no|ｎｏ|Ｎｏ)\s*[.．]?\s*/i, '');
   }
