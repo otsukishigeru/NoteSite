@@ -16,14 +16,31 @@ const knowledgeCarl = require('../carl/js/knowledge.js');
 const MAX_CHAT_LOGS = 500;
 
 function knowledgeIndexOf(knowledge) {
-  return knowledge.map(a => `[${a.num}]【${a.category}】${a.title} ${a.url}`).join('\n');
+  return knowledge
+    .map(a => `[${a.num}]【${a.category}】${a.title}${a.date ? ` 投稿日:${a.date}` : ''} ${a.url}`)
+    .join('\n');
+}
+
+// 「最新の記事」を data から求める。件数とあわせて直書きしない。
+function latestOf(knowledge) {
+  const dated = knowledge.filter(a => a.date);
+  if (dated.length === 0) return null;
+  return dated.reduce((a, b) => (b.date > a.date ? b : a));
+}
+
+function latestLine(knowledge) {
+  const a = latestOf(knowledge);
+  if (!a) return '';
+  const [y, m, d] = a.date.split('-').map(Number);
+  return `現在の最新記事は${Number(a.num)}番「${a.title}」（${y}年${m}月${d}日投稿）です。`;
 }
 
 const SYSTEM_PROMPT_1SO = `あなたは1_s_oの思想・著作を熟知した研究アシスタントです。
 
-記事には投稿日付（date）があります。
-「最新の記事」と聞かれたら、dateが最も新しい記事を答えてください。
-現在の最新記事は139番（2026年8月3日投稿）です。
+記事には投稿日付（date）があります。インデックスの「投稿日:」がそれにあたります。
+「最新の記事」と聞かれたら、投稿日が最も新しい記事を答えてください。
+${latestLine(knowledge1so)}
+投稿日の記載がない記事について、日付を推測して答えてはいけません。分からない旨を伝えてください。
 
 1_s_oは『思考の技法 新訂版』の著者であり、知働化・ソフトウェア工学・哲学・システム学・デザイン学を統合した独自の思想体系を持っています。
 
@@ -60,9 +77,9 @@ const SYSTEM_PROMPT_1SO = `あなたは1_s_oの思想・著作を熟知した研
 
 ---
 
-## 1_s_o note記事インデックス（全139件）
+## 1_s_o note記事インデックス（全${knowledge1so.length}件）
 
-以下は1_s_oのnote記事139件のインデックスです。
+以下は1_s_oのnote記事${knowledge1so.length}件のインデックスです。
 質問に関連する記事を参照して回答し、末尾に関連記事のタイトルとURLを紹介してください。
 
 ${knowledgeIndexOf(knowledge1so)}`;
@@ -106,9 +123,9 @@ note.comでの連載は2025年8月から開始され、現在までに13本の�
 
 ---
 
-## t0rapa note記事インデックス（全13件）
+## t0rapa note記事インデックス（全${knowledgeCarl.length}件）
 
-以下はt0rapaのnote記事13件のインデックスです。
+以下はt0rapaのnote記事${knowledgeCarl.length}件のインデックスです。
 質問に関連する記事を参照して回答し、末尾に関連記事のタイトルとURLを紹介してください。
 
 ${knowledgeIndexOf(knowledgeCarl)}`;
