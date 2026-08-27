@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/learn/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学習 ｜ 要求工学 学習</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="prov"></div>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+  <div id="stage"><p class="empty-note">読み込んでいます…</p></div>
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/learn.js"></script>
+<script>
+(function () {
+  'use strict';
+  var el = document.getElementById('stage');
+  var sid = LEARN.qs('s') || 'beginner';
+
+  LEARN.load().then(function (data) {
+    var s = LEARN.findStage(data, sid);
+    if (!s) { LEARN.mount(''); return LEARN.fail(el, 'その段階は見つかりませんでした。'); }
+
+    LEARN.mount(s.id);
+    LEARN.setStageColor(s.color);
+    document.title = s.title + '（' + s.subtitle + '）｜ 要求工学 学習';
+
+    if (s.provisional) {
+      document.getElementById('prov').innerHTML =
+        '<div class="prov">この段階の内容は仮置きです。学習管理者の方は' +
+        '<a href="admin/">管理画面</a>から差し替えてください。</div>';
+    }
+
+    var idx = data.stages.map(function (x) { return x.id; }).indexOf(s.id);
+    var prev = idx > 0 ? data.stages[idx - 1] : null;
+    var next = idx >= 0 && idx < data.stages.length - 1 ? data.stages[idx + 1] : null;
+    var c = LEARN.counts(s);
+
+    /* ---------- 用語 ---------- */
+    var termsHtml = s.terms.map(function (t) {
+      var rel = (t.related || []).map(function (rid) {
+        var f = LEARN.findTerm(data, rid);
+        if (!f) return null;
+        return '<a href="stage.html?s=' + encodeURIComponent(f.stage.id) + '#t-' + encodeURIComponent(rid) + '">' +
+               LEARN.esc(f.term.term) + '</a>';
+      }).filter(Boolean).join('、');
+
+      var foot = [];
+      if (rel) foot.push('<span><b>関連する語</b>' + rel + '</span>');
+      if (t.back) foot.push('<span><b>前の段階との対応</b>' + LEARN.esc(t.back) + '</span>');
+      if (t.forward) foot.push('<span class="fwd"><b>この先での扱い</b>' + LEARN.esc(t.forward) + '</span>');
+      if (t.source) foot.push('<span><b>さらに深く</b>' + LEARN.esc(t.source) + '</span>');
+
+      return '<article class="term" id="t-' + LEARN.esc(t.id) + '" data-search="' +
+          LEARN.esc((t.term + ' ' + (t.reading || '') + ' ' + t.definition + ' ' + (t.body || '')).toLowerCase()) + '">' +
+        '<div class="term-head">' +
+          '<h3 class="term-name">' + LEARN.esc(t.term) + '</h3>' +
+          (t.reading ? '<span class="term-read">' + LEARN.esc(t.reading) + '</span>' : '') +
+        '</div>' +
+        '<p class="term-def">' + LEARN.esc(t.definition) + '</p>' +
+        (t.body ? '<p class="term-body">' + LEARN.esc(t.body) + '</p>' : '') +
+        (foot.length ? '<div class="term-foot">' + foot.join('') + '</div>' : '') +
+      '</article>';
+    }).join('');
+
+    /* ---------- 文献 ---------- */
+    var refsHtml = s.refs.map(function (r) {
+      return '<div class="ref">' +
+        '<div class="ref-top">' +
+          '<span class="kind ' + LEARN.kindClass(r.kind) + '">' + LEARN.esc(r.kind || '文献') + '</span>' +
+          '<span class="ref-label">' + LEARN.esc(r.label) + '</span>' +
+        '</div>' +
+        '<p class="ref-reads">' + LEARN.esc(r.reads || '') + '</p>' +
+      '</div>';
+    }).join('');
+
+    el.innerHTML =
+      '<div class="page-head">' +
+        '<p class="eyebrow">' + LEARN.esc(s.eyebrow || '') + '</p>' +
+        '<h1>' + LEARN.esc(s.title) + '　── ' + LEARN.esc(s.subtitle || '') + '</h1>' +
+        '<p class="sub">用語 ' + c.terms + '語　／　参考文献 ' + c.refs + '件　／　設問 ' + c.quiz + '問</p>' +
+      '</div>' +
+
+      '<h2 id="premise">この段階の前提</h2>' +
+      '<p class="lead">' + LEARN.esc(s.premise || '') + '</p>' +
+      '<div class="box tint"><p class="box-title">到達目標</p>' +
+      '<p style="margin-bottom:0">' + LEARN.esc(s.goal || '') + '</p></div>' +
+
+      '<h2 id="terms">概念・用語</h2>' +
+      '<p>用語の解説は、それだけで読み切れるように書いてあります。' +
+      '「さらに深く」に挙げた出典は、先へ進みたいときの道案内であって、' +
+      '解説を理解するために手元に置く必要はありません。</p>' +
+      '<div class="term-bar">' +
+        '<label for="q">絞り込み</label>' +
+        '<input type="search" id="q" placeholder="語や説明の中の言葉で探す" autocomplete="off">' +
+        '<span class="count" id="cnt">' + c.terms + ' 語</span>' +
+      '</div>' +
+      '<div id="terms">' + termsHtml + '</div>' +
+
+      '<h2 id="refs">参考文献</h2>' +
+      '<p>この段階の理解を支える文献です。それぞれに「何が読めるか」を添えてあります。</p>' +
+      refsHtml +
+
+      '<h2 id="quiz">理解度判定テスト</h2>' +
+      '<p>選択式で' + c.quiz + '問です。合格ラインは' + (s.quiz ? s.quiz.pass : 0) + '問正答としていますが、' +
+      '点数そのものより、誤答した設問から復習すべき語へたどれることを目的にしています。' +
+      '結果は記録されません。</p>' +
+      '<div class="btn-row">' +
+        '<a class="btn" href="quiz.html?s=' + encodeURIComponent(s.id) + '">テストを受ける →</a>' +
+      '</div>' +
+
+      '<div class="progress-bar">' +
+        (prev ? '<a class="btn ghost mini" href="stage.html?s=' + encodeURIComponent(prev.id) + '">← ' + LEARN.esc(prev.title) + '</a>' : '<span></span>') +
+        '<span class="state">' + LEARN.esc(s.title) + '</span>' +
+        (next ? '<a class="btn mini" href="stage.html?s=' + encodeURIComponent(next.id) + '">' + LEARN.esc(next.title) + ' →</a>' : '<span></span>') +
+      '</div>';
+
+    /* ---------- 絞り込み ---------- */
+    var input = document.getElementById('q');
+    var cnt = document.getElementById('cnt');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#terms .term'));
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase();
+      var n = 0;
+      cards.forEach(function (card) {
+        var hit = q === '' || card.dataset.search.indexOf(q) >= 0;
+        card.classList.toggle('is-hidden', !hit);
+        if (hit) n++;
+      });
+      cnt.textContent = n + ' 語';
+    });
+
+    // 別の段階から用語を指して来た場合に、その位置へ寄せる
+    if (location.hash) {
+      var target = document.querySelector(location.hash);
+      if (target) setTimeout(function () {
+        target.scrollIntoView({ block: 'center' });
+        target.style.borderColor = s.color;
+      }, 60);
+    }
+  }).catch(function (e) {
+    LEARN.mount('');
+    LEARN.fail(el, e.message || '読み込みに失敗しました');
+  });
+})();
+</script>
+</body>
+</html>

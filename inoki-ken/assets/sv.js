@@ -179,7 +179,8 @@
       { href: './', label: 'アンケート', key: 'surveys' },
       { href: '../concept/', label: '概念', key: 'concept' },
       { href: '../hypo/', label: '仮説', key: 'hypo' },
-      { href: '../guide/', label: '参考', key: 'guide' }
+      { href: '../guide/', label: '参考', key: 'guide' },
+      { href: '/learn/', label: '学習', key: 'learn' }
     ];
     return '' +
       '<header class="site-head"><div class="wrap head-inner">' +

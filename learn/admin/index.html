@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/learn/admin/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>管理画面 ｜ 要求工学 学習</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="wide">
+
+<!-- ============ ログイン ============ -->
+<div id="login-view" class="auth-wrap">
+  <div class="auth-card">
+    <h1>学習サイト 管理画面</h1>
+    <p class="sub">「独自」の概念・文献・テストを編集します</p>
+    <div id="login-msg" class="msg err" style="display:none"></div>
+    <form id="login-form" autocomplete="off">
+      <div class="field">
+        <label for="pass">管理パスワード</label>
+        <input type="password" id="pass" required autofocus>
+      </div>
+      <button type="submit" id="login-btn" class="btn block">ログイン</button>
+    </form>
+    <p style="text-align:center;margin:1.4em 0 0;font-size:.84rem">
+      <a href="/learn/">学習サイトに戻る</a></p>
+  </div>
+</div>
+
+<!-- ============ 管理パネル ============ -->
+<div id="panel-view" style="display:none">
+
+<div class="admin-bar"><div class="wrap">
+  <span><strong>要求工学 学習</strong>　管理画面</span>
+  <span>
+    <a href="/learn/stage.html?s=custom">「独自」を見る</a>　
+    <a href="#" id="logout">ログアウト</a>
+  </span>
+</div></div>
+
+<div class="wrap">
+  <div id="msg"></div>
+
+  <div class="tabs">
+    <button type="button" data-tab="basic" class="on">基本情報</button>
+    <button type="button" data-tab="terms">概念・用語</button>
+    <button type="button" data-tab="refs">参考文献</button>
+    <button type="button" data-tab="quiz">判定テスト</button>
+    <button type="button" data-tab="json">定義（JSON）</button>
+  </div>
+
+  <section id="tab-basic"></section>
+  <section id="tab-terms" style="display:none"></section>
+  <section id="tab-refs" style="display:none"></section>
+  <section id="tab-quiz" style="display:none"></section>
+
+  <section id="tab-json" style="display:none">
+    <div class="page-head"><p class="eyebrow">definition</p><h1>定義（JSON）</h1>
+      <p class="sub">画面の編集で足りないときは、ここで直接書き換えられます</p></div>
+    <div class="box warn"><p class="box-title">お使いになる前に</p>
+      <p style="margin-bottom:0">ここでの書き換えは「独自」の内容にそのまま反映されます。
+        保存の前に構造の検査は行いますが、意味の正しさまでは確かめられません。
+        書き換える前に「いまの内容を書き出す」で控えを取っておくことを勧めます。</p></div>
+    <div class="btn-row">
+      <button type="button" class="btn ghost mini" id="json-load">画面の編集内容を読み込む</button>
+      <button type="button" class="btn ghost mini" id="json-export">いまの内容を書き出す</button>
+      <button type="button" class="btn terra mini" id="json-reset">仮置きの内容に戻す</button>
+    </div>
+    <textarea class="json-area" id="json-area" spellcheck="false"></textarea>
+  </section>
+
+  <div class="progress-bar">
+    <span class="state" id="state">　</span>
+    <button type="button" class="btn mini" id="save">この内容を保存する</button>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+</div>
+
+<script src="../assets/learn.js"></script>
+<script>
+(function () {
+  'use strict';
+  var pw = null, C = null, REV = 0;
+  var esc = LEARN.esc;
+
+  function call(action, extra) {
+    return LEARN.api(Object.assign({ action: action, adminPassword: pw }, extra || {}));
+  }
+  function say(text, ok) {
+    var m = document.getElementById('msg');
+    m.innerHTML = '<div class="msg ' + (ok ? 'ok' : 'err') + '">' + esc(text) + '</div>';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function uid(prefix) {
+    return prefix + '-' + Math.random().toString(36).slice(2, 7);
+  }
+
+  /* ---------- タブ ---------- */
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      read();
+      document.querySelectorAll('.tabs button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      ['basic', 'terms', 'refs', 'quiz', 'json'].forEach(function (t) {
+        document.getElementById('tab-' + t).style.display = (t === b.dataset.tab) ? '' : 'none';
+      });
+      draw();
+    });
+  });
+
+  function field(label, name, value, opt) {
+    opt = opt || {};
+    var input = opt.area
+      ? '<textarea data-f="' + name + '" rows="' + (opt.rows || 4) + '">' + esc(value || '') + '</textarea>'
+      : '<input type="' + (opt.type || 'text') + '" data-f="' + name + '" value="' + esc(value == null ? '' : value) + '">';
+    return '<div class="field" style="' + (opt.flex || 'flex:1;min-width:170px') + '"><label>' +
+      esc(label) + '</label>' + input + '</div>';
+  }
+
+  /* ---------- 描画 ---------- */
+  function draw() {
+    if (!C) return;
+    document.getElementById('tab-basic').innerHTML =
+      '<div class="page-head"><p class="eyebrow">basic</p><h1>基本情報</h1>' +
+      '<p class="sub">「独自」段階の表題と、学習者に示す前提・到達目標です</p></div>' +
+      '<div class="edit-block" id="basic">' +
+        '<div class="form-row">' + field('表題', 'title', C.title, { flex: 'flex:1;min-width:200px' }) +
+          field('副題', 'subtitle', C.subtitle) +
+          field('英字の小見出し', 'eyebrow', C.eyebrow, { flex: 'width:170px' }) +
+          field('色', 'color', C.color, { flex: 'width:120px' }) + '</div>' +
+        '<div style="margin-top:12px">' + field('この段階の前提', 'premise', C.premise, { area: true, rows: 4, flex: 'flex:1' }) + '</div>' +
+        '<div style="margin-top:12px">' + field('到達目標', 'goal', C.goal, { area: true, rows: 2, flex: 'flex:1' }) + '</div>' +
+      '</div>' +
+      (C.provisional ? '<div class="box warn"><p class="box-title">いまは仮置きの状態です</p>' +
+        '<p style="margin-bottom:0">一度でも保存すると、学習画面の上に出ている「仮置きです」の帯は自動的に消えます。</p></div>' : '');
+
+    document.getElementById('tab-terms').innerHTML =
+      '<div class="page-head"><p class="eyebrow">terms</p><h1>概念・用語（' + C.terms.length + '語）</h1>' +
+      '<p class="sub">解説は、それだけで読み切れる長さで書いてください</p></div>' +
+      '<div id="terms">' + C.terms.map(termBlock).join('') + '</div>' +
+      '<div class="btn-row"><button type="button" class="btn ghost mini" data-add="term">用語を追加</button></div>';
+
+    document.getElementById('tab-refs').innerHTML =
+      '<div class="page-head"><p class="eyebrow">refs</p><h1>参考文献（' + C.refs.length + '件）</h1>' +
+      '<p class="sub">「何が読めるか」を必ず書いてください。書名だけでは道案内になりません</p></div>' +
+      '<div id="refs">' + C.refs.map(refBlock).join('') + '</div>' +
+      '<div class="btn-row"><button type="button" class="btn ghost mini" data-add="ref">文献を追加</button></div>';
+
+    var q = C.quiz;
+    document.getElementById('tab-quiz').innerHTML =
+      '<div class="page-head"><p class="eyebrow">quiz</p><h1>判定テスト（' + q.questions.length + '問）</h1>' +
+      '<p class="sub">選択式です。誤答したときの復習先として、用語を結びつけられます</p></div>' +
+      '<div class="edit-block" id="quizmeta"><div class="form-row">' +
+        field('合格ライン（正答数）', 'pass', q.pass, { type: 'number', flex: 'width:200px' }) +
+        '<span class="quiet" style="font-size:.85rem">全 ' + q.questions.length + ' 問中</span>' +
+      '</div></div>' +
+      '<div id="qs">' + q.questions.map(quizBlock).join('') + '</div>' +
+      '<div class="btn-row"><button type="button" class="btn ghost mini" data-add="q">設問を追加</button></div>';
+
+    bind();
+    document.getElementById('state').textContent =
+      '用語 ' + C.terms.length + ' ／ 文献 ' + C.refs.length + ' ／ 設問 ' + C.quiz.questions.length +
+      '　（更新回数 ' + REV + '）';
+  }
+
+  function termBlock(t, i) {
+    return '<div class="edit-block" data-kind="term" data-i="' + i + '">' +
+      '<div class="form-row">' +
+        field('id', 'id', t.id, { flex: 'width:130px' }) +
+        field('見出し語', 'term', t.term) +
+        field('読み', 'reading', t.reading, { flex: 'width:200px' }) +
+        '<button type="button" class="btn ghost mini" data-move="up">↑</button>' +
+        '<button type="button" class="btn ghost mini" data-move="down">↓</button>' +
+        '<button type="button" class="btn terra mini" data-del="1">削除</button>' +
+      '</div>' +
+      '<div style="margin-top:10px">' + field('定義（1〜2文）', 'definition', t.definition, { area: true, rows: 3, flex: 'flex:1' }) + '</div>' +
+      '<div style="margin-top:10px">' + field('解説（長くて構いません）', 'body', t.body, { area: true, rows: 6, flex: 'flex:1' }) + '</div>' +
+      '<div class="form-row" style="margin-top:10px">' +
+        field('関連する語のid（カンマ区切り）', 'related', (t.related || []).join(', ')) +
+        field('さらに深く（出典）', 'source', t.source) +
+      '</div>' +
+    '</div>';
+  }
+
+  function refBlock(r, i) {
+    return '<div class="edit-block" data-kind="ref" data-i="' + i + '">' +
+      '<div class="form-row">' +
+        field('id', 'id', r.id, { flex: 'width:130px' }) +
+        field('種別', 'kind', r.kind, { flex: 'width:150px' }) +
+        '<button type="button" class="btn ghost mini" data-move="up">↑</button>' +
+        '<button type="button" class="btn ghost mini" data-move="down">↓</button>' +
+        '<button type="button" class="btn terra mini" data-del="1">削除</button>' +
+      '</div>' +
+      '<div style="margin-top:10px">' + field('書誌', 'label', r.label, { area: true, rows: 2, flex: 'flex:1' }) + '</div>' +
+      '<div style="margin-top:10px">' + field('何が読めるか', 'reads', r.reads, { area: true, rows: 3, flex: 'flex:1' }) + '</div>' +
+    '</div>';
+  }
+
+  function quizBlock(q, i) {
+    return '<div class="edit-block" data-kind="q" data-i="' + i + '">' +
+      '<div class="form-row">' +
+        field('id', 'id', q.id, { flex: 'width:120px' }) +
+        field('正答の番号（1から）', 'answer', (q.answer || 0) + 1, { type: 'number', flex: 'width:170px' }) +
+        field('復習先の用語id', 'term', q.term, { flex: 'width:200px' }) +
+        '<button type="button" class="btn ghost mini" data-move="up">↑</button>' +
+        '<button type="button" class="btn ghost mini" data-move="down">↓</button>' +
+        '<button type="button" class="btn terra mini" data-del="1">削除</button>' +
+      '</div>' +
+      '<div style="margin-top:10px">' + field('問題文', 'text', q.text, { area: true, rows: 2, flex: 'flex:1' }) + '</div>' +
+      '<div style="margin-top:10px">' + field('選択肢（1行に一つ）', 'choices', (q.choices || []).join('\n'), { area: true, rows: 4, flex: 'flex:1' }) + '</div>' +
+      '<div style="margin-top:10px">' + field('解説', 'explain', q.explain, { area: true, rows: 3, flex: 'flex:1' }) + '</div>' +
+    '</div>';
+  }
+
+  function bind() {
+    document.querySelectorAll('[data-add]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        read();
+        var k = b.dataset.add;
+        if (k === 'term') C.terms.push({ id: uid('t'), term: '新しい用語', reading: '', definition: '定義を書いてください。', body: '', related: [], source: '' });
+        if (k === 'ref') C.refs.push({ id: uid('r'), kind: '文献', label: '書誌を書いてください', reads: '何が読めるかを書いてください。' });
+        if (k === 'q') C.quiz.questions.push({ id: uid('q'), text: '問題文', choices: ['選択肢1', '選択肢2', '選択肢3', '選択肢4'], answer: 0, explain: '', term: '' });
+        draw();
+      });
+    });
+    document.querySelectorAll('[data-del]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        read();
+        var blk = b.closest('.edit-block');
+        var arr = pick(blk.dataset.kind), i = Number(blk.dataset.i);
+        if (arr.length <= 1) { say('最後の一件は削除できません。', false); return; }
+        if (!confirm('この項目を削除します。よろしいですか。')) return;
+        arr.splice(i, 1);
+        draw();
+      });
+    });
+    document.querySelectorAll('[data-move]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        read();
+        var blk = b.closest('.edit-block');
+        var arr = pick(blk.dataset.kind), i = Number(blk.dataset.i);
+        var j = b.dataset.move === 'up' ? i - 1 : i + 1;
+        if (j < 0 || j >= arr.length) return;
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        draw();
+      });
+    });
+  }
+
+  function pick(kind) {
+    return kind === 'term' ? C.terms : kind === 'ref' ? C.refs : C.quiz.questions;
+  }
+
+  function val(root, name) {
+    var el = root.querySelector('[data-f="' + name + '"]');
+    return el ? el.value : '';
+  }
+
+  /* 画面の入力を C に取り込む */
+  function read() {
+    if (!C) return;
+    var b = document.getElementById('basic');
+    if (b) {
+      C.title = val(b, 'title').trim() || '独自';
+      C.subtitle = val(b, 'subtitle').trim();
+      C.eyebrow = val(b, 'eyebrow').trim();
+      C.color = val(b, 'color').trim() || '#C2703D';
+      C.premise = val(b, 'premise').trim();
+      C.goal = val(b, 'goal').trim();
+    }
+    var ts = document.querySelectorAll('#terms .edit-block');
+    if (ts.length) {
+      C.terms = Array.prototype.map.call(ts, function (el) {
+        var rel = val(el, 'related').split(/[,、\s]+/).map(function (x) { return x.trim(); }).filter(Boolean);
+        return {
+          id: val(el, 'id').trim(), term: val(el, 'term').trim(), reading: val(el, 'reading').trim(),
+          definition: val(el, 'definition').trim(), body: val(el, 'body').trim(),
+          related: rel, source: val(el, 'source').trim()
+        };
+      });
+    }
+    var rs = document.querySelectorAll('#refs .edit-block');
+    if (rs.length) {
+      C.refs = Array.prototype.map.call(rs, function (el) {
+        return { id: val(el, 'id').trim(), kind: val(el, 'kind').trim(), label: val(el, 'label').trim(), reads: val(el, 'reads').trim() };
+      });
+    }
+    var qm = document.getElementById('quizmeta');
+    if (qm) C.quiz.pass = Number(val(qm, 'pass')) || 0;
+    var qs = document.querySelectorAll('#qs .edit-block');
+    if (qs.length) {
+      C.quiz.questions = Array.prototype.map.call(qs, function (el) {
+        var ch = val(el, 'choices').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+        var ans = Number(val(el, 'answer')) - 1;
+        return {
+          id: val(el, 'id').trim(), text: val(el, 'text').trim(), choices: ch,
+          answer: Number.isFinite(ans) && ans >= 0 ? ans : 0,
+          explain: val(el, 'explain').trim(), term: val(el, 'term').trim()
+        };
+      });
+    }
+  }
+
+  /* ---------- 保存 ---------- */
+  document.getElementById('save').addEventListener('click', function () {
+    read();
+    save(C);
+  });
+
+  function save(payload) {
+    call('saveCustom', { custom: payload, rev: REV }).then(function (d) {
+      if (d.conflict) {
+        say(d.error + '（現在の更新回数は ' + d.rev + ' です）', false);
+        return;
+      }
+      if (!d.ok) { say(d.error || '保存に失敗しました。', false); return; }
+      C = d.custom; REV = d.rev;
+      document.getElementById('json-area').value = JSON.stringify(C, null, 2);
+      draw();
+      say('保存しました。学習サイトに反映されています。', true);
+    });
+  }
+
+  /* ---------- JSON ---------- */
+  document.getElementById('json-load').addEventListener('click', function () {
+    read();
+    document.getElementById('json-area').value = JSON.stringify(C, null, 2);
+    say('画面の編集内容を JSON に写しました。', true);
+  });
+  document.getElementById('json-export').addEventListener('click', function () {
+    read();
+    var blob = new Blob(['﻿' + JSON.stringify(C, null, 2)], { type: 'application/json;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'learn-custom.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+  document.getElementById('json-reset').addEventListener('click', function () {
+    if (!confirm('「独自」の内容を、あらかじめ用意された仮置きの内容に戻します。\nいま編集中の内容は失われます。よろしいですか。')) return;
+    call('resetCustom', {}).then(function (d) {
+      if (!d.ok) { say(d.error || '初期化に失敗しました。', false); return; }
+      C = d.custom; REV = d.rev;
+      document.getElementById('json-area').value = JSON.stringify(C, null, 2);
+      draw();
+      say('仮置きの内容に戻しました。', true);
+    });
+  });
+
+  /* ---------- ログイン ---------- */
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = document.getElementById('pass').value;
+    if (!v) return;
+    var btn = document.getElementById('login-btn');
+    btn.disabled = true; btn.textContent = '確認中…';
+    LEARN.api({ action: 'adminLogin', adminPassword: v }).then(function (d) {
+      btn.disabled = false; btn.textContent = 'ログイン';
+      if (!d.ok) {
+        var m = document.getElementById('login-msg');
+        m.textContent = d.error || 'パスワードが正しくありません。';
+        m.style.display = '';
+        return;
+      }
+      pw = v;
+      document.getElementById('login-view').style.display = 'none';
+      document.getElementById('panel-view').style.display = '';
+      call('getCustomAdmin', {}).then(function (r) {
+        if (!r.ok) { say(r.error || '取得に失敗しました。', false); return; }
+        C = r.custom; REV = r.rev;
+        document.getElementById('json-area').value = JSON.stringify(C, null, 2);
+        draw();
+      });
+    });
+  });
+
+  document.getElementById('logout').addEventListener('click', function (e) {
+    e.preventDefault();
+    pw = null; C = null;
+    document.getElementById('pass').value = '';
+    document.getElementById('panel-view').style.display = 'none';
+    document.getElementById('login-view').style.display = '';
+  });
+
+  /* JSON タブからの保存 */
+  document.getElementById('json-area').addEventListener('blur', function () {});
+})();
+</script>
+</body>
+</html>

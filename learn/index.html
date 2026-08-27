@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/learn/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="要求工学の初学者に向けた学習サイト。初級・中級・上級の三段階で、主要な概念と参考文献への道案内を提供します。">
+<meta property="og:title" content="要求工学 学習 — 知働化コミュニティ">
+<meta property="og:description" content="要求工学の主要な概念を学び、参考とすべき書籍や論文への道案内を得るための学習サイトです。">
+<meta property="og:type" content="website">
+<title>要求工学 学習 ｜ 知働化コミュニティ</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">learning</p>
+    <h1>要求工学 学習</h1>
+    <p class="sub">主要な概念を学び、次に読むべき一冊にたどりつくために</p>
+  </div>
+
+  <p class="lead">
+    このサイトは、要求工学をこれから学ぶ方に向けた道案内です。
+    文献を網羅的に並べることが目的ではありません。
+    いまどの段階にいる人が、次に何を読み、何を確かめればよいのかを示すことを目指しています。
+  </p>
+
+  <p>
+    段階は三つに分かれています。ただし、これは難しさの階段ではありません。
+    拠って立つ前提の違いです。初級は要求工学がこれまで共有してきた語彙を扱い、
+    中級はその語彙を組み替えるための三本柱を扱い、上級は組み替えそのものの根拠となる
+    哲学と原理を扱います。つまり、初級で学んだことのいくつかは、
+    上級で「そのままでは成り立たない」と示されることになります。
+  </p>
+
+  <p>
+    これは矛盾ではなく、意図した設計です。棄却するとしても、
+    棄却の対象を正確に知らずに棄却することはできないからです。
+    どの段階から読み始めても構いませんし、順序も問いません。
+  </p>
+
+  <h2 id="stages">四つの段階</h2>
+
+  <div id="stage-list" class="stage-grid">
+    <p class="empty-note">読み込んでいます…</p>
+  </div>
+
+  <h2 id="how">それぞれの段階の中身</h2>
+
+  <p>
+    どの段階も、次の三つで構成されています。順に進むことを勧めますが、強制はしません。
+  </p>
+
+  <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th style="width:22%">構成要素</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>概念・用語解説</td>
+          <td>その段階で押さえるべき語を、定義と、そこから先の説明とあわせて示します。
+              解説はその場で読み切れるように書いてありますので、原典を手元に置く必要はありません。</td>
+        </tr>
+        <tr>
+          <td>参考文献</td>
+          <td>その段階の理解を支える文献と、次の段階へ進むための文献を、
+              「何が読めるか」という注記つきで並べます。書名の羅列にはしていません。</td>
+        </tr>
+        <tr>
+          <td>理解度判定テスト</td>
+          <td>選択式です。点数そのものより、誤答から復習すべき用語へたどれることを重視しています。
+              選別のための試験ではありません。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box tint">
+    <p class="box-title">記録は残しません</p>
+    <p style="margin-bottom:0">
+      テストの採点は、ご自身の端末の中だけで行われます。結果は送信されず、保存もされません。
+      どなたが何点だったかを、こちらで知ることはできない作りにしてあります。
+      ですから、何度でも気楽にお試しください。設問の並びは毎回入れ替わります。
+    </p>
+  </div>
+
+  <h2 id="custom">「独自」について</h2>
+
+  <p>
+    三つの段階とは別に「独自」を設けています。ここは学習管理者が、
+    概念・用語、参考文献、判定テストを自由に登録・編集・削除できる領域です。
+    研究室ごと、講義ごとの教材を、サイトの作り替えなしに載せられるようにするためのものです。
+  </p>
+
+  <p>
+    公開の時点では、位野木研究室の要求工学に関連する項目を仮置きしてあります。
+    いずれも公開されている情報の範囲で構成したものですので、
+    差し替えを前提としてご覧ください。
+  </p>
+
+  <h2 id="link">意識調査について</h2>
+
+  <p>
+    このサイトとは別に、AI時代の要求工学に関する意識調査を行っています。
+    学んだうえで調査にお答えいただき、その結果が学習内容の見直しにつながる。
+    そうした循環を想定しています。調査へのご協力は
+    <a href="/inoki-ken/">こちらのサイト</a>からお願いしています（ID・SubID が必要です）。
+  </p>
+
+  <div class="btn-row center">
+    <a class="btn" href="stage.html?s=beginner">初級から始める →</a>
+    <a class="btn ghost" href="refs.html">参考文献を一覧する</a>
+  </div>
+
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/learn.js"></script>
+<script>
+(function () {
+  'use strict';
+  LEARN.mount('home');
+
+  var box = document.getElementById('stage-list');
+
+  LEARN.load().then(function (data) {
+    box.innerHTML = data.stages.map(function (s) {
+      var c = LEARN.counts(s);
+      return '<a class="stage-card" href="stage.html?s=' + encodeURIComponent(s.id) + '"' +
+        ' style="--c:' + LEARN.esc(s.color || '#2F7D6E') + '">' +
+        '<p class="num">' + LEARN.esc(s.eyebrow || '') + '</p>' +
+        '<h3>' + LEARN.esc(s.title) + '</h3>' +
+        '<p class="st-sub">' + LEARN.esc(s.subtitle || '') + '</p>' +
+        '<p class="st-goal">' + LEARN.esc(s.goal || '') + '</p>' +
+        '<p class="go">この段階を学ぶ →</p>' +
+        '<p class="st-meta"><span>用語 ' + c.terms + '</span><span>文献 ' + c.refs + '</span>' +
+        '<span>設問 ' + c.quiz + '</span>' +
+        (s.provisional ? '<span style="color:#C2703D">仮置き</span>' : '') + '</p>' +
+        '</a>';
+    }).join('');
+  }).catch(function (e) {
+    box.innerHTML = '<p class="empty-note">' + LEARN.esc(e.message || '読み込みに失敗しました') + '</p>';
+  });
+})();
+</script>
+</body>
+</html>

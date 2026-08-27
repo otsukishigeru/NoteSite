@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<base href="/learn/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>参考文献 ｜ 要求工学 学習</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="wide">
+
+<a class="skip" href="#main">本文へ移動</a>
+<div id="site-header"></div>
+
+<main id="main">
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">references</p>
+    <h1>参考文献</h1>
+    <p class="sub">四つの段階に配架した文献を、一箇所にまとめています</p>
+  </div>
+
+  <p class="lead">
+    それぞれの文献には「何が読めるか」を添えてあります。
+    書名だけを並べても道案内にはなりませんので、その一冊を手に取ると何が分かるのか、
+    どの段階で読むと効くのかを記しました。
+  </p>
+
+  <div class="box tint">
+    <p class="box-title">三つの入口</p>
+    <p style="margin-bottom:0">
+      読む順序に迷ったときは、次の三つのいずれかから入ることを勧めます。
+      <strong>原理から入る</strong>なら、中級の原典から上級の原理へ。
+      <strong>哲学から入る</strong>なら、上級の哲学書から中級の三本柱へ。
+      <strong>実務から入る</strong>なら、初級の標準・規格から中級の技法へ。
+      下の絞り込みで、それぞれの入口に対応する文献だけを表示できます。
+    </p>
+  </div>
+
+  <div id="filters"></div>
+  <div id="list"><p class="empty-note">読み込んでいます…</p></div>
+
+</div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/learn.js"></script>
+<script>
+(function () {
+  'use strict';
+  LEARN.mount('refs');
+
+  var list = document.getElementById('list');
+  var filters = document.getElementById('filters');
+  var ALL = [], stageFilter = 'all', kindFilter = 'all';
+
+  var ENTRANCE = {
+    principle: { label: '原理から入る', stages: ['intermediate', 'advanced'], kinds: ['原典', '論文'] },
+    philosophy: { label: '哲学から入る', stages: ['advanced', 'intermediate'], kinds: ['哲学'] },
+    practice:   { label: '実務から入る', stages: ['beginner'], kinds: ['標準', '方法論', '知識体系'] }
+  };
+  var entrance = null;
+
+  function draw() {
+    var rows = ALL.filter(function (r) {
+      if (entrance) {
+        var e = ENTRANCE[entrance];
+        if (e.stages.indexOf(r.stageId) < 0) return false;
+        if (e.kinds.indexOf(r.kind) < 0) return false;
+        return true;
+      }
+      if (stageFilter !== 'all' && r.stageId !== stageFilter) return false;
+      if (kindFilter !== 'all' && r.kind !== kindFilter) return false;
+      return true;
+    });
+
+    if (!rows.length) {
+      list.innerHTML = '<p class="empty-note">条件に合う文献がありません。</p>';
+      return;
+    }
+    list.innerHTML =
+      '<p class="quiet" style="font-size:.85rem">' + rows.length + ' 件を表示しています</p>' +
+      rows.map(function (r) {
+        return '<div class="ref">' +
+          '<div class="ref-top">' +
+            '<span class="kind ' + LEARN.kindClass(r.kind) + '">' + LEARN.esc(r.kind || '文献') + '</span>' +
+            '<span class="ref-label">' + LEARN.esc(r.label) + '</span>' +
+          '</div>' +
+          '<p class="ref-reads">' + LEARN.esc(r.reads || '') + '</p>' +
+          '<p class="ref-stage">配架：<a href="stage.html?s=' + encodeURIComponent(r.stageId) + '#refs">' +
+            LEARN.esc(r.stageTitle) + '</a></p>' +
+        '</div>';
+      }).join('');
+  }
+
+  function chip(label, on, fn) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (on ? ' on' : '');
+    b.textContent = label;
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function drawFilters() {
+    var stages = [{ id: 'all', title: 'すべての段階' }].concat(
+      ALL.reduce(function (acc, r) {
+        if (!acc.some(function (x) { return x.id === r.stageId; })) acc.push({ id: r.stageId, title: r.stageTitle });
+        return acc;
+      }, []));
+    var kinds = ['all'].concat(ALL.map(function (r) { return r.kind; })
+      .filter(function (k, i, a) { return k && a.indexOf(k) === i; }));
+
+    filters.innerHTML = '';
+    var r1 = document.createElement('div'); r1.className = 'chips';
+    stages.forEach(function (s) {
+      r1.appendChild(chip(s.title, !entrance && stageFilter === s.id, function () {
+        entrance = null; stageFilter = s.id; drawFilters(); draw();
+      }));
+    });
+    var r2 = document.createElement('div'); r2.className = 'chips';
+    kinds.forEach(function (k) {
+      r2.appendChild(chip(k === 'all' ? 'すべての種別' : k, !entrance && kindFilter === k, function () {
+        entrance = null; kindFilter = k; drawFilters(); draw();
+      }));
+    });
+    var r3 = document.createElement('div'); r3.className = 'chips';
+    Object.keys(ENTRANCE).forEach(function (key) {
+      r3.appendChild(chip(ENTRANCE[key].label, entrance === key, function () {
+        entrance = entrance === key ? null : key; drawFilters(); draw();
+      }));
+    });
+    filters.appendChild(r1);
+    filters.appendChild(r2);
+    filters.appendChild(r3);
+  }
+
+  LEARN.load().then(function (data) {
+    data.stages.forEach(function (s) {
+      (s.refs || []).forEach(function (r) {
+        ALL.push({ stageId: s.id, stageTitle: s.title, kind: r.kind, label: r.label, reads: r.reads });
+      });
+    });
+    drawFilters();
+    draw();
+  }).catch(function (e) {
+    list.innerHTML = '<p class="empty-note">' + LEARN.esc(e.message || '読み込みに失敗しました') + '</p>';
+  });
+})();
+</script>
+</body>
+</html>
