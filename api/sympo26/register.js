@@ -3,9 +3,11 @@
 // 1) Upstash Redis に常に保存（バックアップ）
 // 2) Google スプレッドシート「Sympo26Reg」へ追記
 //    （Apps Script ウェブアプリ経由：SYMPO26_SHEET_WEBHOOK_URL）
-// 3) Resend API でメール送信（RESEND_API_KEY が設定済みの場合）
+// 3) otsuki.s.1corp@gmail.com からメール送信
+//    （Gmail SMTP を優先。未設定のときは Resend にフォールバック）
 //    - 事務局宛　：「Sympo26Reg：参加申込」
-//    - 申込者宛　：「Re:Sympo26Reg：参加申込」（御礼・参加料明示）
+//    - 申込者宛　：「Re:Sympo26Reg：参加申込」
+//      （プログラム委員長 大槻 繁 名義の御礼。参加料を明示）
 // =============================================
 
 const TO_EMAIL   = 'otsuki.s.1corp@gmail.com';
@@ -88,10 +90,36 @@ async function appendToSheet(entry) {
   return { saved: true };
 }
 
-// ── Resend でメール送信 ───────────────────────────────────────
-async function resendSend(payload) {
+// ── メール送信 ───────────────────────────────────────────────
+// 送信元は otsuki.s.1corp@gmail.com。Gmail の SMTP（アプリパスワード）を優先し、
+// 未設定のときは Resend にフォールバックする。
+const FROM_NAME_THANKS = 'Symposium2026 プログラム委員長 大槻 繁';
+const FROM_NAME_ADMIN  = 'Symposium2026 参加申込フォーム';
+
+async function sendViaGmail({ to, subject, html, text, replyTo, fromName }) {
+  const user = process.env.GMAIL_USER || TO_EMAIL;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!pass) return null;  // 未設定 → Resend にフォールバック
+
+  const nodemailer  = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com', port: 465, secure: true,
+    auth: { user, pass },
+  });
+  await transporter.sendMail({
+    from: `"${fromName}" <${user}>`,
+    to, subject, html, text,
+    replyTo: replyTo || user,
+  });
+  return { sent: true, via: 'gmail' };
+}
+
+async function sendViaResend({ to, subject, html, text, replyTo, fromName }) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return { sent: false, reason: 'no_api_key' };
+  if (!apiKey) return { sent: false, reason: 'no_mail_config' };
+
+  const addr = process.env.SYMPO26_MAIL_FROM || 'onboarding@resend.dev';
+  const from = addr.includes('<') ? addr : `${fromName} <${addr}>`;
 
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -99,14 +127,33 @@ async function resendSend(payload) {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ from: process.env.SYMPO26_MAIL_FROM || 'onboarding@resend.dev', ...payload }),
+    body: JSON.stringify({ from, to: [to], reply_to: replyTo || TO_EMAIL, subject, html, text }),
   });
 
   if (!r.ok) {
     const txt = await r.text();
     throw new Error(`Resend ${r.status}: ${txt.slice(0, 200)}`);
   }
-  return { sent: true };
+  return { sent: true, via: 'resend' };
+}
+
+async function deliver(opts) {
+  const errors = [];
+  try {
+    const viaGmail = await sendViaGmail(opts);
+    if (viaGmail) return viaGmail;
+  } catch (e) {
+    console.error('Gmail send error:', e.message);
+    errors.push(`gmail: ${e.message}`);
+  }
+  try {
+    const viaResend = await sendViaResend(opts);
+    if (viaResend.sent) return viaResend;
+    errors.push(`resend: ${viaResend.reason}`);
+  } catch (e) {
+    errors.push(`resend: ${e.message}`);
+  }
+  return { sent: false, reason: errors.join(' / ') };
 }
 
 function row(k, v, pre) {
@@ -141,9 +188,10 @@ async function sendAdminMail(entry) {
     `\n受信: ${entry.date}`,
   ].filter(Boolean).join('\n');
 
-  return resendSend({
-    to:       [TO_EMAIL],
-    reply_to: entry.email,
+  return deliver({
+    to:       TO_EMAIL,
+    replyTo:  entry.email,
+    fromName: FROM_NAME_ADMIN,
     subject:  'Sympo26Reg：参加申込',
     html,
     text,
@@ -164,7 +212,7 @@ async function sendThanksMail(entry) {
   <h2 style="color:#16181D;border-bottom:3px solid #E42C2C;padding-bottom:8px;">${SITE_NAME} 参加申込みを受け付けました</h2>
   <p style="margin-top:20px;">${esc(entry.name)} 様</p>
   <p>このたびは ${SITE_NAME}（アジャイルプロセス協議会 知働化研究会）へお申込みいただき、ありがとうございます。<br>
-  以下の内容で参加申込みを受け付けました。</p>
+  以下の内容で参加申込みを受け付けました。当日、会場でお目にかかれることを楽しみにしております。</p>
 
   <table style="width:100%;border-collapse:collapse;margin-top:20px;font-size:14px;">
     ${row('お名前', entry.name)}
@@ -192,7 +240,8 @@ async function sendThanksMail(entry) {
     <a href="mailto:${TO_EMAIL}" style="color:#E42C2C;">${TO_EMAIL}</a> までお問い合わせください。
   </p>
   <p style="margin-top:18px;font-size:13px;color:#4A4F58;">
-    アジャイルプロセス協議会 知働化研究会　Symposium2026 事務局<br>大槻 繁
+    アジャイルプロセス協議会 知働化研究会　Symposium2026<br>
+    プログラム委員長　大槻 繁
   </p>
 </div>`;
 
@@ -200,7 +249,7 @@ async function sendThanksMail(entry) {
     `${entry.name} 様`,
     '',
     `このたびは ${SITE_NAME}（アジャイルプロセス協議会 知働化研究会）へお申込みいただき、ありがとうございます。`,
-    '以下の内容で参加申込みを受け付けました。',
+    '以下の内容で参加申込みを受け付けました。当日、会場でお目にかかれることを楽しみにしております。',
     '',
     `お名前: ${entry.name}`,
     entry.kana ? `お名前の読み: ${entry.kana}` : '',
@@ -217,12 +266,14 @@ async function sendThanksMail(entry) {
     '開催要領：https://chidouka-lab.com/sympo26/',
     '',
     `お問い合わせ：${TO_EMAIL}`,
-    'アジャイルプロセス協議会 知働化研究会　Symposium2026 事務局　大槻 繁',
+    'アジャイルプロセス協議会 知働化研究会　Symposium2026',
+    'プログラム委員長　大槻 繁',
   ].filter(Boolean).join('\n');
 
-  return resendSend({
-    to:       [entry.email],
-    reply_to: TO_EMAIL,
+  return deliver({
+    to:       entry.email,
+    replyTo:  TO_EMAIL,
+    fromName: FROM_NAME_THANKS,
     subject:  'Re:Sympo26Reg：参加申込',
     html,
     text,

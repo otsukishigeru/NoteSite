@@ -10,3 +10,7 @@ wireframes/
 
 # Claude Code の作業用ワークツリー（数百MBになるため除外）
 .claude/worktrees/
+
+# npm
+node_modules/
+package-lock.json
