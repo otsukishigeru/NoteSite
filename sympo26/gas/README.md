@@ -17,9 +17,14 @@ Google スプレッドシート「**Sympo26Reg**」に集計するための設�
 
 1. スプレッドシートのメニューから **拡張機能 → Apps Script** を開きます。
 2. `コード.gs` の中身をすべて消し、このフォルダの **`Sympo26Reg.gs`** の内容を貼り付けます。
-3. 合言葉を使う場合は、先頭の `var SHARED_TOKEN = '';` に任意の文字列を入れます
-   （例：`var SHARED_TOKEN = 'sympo26-abc123';`）。空のままでも動きます。
+3. 先頭の `var SHARED_TOKEN = '';` に、事務局で決めた合言葉を入れます
+   （`var SHARED_TOKEN = '（合言葉）';` の形）。合言葉が一致しないリクエストは記録せずに拒否します。
 4. 保存します。
+
+> **合言葉はリポジトリに書かないでください。**
+> このリポジトリは公開されているため、`Sympo26Reg.gs` の `SHARED_TOKEN` は空欄のままコミットしています。
+> 実際の値は、この Apps Script エディタと、手順4の Vercel 環境変数 `SYMPO26_SHEET_TOKEN` の
+> 2か所にだけ入力してください。
 
 ## 3. ウェブアプリとしてデプロイする
 
@@ -39,7 +44,7 @@ Vercel のプロジェクト設定 → Settings → Environment Variables に、
 | 変数名 | 値 | 必須 |
 |---|---|---|
 | `SYMPO26_SHEET_WEBHOOK_URL` | 手順3で控えたウェブアプリの URL | スプレッドシート集計に必要 |
-| `SYMPO26_SHEET_TOKEN` | 手順2で決めた合言葉（設定した場合のみ） | 任意 |
+| `SYMPO26_SHEET_TOKEN` | 手順2で `SHARED_TOKEN` に入れた合言葉と同じ値 | 合言葉を使う場合は必須 |
 | `RESEND_API_KEY` | Resend の API キー | メール送信に必要 |
 | `SYMPO26_MAIL_FROM` | 送信元アドレス（例：`Symposium2026 <sympo26@（認証済みドメイン）>`） | 申込者への御礼メールに必要 |
 
