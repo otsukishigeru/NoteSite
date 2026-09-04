@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Symposium2026（2026年11月14日／工学院大学 新宿キャンパス）の参加申込みフォームです。">
+<meta property="og:title" content="参加申込み — Symposium2026">
+<meta property="og:description" content="アジャイルプロセス協議会 知働化研究会 Symposium2026 の参加申込みフォーム。">
+<meta property="og:type" content="website">
+<title>参加申込み — Symposium2026</title>
+
+<style>
+/* ================================================================
+   Symposium2026 参加申込みページ
+   スタイルは開催要領ページ（../index.html）と共通
+   ================================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+  --red:        #E42C2C;   /* プライマリ・アクセント */
+  --red-dark:   #C01E1E;
+  --ink:        #16181D;   /* 本文テキスト */
+  --ink-sub:    #4A4F58;   /* サブテキスト */
+  --ink-light:  #8A9099;   /* 補助テキスト */
+  --bg:         #FFFFFF;
+  --gray:       #F2F2F2;   /* セクション背景 */
+  --gray-line:  #E2E2E2;
+  --black:      #14151A;
+  --shadow-sm:  0 2px 10px rgba(0,0,0,.06);
+  --shadow-md:  0 8px 30px rgba(0,0,0,.10);
+  --radius:     14px;
+  --max-w:      1000px;
+}
+
+html{ scroll-behavior:smooth; font-size:16px; }
+body{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+em{ font-style:normal; }
+
+::-webkit-scrollbar{ width:8px; }
+::-webkit-scrollbar-track{ background:#fff; }
+::-webkit-scrollbar-thumb{ background:#ccc; border-radius:4px; }
+
+.fade-in{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+.fade-in.visible{ opacity:1; transform:translateY(0); }
+
+/* ── コミュニティ トップバー ── */
+.community-bar{
+  background:var(--black); padding:8px 20px;
+  display:flex; align-items:center; justify-content:center;
+}
+.community-bar a{
+  display:flex; align-items:center; gap:9px; color:#fff;
+  font-size:13px; font-weight:700; letter-spacing:.04em; opacity:.92;
+  transition:opacity .15s;
+}
+.community-bar a:hover{ opacity:1; }
+.community-bar img{ height:20px; width:auto; }
+
+/* ── ヘッダー ── */
+.site-header{
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--gray-line);
+}
+.header-inner{
+  max-width:var(--max-w); margin:0 auto; padding:0 24px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:40px; height:40px; background:var(--red); border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:13px; font-weight:900; letter-spacing:.02em; flex-shrink:0;
+}
+.brand-text{ display:flex; flex-direction:column; line-height:1.25; }
+.brand-main{ font-size:15px; font-weight:800; color:var(--ink); }
+.brand-sub{ font-size:10px; color:var(--ink-light); letter-spacing:.06em; }
+.nav-links{ display:flex; gap:26px; }
+.nav-links a{
+  font-size:13.5px; font-weight:700; color:var(--ink-sub);
+  position:relative; transition:color .15s;
+}
+.nav-links a:hover{ color:var(--red); }
+@media(max-width:760px){ .nav-links{ display:none; } }
+
+/* ── 共通セクション ── */
+.section{ padding:78px 24px; }
+.section.gray{ background:var(--gray); }
+.wrap{ max-width:var(--max-w); margin:0 auto; }
+.sec-head{ margin-bottom:38px; }
+.sec-label{
+  display:inline-block; font-size:12px; font-weight:800; letter-spacing:.18em;
+  color:var(--red); margin-bottom:10px;
+}
+.sec-title{
+  font-size:clamp(24px,4vw,34px); font-weight:900; color:var(--ink);
+  line-height:1.25; position:relative; padding-bottom:14px;
+}
+.sec-title::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:54px; height:4px; background:var(--red); border-radius:2px;
+}
+
+/* ── 概要 ── */
+.lead{ font-size:16.5px; color:var(--ink-sub); margin-bottom:18px; }
+.lead strong{ color:var(--ink); font-weight:800; }
+.lead .accent{ color:var(--red); font-weight:800; }
+
+/* ── 戻るリンク ── */
+.nav-back{
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--gray-line); border-radius:999px;
+  padding:9px 18px; font-size:13px; font-weight:700; color:var(--ink-sub);
+  transition:border-color .2s, color .2s, transform .15s;
+}
+.nav-back:hover{ border-color:var(--red); color:var(--red); transform:translateY(-2px); }
+
+/* ── 開催情報の要約 ── */
+.reg-meta{
+  display:flex; flex-wrap:wrap; gap:12px; margin-top:20px;
+}
+.reg-meta div{
+  flex:1 1 200px; background:var(--gray); border-radius:10px; padding:14px 18px;
+}
+.reg-meta .k{ display:block; font-size:11px; font-weight:800; letter-spacing:.1em; color:var(--red); margin-bottom:4px; }
+.reg-meta .v{ font-size:14.5px; font-weight:700; color:var(--ink); line-height:1.6; }
+
+/* ── 参加申込フォーム ── */
+.reg-card{
+  background:#fff; border:1px solid var(--gray-line); border-top:4px solid var(--red);
+  border-radius:var(--radius); box-shadow:var(--shadow-sm);
+  padding:34px 34px 38px; margin-top:24px;
+}
+@media(max-width:600px){ .reg-card{ padding:24px 20px 28px; } }
+.reg-row{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:600px){ .reg-row{ grid-template-columns:1fr; gap:0; } }
+.reg-group{ margin-bottom:22px; }
+.reg-label{
+  display:block; font-size:13.5px; font-weight:800; color:var(--ink);
+  margin-bottom:8px; letter-spacing:.02em;
+}
+.reg-label small{ font-weight:600; color:var(--ink-light); margin-left:6px; }
+.reg-label .req{
+  display:inline-block; background:var(--red); color:#fff;
+  font-size:11px; font-weight:800; padding:2px 7px; border-radius:4px;
+  margin-left:8px; vertical-align:middle; letter-spacing:.04em;
+}
+.reg-input, .reg-textarea{
+  width:100%; padding:12px 14px; background:#FAFAFA;
+  border:1.5px solid var(--gray-line); border-radius:9px;
+  color:var(--ink); font-size:15px; font-family:inherit; line-height:1.6;
+  transition:border-color .18s, box-shadow .18s, background .18s;
+}
+.reg-input::placeholder, .reg-textarea::placeholder{ color:#B4B8BE; }
+.reg-input:focus, .reg-textarea:focus{
+  outline:none; background:#fff; border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(228,44,44,.12);
+}
+.reg-textarea{ min-height:130px; resize:vertical; }
+.reg-help{ font-size:13.5px; color:var(--ink-sub); margin-bottom:10px; line-height:1.8; }
+.reg-checks{ display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+.reg-check{
+  display:flex; align-items:center; gap:11px; cursor:pointer;
+  background:#FAFAFA; border:1.5px solid var(--gray-line); border-radius:9px;
+  padding:12px 16px; font-size:14.5px; font-weight:700; color:var(--ink);
+  transition:border-color .18s, background .18s;
+}
+.reg-check:hover{ border-color:var(--red); background:#fff; }
+.reg-check input{ width:18px; height:18px; accent-color:var(--red); cursor:pointer; flex-shrink:0; }
+.reg-check input:checked + span{ color:var(--red); }
+.reg-fee-note{ font-size:13.5px; color:var(--ink-sub); margin-top:14px; line-height:1.8; }
+.reg-fee{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:12px;
+  margin-top:14px; padding:14px 20px; background:var(--gray); border-radius:10px;
+}
+.reg-fee .k{ font-size:12px; font-weight:800; letter-spacing:.1em; color:var(--red); }
+.reg-fee .v{ font-size:24px; font-weight:900; color:var(--ink); }
+.reg-fee .t{ font-size:13px; font-weight:700; color:var(--ink-sub); }
+.reg-actions{ display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; }
+.reg-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  background:var(--red); color:#fff; border:none; border-radius:999px;
+  padding:15px 34px; font-size:15px; font-weight:800; font-family:inherit;
+  letter-spacing:.02em; cursor:pointer;
+  transition:background .2s, transform .15s, box-shadow .2s, opacity .2s;
+}
+.reg-btn:hover:not(:disabled){ background:var(--red-dark); transform:translateY(-2px); box-shadow:0 10px 26px rgba(228,44,44,.32); }
+.reg-btn:disabled{ opacity:.55; cursor:not-allowed; }
+.reg-btn.ghost{ background:#fff; color:var(--ink-sub); border:1.5px solid var(--gray-line); }
+.reg-btn.ghost:hover:not(:disabled){ background:var(--gray); color:var(--ink); box-shadow:none; }
+.reg-msg{ margin-top:18px; padding:14px 18px; border-radius:9px; font-size:14px; line-height:1.7; display:none; }
+.reg-msg.ok{ display:block; background:rgba(26,158,87,.10); border:1px solid #1a9e57; color:#127a42; }
+.reg-msg.err{ display:block; background:rgba(228,44,44,.08); border:1px solid var(--red); color:var(--red-dark); }
+.reg-confirm-head{ font-size:15px; font-weight:800; color:var(--ink); margin-bottom:18px; }
+.reg-summary{ border-top:1px solid var(--gray-line); margin-bottom:24px; }
+.reg-summary .r{
+  display:grid; grid-template-columns:170px 1fr; gap:16px;
+  padding:13px 6px; border-bottom:1px solid var(--gray-line);
+}
+@media(max-width:600px){ .reg-summary .r{ grid-template-columns:1fr; gap:4px; } }
+.reg-summary dt{ font-size:13px; font-weight:800; color:var(--ink-sub); letter-spacing:.04em; }
+.reg-summary dd{ font-size:15px; font-weight:700; color:var(--ink); white-space:pre-wrap; word-break:break-word; }
+.reg-summary .r.fee dd{ font-size:19px; font-weight:900; color:var(--red); }
+.reg-done{ text-align:center; padding:14px 0 6px; }
+.reg-done .mark{
+  width:58px; height:58px; margin:0 auto 18px; border-radius:50%;
+  background:rgba(26,158,87,.12); color:#1a9e57;
+  display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900;
+}
+.reg-done .ttl{ font-size:20px; font-weight:900; color:var(--ink); margin-bottom:12px; }
+.reg-done .txt{ font-size:14.5px; color:var(--ink-sub); line-height:1.9; }
+
+/* ── フッター ── */
+.site-footer{ background:var(--black); color:#C9CDD4; padding:46px 24px 40px; text-align:center; }
+.footer-back{
+  display:inline-flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18);
+  border-radius:999px; padding:12px 24px; font-size:14px; font-weight:700; color:#fff;
+  transition:background .2s, transform .15s; margin-bottom:24px;
+}
+.footer-back:hover{ background:rgba(228,44,44,.92); border-color:transparent; transform:translateY(-2px); }
+.footer-meta{ font-size:13px; line-height:1.9; }
+.footer-meta strong{ color:#fff; }
+.footer-copy{ font-size:11px; opacity:.55; margin-top:18px; }
+</style>
+</head>
+<body>
+
+<!-- コミュニティ トップバー -->
+<div class="community-bar">
+  <a href="/">
+    <img src="/assets/images/ParadigmIcon.png" alt="知働化コミュニティ">
+    ← 知働化コミュニティ トップへ（chidouka-lab.com）
+  </a>
+</div>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/sympo26/" class="brand">
+      <span class="brand-mark">S26</span>
+      <span class="brand-text">
+        <span class="brand-main">Symposium2026</span>
+        <span class="brand-sub">アジャイルプロセス協議会 知働化研究会</span>
+      </span>
+    </a>
+    <a href="/sympo26/" class="nav-back">← 開催要領へ戻る</a>
+  </div>
+</header>
+
+<!-- 参加申込 -->
+<section class="section" id="register">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <span class="sec-label">Registration</span>
+      <h2 class="sec-title">Symposium2026 参加申込み</h2>
+    </div>
+    <p class="lead fade-in">
+      シンポジウムに参加する方は、必ず、以下のフォームにて申込みしてください。
+    </p>
+
+    <div class="reg-meta fade-in">
+      <div><span class="k">日時</span><span class="v">2026年11月14日（土）<br>9時半 開場 ～ 18時 閉会</span></div>
+      <div><span class="k">会場</span><span class="v">工学院大学<br>新宿キャンパス</span></div>
+      <div><span class="k">参加料</span><span class="v">一般 ¥5,000<br>協議会メンバ・学生 無料</span></div>
+    </div>
+
+    <div class="reg-card fade-in">
+
+      <!-- ① 入力 -->
+      <form id="reg-form" novalidate>
+        <div class="reg-row">
+          <div class="reg-group">
+            <label class="reg-label" for="reg-name">お名前<span class="req">必須</span></label>
+            <input id="reg-name" class="reg-input" type="text" placeholder="大槻 繁" autocomplete="name" required>
+          </div>
+          <div class="reg-group">
+            <label class="reg-label" for="reg-kana">お名前の読み<small>（カタカナ）</small></label>
+            <input id="reg-kana" class="reg-input" type="text" placeholder="オオツキ シゲル">
+          </div>
+        </div>
+
+        <div class="reg-row">
+          <div class="reg-group">
+            <label class="reg-label" for="reg-email">メールアドレス<span class="req">必須</span></label>
+            <input id="reg-email" class="reg-input" type="email" placeholder="example@email.com" autocomplete="email" required>
+          </div>
+          <div class="reg-group">
+            <label class="reg-label" for="reg-org">会社名・所属</label>
+            <input id="reg-org" class="reg-input" type="text" placeholder="（任意）" autocomplete="organization">
+          </div>
+        </div>
+
+        <div class="reg-group">
+          <span class="reg-label">以下に当てはまりますか？<small>（複数選択可）</small></span>
+          <div class="reg-checks">
+            <label class="reg-check"><input type="checkbox" name="reg-cat" value="apa_member"><span>アジャイルプロセス協議会 会員</span></label>
+            <label class="reg-check"><input type="checkbox" name="reg-cat" value="student"><span>学生</span></label>
+            <label class="reg-check"><input type="checkbox" name="reg-cat" value="speaker"><span>シンポジウムコーディネータまたはスピーカー</span></label>
+          </div>
+          <p class="reg-fee-note">
+            上記のどれにも当てはまらない方は「一般」で、参加料は（総額）¥5,000になります。<br>
+            当日、受付にて現金にてお支払いください。
+          </p>
+          <div class="reg-fee">
+            <span class="k">参加料</span>
+            <span class="v" id="reg-fee-val">¥5,000</span>
+            <span class="t" id="reg-fee-kind">一般</span>
+          </div>
+        </div>
+
+        <div class="reg-group">
+          <label class="reg-label" for="reg-message">メッセージ</label>
+          <p class="reg-help">なお、参加申込みについて、メッセージがある方は、下記欄に記入ください。</p>
+          <textarea id="reg-message" class="reg-textarea" placeholder="（任意）"></textarea>
+        </div>
+
+        <button type="submit" class="reg-btn" id="reg-check-btn">入力内容を確認する →</button>
+        <div id="reg-msg" class="reg-msg"></div>
+      </form>
+
+      <!-- ② 確認 -->
+      <div id="reg-confirm" hidden>
+        <p class="reg-confirm-head">以下の内容で申込みます。よろしければ「送信する」を押してください。</p>
+        <dl class="reg-summary" id="reg-summary"></dl>
+        <div class="reg-actions">
+          <button type="button" class="reg-btn ghost" id="reg-back-btn">← 修正する</button>
+          <button type="button" class="reg-btn" id="reg-send-btn">送信する</button>
+        </div>
+        <div id="reg-msg2" class="reg-msg"></div>
+      </div>
+
+      <!-- ③ 完了 -->
+      <div id="reg-done" class="reg-done" hidden>
+        <div class="mark">✓</div>
+        <p class="ttl">参加申込みを受け付けました</p>
+        <p class="txt" id="reg-done-txt"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <a class="footer-back" href="/sympo26/">← Symposium2026 開催要領へ戻る</a>
+  <p class="footer-meta">
+    <strong>Symposium2026</strong>　アジャイルプロセス協議会 知働化研究会<br>
+    2026年11月14日（土）／ 工学院大学 新宿キャンパス
+  </p>
+  <p class="footer-copy">© 知働化研究会 / Agile Process Association　|　chidouka-lab.com/sympo26/</p>
+</footer>
+
+<script>
+/* フェードイン */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+},{ threshold:.12 });
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+/* 参加申込フォーム */
+(function(){
+  var form     = document.getElementById('reg-form');
+  if(!form) return;
+  var confirmBox = document.getElementById('reg-confirm');
+  var doneBox    = document.getElementById('reg-done');
+  var summary    = document.getElementById('reg-summary');
+  var msg        = document.getElementById('reg-msg');
+  var msg2       = document.getElementById('reg-msg2');
+  var sendBtn    = document.getElementById('reg-send-btn');
+  var backBtn    = document.getElementById('reg-back-btn');
+  var feeVal     = document.getElementById('reg-fee-val');
+  var feeKind    = document.getElementById('reg-fee-kind');
+  var checks     = Array.prototype.slice.call(form.querySelectorAll('input[name="reg-cat"]'));
+  var CAT_LABEL  = {
+    apa_member: 'アジャイルプロセス協議会 会員',
+    student:    '学生',
+    speaker:    'シンポジウムコーディネータまたはスピーカー'
+  };
+  var payload = null;
+
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function checkedCats(){ return checks.filter(function(c){ return c.checked; }).map(function(c){ return c.value; }); }
+  function labelsOf(keys){ return keys.length ? keys.map(function(k){ return CAT_LABEL[k]; }) : ['一般']; }
+  /* 会員・学生に加え、コーディネータ／スピーカーも無料扱い（参加料チップには表示しない） */
+  function feeOf(keys){ return keys.length ? 0 : 5000; }
+  function feeTextOf(fee){ return fee === 0 ? '無料' : '¥5,000'; }
+
+  function updateFee(){
+    var keys = checkedCats();
+    var fee  = feeOf(keys);
+    feeVal.textContent  = feeTextOf(fee);
+    feeVal.style.color  = fee === 0 ? '#1a9e57' : '';
+    feeKind.textContent = labelsOf(keys).join(' / ');
+  }
+  checks.forEach(function(c){ c.addEventListener('change', updateFee); });
+  updateFee();
+
+  function showMsg(el, kind, text){
+    el.className = 'reg-msg ' + kind;
+    el.textContent = text;
+  }
+  function clearMsg(el){ el.className = 'reg-msg'; el.textContent = ''; }
+
+  function addRow(dt, dd, cls){
+    var r = document.createElement('div');
+    r.className = 'r' + (cls ? ' ' + cls : '');
+    var k = document.createElement('dt'); k.textContent = dt;
+    var v = document.createElement('dd'); v.textContent = dd;
+    r.appendChild(k); r.appendChild(v);
+    summary.appendChild(r);
+  }
+
+  /* ① 入力 → 確認 */
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearMsg(msg);
+
+    var name  = val('reg-name');
+    var email = val('reg-email');
+    if(!name || !email){
+      showMsg(msg, 'err', '必須項目（お名前・メールアドレス）をご入力ください。');
+      return;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      showMsg(msg, 'err', 'メールアドレスの形式が正しくありません。');
+      return;
+    }
+
+    var keys = checkedCats();
+    payload = {
+      name: name,
+      kana: val('reg-kana'),
+      email: email,
+      org: val('reg-org'),
+      categories: keys,
+      message: val('reg-message')
+    };
+
+    summary.innerHTML = '';
+    addRow('お名前', payload.name);
+    addRow('お名前の読み', payload.kana || '（未記入）');
+    addRow('メールアドレス', payload.email);
+    addRow('会社名・所属', payload.org || '（未記入）');
+    addRow('区分', labelsOf(keys).join(' / '));
+    addRow('参加料', feeTextOf(feeOf(keys)) + (feeOf(keys) === 0 ? '' : '（総額・当日受付にて現金でお支払い）'), 'fee');
+    addRow('メッセージ', payload.message || '（未記入）');
+
+    form.hidden = true;
+    confirmBox.hidden = false;
+    clearMsg(msg2);
+    confirmBox.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+  /* ② 確認 → 修正 */
+  backBtn.addEventListener('click', function(){
+    confirmBox.hidden = true;
+    form.hidden = false;
+    form.scrollIntoView({ behavior:'smooth', block:'start' });
+    document.getElementById('reg-name').focus();
+  });
+
+  /* ③ 確認 → 送信 */
+  sendBtn.addEventListener('click', async function(){
+    if(!payload) return;
+    clearMsg(msg2);
+    sendBtn.disabled = true;
+    backBtn.disabled = true;
+    sendBtn.textContent = '送信中...';
+
+    try{
+      var res  = await fetch('/api/sympo26/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error || '送信に失敗しました。');
+
+      var fee = data.fee_text || feeTextOf(feeOf(payload.categories));
+      document.getElementById('reg-done-txt').innerHTML =
+        'ご記入いただいたメールアドレス宛に、申込内容の確認メールをお送りしました。<br>' +
+        'あなたの参加料は <strong>' + fee + '</strong> です。' +
+        (data.fee === 0 ? '' : '当日、受付にて現金にてお支払いください。') +
+        '<br>当日のご来場をお待ちしております。';
+      confirmBox.hidden = true;
+      doneBox.hidden = false;
+      doneBox.scrollIntoView({ behavior:'smooth', block:'center' });
+    }catch(err){
+      showMsg(msg2, 'err', (err && err.message) || '送信中にエラーが発生しました。時間をおいて再度お試しください。');
+      sendBtn.disabled = false;
+      backBtn.disabled = false;
+      sendBtn.textContent = '送信する';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
