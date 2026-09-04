@@ -14,6 +14,7 @@ const REDIS_KEY  = 'sympo26:registrations';
 const FEE_GENERAL = 5000;
 
 // 区分の定義（キー → 表示名）。いずれかに該当すれば参加料は無料。
+// コーディネータ／スピーカーも無料扱いとする（開催概要の参加料チップには表示しない）。
 const CATEGORY_LABELS = {
   apa_member: 'アジャイルプロセス協議会 会員',
   student:    '学生',

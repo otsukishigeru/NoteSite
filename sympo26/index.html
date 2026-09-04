@@ -557,7 +557,7 @@ em{ font-style:normal; }
       <div class="detail-card full fade-in">
         <span class="dk">参加料</span>
         <div class="fee-row">
-          <span class="fee-chip">一般 <span class="price">¥5,000（予定）</span></span>
+          <span class="fee-chip">一般 <span class="price">¥5,000</span></span>
           <span class="fee-chip free">協議会メンバ <span class="price">無料</span></span>
           <span class="fee-chip free">学生 <span class="price">無料</span></span>
         </div>
@@ -1036,6 +1036,7 @@ pt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
   function val(id){ return document.getElementById(id).value.trim(); }
   function checkedCats(){ return checks.filter(function(c){ return c.checked; }).map(function(c){ return c.value; }); }
   function labelsOf(keys){ return keys.length ? keys.map(function(k){ return CAT_LABEL[k]; }) : ['一般']; }
+  /* 会員・学生に加え、コーディネータ／スピーカーも無料扱い（参加料チップには表示しない） */
   function feeOf(keys){ return keys.length ? 0 : 5000; }
   function feeTextOf(fee){ return fee === 0 ? '無料' : '¥5,000'; }
 
