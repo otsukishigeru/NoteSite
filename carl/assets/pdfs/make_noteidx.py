@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# make_noteidx.py — noteidx.pdf (16件版) を生成する
+# make_noteidx.py — noteidx.pdf (17件版) を生成する
 # 実行: python3 make_noteidx.py
 
 from reportlab.pdfbase import pdfmetrics
@@ -214,6 +214,20 @@ articles = [
             "ながら成長するための「フロンティア・エコシステム」の構築を提唱しています。"
         ),
     },
+    {
+        "num": "017",
+        "title": "同じ考えにならなくても、わかり合えるのか——自由エネルギー原理から考える対話と共有理解",
+        "date": "2026-09-09", "like": "1",
+        "url": "https://note.com/carl/n/nbd3f9c0fcc6e",
+        "desc": (
+            "脳を「世界を予測する機械」と捉える自由エネルギー原理（能動的推論）の枠組みを用い、"
+            "人間同士の対話やすれ違いのメカニズムを解き明かした記事です。言葉を通じた予測誤差の"
+            "やりとりによって、互いの内部状態や考えが完全に一致しなくても、相手の言葉のルールや"
+            "文脈を学び合い理解を深められることを解説しています。意見の「同意」と背景の「理解」"
+            "を整理し、会話の枠組みそのものを問い直しながら、異なる考えを持ったまま協調していく"
+            "対話の本質を提示しています。"
+        ),
+    },
 ]
 
 
@@ -328,9 +342,9 @@ def build_pdf(output_path):
 
     # サブタイトル
     c.setFont(font_body, size_h2)
-    c.drawString(MARGIN_L, y, "t0rapa（carl）の作品を全16件を作成日順に掲載します。")
+    c.drawString(MARGIN_L, y, "t0rapa（carl）の作品を全17件を作成日順に掲載します。")
     y -= size_h2 + 4
-    c.drawString(MARGIN_L, y, "（取得日：2026年7月2日）")
+    c.drawString(MARGIN_L, y, "（取得日：2026年9月9日）")
     y -= size_h2 + 20
 
     page_bottom = MARGIN_B + 20  # footer 用余白
