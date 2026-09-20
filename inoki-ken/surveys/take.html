@@ -85,7 +85,9 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
       '<div class="box plain"><p class="box-title">個人情報の取り扱い</p>' +
       '<p style="margin-bottom:0">氏名・所属機関名・連絡先など、個人を特定しうる項目は一切採取しません。' +
       '採取するのは、次の画面でお尋ねする五つのプロフィール項目と、設問へのお答えだけです。' +
-      '送信された回答は匿名のまま統計的に集計され、個々の回答が単独で公開されることはありません。</p></div>' +
+      '送信された回答は匿名のまま統計的に集計され、個々の回答が単独で公開されることはありません。' +
+      '自由記述にお書きいただいた文章は集計ページには出しませんので、' +
+      'ほかの回答者の方に読まれることはありません。</p></div>' +
       (closed
         ? '<p class="empty-note">このアンケートは現在お答えいただけません。</p>' +
           '<p style="text-align:center"><a class="sv-btn ghost" href="report.html?s=' + encodeURIComponent(s.id) + '">集計を見る</a></p>'

@@ -250,6 +250,44 @@ export default async function handler(req, res) {
     }).filter(Boolean);
   }
 
+  // ──────────────────────────────────────────────────────────
+  // 自由記述の伏せ込み（方針：読み出し側で締める）
+  //   回答そのものは KV に残したまま、返す段階で落とします。
+  //   管理者は従来どおり全文を扱えます（管理画面／完全版CSV）。
+  // ──────────────────────────────────────────────────────────
+  function isAdmin(pw) {
+    const real = process.env.ADMIN_PASSWORD;
+    return Boolean(real) && typeof pw === 'string' && pw === real;
+  }
+
+  function freeTextIds(def, survey) {
+    const qids = allQuestions(survey).filter(q => q.type === 'text').map(q => q.id);
+    const pids = (def.profile || []).filter(f => f.type === 'text').map(f => f.id);
+    return { qids, pids };
+  }
+
+  // 記述の「件数」だけは集計に使えるよう残します（中身は返しません）
+  function countTexts(def, survey, entries) {
+    const { qids } = freeTextIds(def, survey);
+    const out = {};
+    for (const qid of qids) {
+      out[qid] = entries.filter(e => e && e.a && String(e.a[qid] || '').trim()).length;
+    }
+    return out;
+  }
+
+  function redactFreeText(def, survey, entries) {
+    const { qids, pids } = freeTextIds(def, survey);
+    if (qids.length === 0 && pids.length === 0) return entries;
+    return entries.map(e => {
+      const a = Object.assign({}, e && e.a);
+      const p = Object.assign({}, e && e.p);
+      for (const qid of qids) delete a[qid];
+      for (const pid of pids) delete p[pid];
+      return Object.assign({}, e, { a, p });
+    });
+  }
+
   const body = req.body || {};
   const { action } = body;
 
@@ -348,7 +386,10 @@ export default async function handler(req, res) {
 
   // ──────────────────────────────────────────────────────────
   // ⑤ レポート用データの取得
-  //    回答は元から匿名ですので、そのまま返して集計は画面側で行います。
+  //    集計そのものは画面側で行いますので、回答をそのまま返します。
+  //    ただし自由記述（type: 'text'）は、書いた本人以外の目に触れないよう、
+  //    管理者パスワードが一致したときを除いて**サーバ側で取り除きます**。
+  //    画面から表示を消すだけでは、この API を直に呼べば読めてしまうためです。
   // ──────────────────────────────────────────────────────────
   if (action === 'getReport') {
     try {
@@ -357,7 +398,19 @@ export default async function handler(req, res) {
       const survey = findSurvey(def, sid);
       if (!survey) return res.status(404).json({ ok: false, error: '該当するアンケートが見つかりません' });
       const entries = await fetchEntries(sid);
-      return res.status(200).json({ ok: true, survey, profile: def.profile, entries, count: entries.length });
+
+      const full = isAdmin(body.adminPassword);
+      if (full) {
+        return res.status(200).json({
+          ok: true, survey, profile: def.profile,
+          entries, count: entries.length, redacted: false, textCounts: countTexts(def, survey, entries)
+        });
+      }
+      return res.status(200).json({
+        ok: true, survey, profile: def.profile,
+        entries: redactFreeText(def, survey, entries),
+        count: entries.length, redacted: true, textCounts: countTexts(def, survey, entries)
+      });
     } catch (err) {
       console.error('inoki-ken getReport error:', err.message);
       return res.status(500).json({ ok: false, error: '集計データの取得に失敗しました' });

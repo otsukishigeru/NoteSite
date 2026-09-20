@@ -2,6 +2,9 @@
    アンケート集計レポート（report.html）
    受け取った匿名の回答から、分布・平均・クロス集計・
    二軸マトリクス・立場別ギャップを描き出します。
+   自由記述の本文と回答の生データ（CSV）は、このページでは扱いません。
+   本文はサーバ側（api/inoki-ken.js の getReport）で取り除かれており、
+   全文と CSV は管理画面（/inoki-ken/admin/）からのみ扱えます。
    ===================================================== */
 (function () {
   'use strict';
@@ -10,7 +13,7 @@
 
   var stage = document.getElementById('stage');
   var sid = SV.qs('s');
-  var SURVEY = null, PROFILE = null, ENTRIES = [];
+  var SURVEY = null, PROFILE = null, ENTRIES = [], TEXTCOUNTS = {};
 
   function fail(msg) {
     stage.innerHTML = '<div class="page-head"><h1>集計</h1></div>' +
@@ -376,46 +379,23 @@
     return html;
   }
 
+  /* ---------- ⑨ 自由記述（件数のみ） ----------
+     お書きいただいた文章そのものは、この集計ページには出しません。
+     内容はサーバ側で取り除かれており、画面に届いていません。      */
   function renderTexts() {
     var qs = SV.allQuestions(SURVEY).filter(function (q) { return q.type === 'text'; });
     if (!qs.length) return '';
     var html = '<h2 id="texts">自由記述</h2>' +
-      '<p>お寄せいただいた記述を、新しいものから最大30件まで並べます。表記はそのままです。</p>';
+      '<div class="box"><p class="box-title">記述の内容は公開しておりません</p>' +
+      '<p style="margin-bottom:0">自由記述にお書きいただいた文章は、ほかの回答者の方からは読めません。' +
+      'この欄には、お寄せいただいた件数だけを掲げます。いただいた記述は、調査を進めるうえでの検討に、' +
+      '著者が直接あたらせていただきます。</p></div>';
     qs.forEach(function (q) {
-      var texts = ENTRIES.map(function (e) { return e.a && e.a[q.id]; })
-        .filter(function (t) { return t && String(t).trim(); }).slice(0, 30);
-      html += '<h3>' + SV.esc(q.text) + '</h3>';
-      html += texts.length
-        ? '<ul class="dots">' + texts.map(function (t) { return '<li>' + SV.esc(t) + '</li>'; }).join('') + '</ul>'
-        : '<p class="empty-note">まだ記述はありません。</p>';
+      var n = TEXTCOUNTS[q.id] || 0;
+      html += '<h3>' + SV.esc(q.text) + '</h3>' +
+        '<p class="quiet">' + (n ? n + '件の記述をお寄せいただいています。' : 'まだ記述はありません。') + '</p>';
     });
     return html;
-  }
-
-  /* ---------- CSV ---------- */
-  function buildCsv() {
-    var qs = SV.allQuestions(SURVEY);
-    var head = ['回答日時', '経路']
-      .concat(PROFILE.map(function (f) { return f.label; }))
-      .concat(qs.map(function (q) { return q.id + '：' + q.text; }));
-    var rows = [head];
-    ENTRIES.forEach(function (e) {
-      var row = [e.t || '', e.s === 'sheet' ? '表形式' : '画面'];
-      PROFILE.forEach(function (f) {
-        var v = e.p && e.p[f.id];
-        row.push(Array.isArray(v) ? v.map(function (x) { return SV.labelOf(f, x); }).join('｜')
-                                  : (f.type === 'text' ? (v || '') : SV.labelOf(f, v)));
-      });
-      qs.forEach(function (q) {
-        var v = e.a && e.a[q.id];
-        if (v == null) { row.push(''); return; }
-        if (Array.isArray(v)) row.push(v.map(function (x) { return SV.labelOf(q, x); }).join('｜'));
-        else if (q.type === 'single') row.push(SV.labelOf(q, v));
-        else row.push(v);
-      });
-      rows.push(row);
-    });
-    return SV.toCsv(rows);
   }
 
   /* ---------- 組み立て ---------- */
@@ -441,13 +421,7 @@
               '件数が少ないうちは、一人の回答が平均を大きく動かします。</p></div>'
             : '') +
           renderProfile() + renderSections() + special +
-          renderRanking() + renderCross() + renderQuestions() + renderChoices() + renderTexts() +
-          '<h2 id="dl">データの書き出し</h2>' +
-          '<p>集計のもとになっている回答を、そのまま表計算ソフトで扱える形（CSV）で取り出せます。' +
-          'Googleスプレッドシートや Dropbox に取り込んで、独自の分析を行うことができます。</p>' +
-          '<div class="dl"><p class="box-title">回答データ（CSV）</p>' +
-          '<p>回答' + ENTRIES.length + '件・プロフィール' + PROFILE.length + '項目・設問' + SV.allQuestions(SURVEY).length + '問。氏名等は含まれません。</p>' +
-          '<button type="button" class="dl-btn" id="dl-csv">CSVをダウンロード</button></div>'
+          renderRanking() + renderCross() + renderQuestions() + renderChoices() + renderTexts()
       ) +
       '<div class="sv-actions" style="justify-content:center;margin-top:2.4em">' +
       '<a class="sv-btn ghost" href="./">一覧に戻る</a>' +
@@ -461,13 +435,6 @@
       axis.addEventListener('change', draw);
       draw();
     }
-
-    var dl = document.getElementById('dl-csv');
-    if (dl) {
-      dl.addEventListener('click', function () {
-        SV.download(SURVEY.id + '_answers.csv', buildCsv());
-      });
-    }
   }
 
   /* ---------- 起動 ---------- */
@@ -476,6 +443,7 @@
   SV.api({ action: 'getReport', sid: sid }).then(function (d) {
     if (!d.ok) return fail(d.error || '読み込みに失敗しました');
     SURVEY = d.survey; PROFILE = d.profile; ENTRIES = d.entries || [];
+    TEXTCOUNTS = d.textCounts || {};
     document.title = SURVEY.title + ' 集計 ｜ AI時代の要求工学 意識調査';
     render();
   }).catch(function () {

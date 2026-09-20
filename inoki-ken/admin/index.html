@@ -170,6 +170,16 @@
       独自の分析を行うことができます。書き出しても、もとの回答は残ります。
     </p>
 
+    <div class="box">
+      <p class="box-title">自由記述をお読みになるには</p>
+      <p style="margin-bottom:0">
+        自由記述にお書きいただいた文章は、回答者向けの集計ページには出さないようにしました。
+        全文をお読みになるときは、この画面の「CSVを書き出す」をお使いください。
+        書き出したCSVには、これまでどおり記述の全文が含まれます。
+        なお「集計を見る」で開くページは回答者向けのものですので、記述の件数しか表示されません。
+      </p>
+    </div>
+
     <div class="tbl-scroll">
     <table class="tbl">
       <thead>
@@ -701,9 +711,12 @@
     btn.disabled = true;
     var old = btn.textContent;
     btn.textContent = '取得中…';
-    SV.api({ action: 'getReport', sid: survey.id }).then(function (d) {
+    // 自由記述の本文はサーバ側で伏せられます。管理者パスワードを添えて、
+    // 全文を含む完全な回答を受け取ります。
+    SV.api({ action: 'getReport', sid: survey.id, adminPassword: adminPassword }).then(function (d) {
       btn.disabled = false; btn.textContent = old;
       if (!d.ok) { showMsg(d.error || '取得に失敗しました。', false); return; }
+      if (d.redacted) { showMsg('自由記述を含まない形でしか取得できませんでした。もう一度ログインしてお試しください。', false); return; }
       var qs = SV.allQuestions(d.survey);
       var head = ['回答日時', '経路']
         .concat(d.profile.map(function (f) { return f.label; }))
