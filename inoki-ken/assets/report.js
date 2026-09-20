@@ -389,7 +389,7 @@
       '<div class="box"><p class="box-title">記述の内容は公開しておりません</p>' +
       '<p style="margin-bottom:0">自由記述にお書きいただいた文章は、ほかの回答者の方からは読めません。' +
       'この欄には、お寄せいただいた件数だけを掲げます。いただいた記述は、調査を進めるうえでの検討に、' +
-      '著者が直接あたらせていただきます。</p></div>';
+      '筆者が直接あたらせていただきます。</p></div>';
     qs.forEach(function (q) {
       var n = TEXTCOUNTS[q.id] || 0;
       html += '<h3>' + SV.esc(q.text) + '</h3>' +
