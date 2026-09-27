@@ -8,10 +8,11 @@
 // KV keys:
 //   inoki-ken:users        → JSON [{id, subid, note, created}]
 //   inoki-ken:surveys      → JSON {version, updated, profile:[...], surveys:[...]}
-//   inoki-ken:ans:<sid>    → list  各要素は JSON {t, p, a, s}
+//   inoki-ken:ans:<sid>    → list  各要素は JSON {t, p, a, s[, u]}
+//                            u は記名式（identify: true）のアンケートでのみ記録するログインID
 //
 // 管理操作（listUsers / addUser / editUser / removeUser / adminLogin /
-// saveDefinition / resetDefinition / clearAnswers）は
+// addUsers / saveDefinition / resetDefinition / clearAnswers）は
 // サイト共通の環境変数 ADMIN_PASSWORD で保護します。
 
 import { seedDefinition } from '../lib/inoki-surveys.js';
@@ -22,6 +23,17 @@ const ANS_KEY = (sid) => `inoki-ken:ans:${sid}`;
 
 const MAX_ENTRIES = 5000;   // 1調査あたりに保持する回答の上限
 const MAX_SHEET_ROWS = 300; // スプレッドシート型で一度に取り込める行数
+const MAX_BULK_USERS = 200; // ID を一括登録できる件数
+
+const ID_PAT = /^[A-Za-z0-9_\-.]{2,40}$/;
+
+// ID・SubID の入力規則（1件ずつの追加と一括登録で共通）
+function checkUserInput(id, subid) {
+  if (!id || !subid) return 'ID と SubID の両方を入力してください';
+  if (!ID_PAT.test(id)) return 'ID は半角の英数字・ハイフン・アンダースコア・ピリオドで、2〜40文字にしてください';
+  if (subid.length < 4 || subid.length > 60) return 'SubID は 4〜60文字にしてください';
+  return null;
+}
 
 const SEED_USERS = [
   { id: 'kogakuin', subid: 'inoki-ken', note: '初期登録', created: '2026-08-07' }
@@ -152,6 +164,7 @@ export default async function handler(req, res) {
       if (seenSurvey.has(s.id)) return `アンケートの id が重複しています（${s.id}）`;
       seenSurvey.add(s.id);
       if (!s.title) return `アンケート ${s.id} の title がありません`;
+      if ('identify' in s && typeof s.identify !== 'boolean') return `アンケート ${s.id} の identify は true / false で指定してください`;
       if (!Array.isArray(s.sections) || s.sections.length === 0) return `アンケート ${s.id} に sections がありません`;
 
       const seenQ = new Set();
@@ -276,16 +289,31 @@ export default async function handler(req, res) {
     return out;
   }
 
+  // 記名式アンケートのログインID（u）も、自由記述と同じく管理者以外には返しません
   function redactFreeText(def, survey, entries) {
     const { qids, pids } = freeTextIds(def, survey);
-    if (qids.length === 0 && pids.length === 0) return entries;
     return entries.map(e => {
       const a = Object.assign({}, e && e.a);
       const p = Object.assign({}, e && e.p);
       for (const qid of qids) delete a[qid];
       for (const pid of pids) delete p[pid];
-      return Object.assign({}, e, { a, p });
+      const out = Object.assign({}, e, { a, p });
+      delete out.u;
+      return out;
     });
+  }
+
+  // 記名式アンケートの送信者を、登録済みの ID・SubID と照合します。
+  // 画面側の「ログイン済み」の印だけでは、別の ID を名乗れてしまうためです。
+  async function verifySubmitter(body) {
+    const id = String(body.id || '').trim();
+    const subid = String(body.subid || '').trim();
+    if (!id || !subid) return { error: 'このアンケートは記名式です。お手数ですが、ログインし直してから送信してください' };
+    const users = await loadUsers();
+    if (!users.some(u => u.id === id && u.subid === subid)) {
+      return { error: 'ID・SubID を確認できませんでした。ログインし直してから送信してください' };
+    }
+    return { id };
   }
 
   const body = req.body || {};
@@ -331,11 +359,19 @@ export default async function handler(req, res) {
       if (!survey) return res.status(404).json({ ok: false, error: '該当するアンケートが見つかりません' });
       if (survey.status === 'closed') return res.status(403).json({ ok: false, error: 'このアンケートは受付を終了しています' });
 
+      let submitter = null;
+      if (survey.identify === true) {
+        const v = await verifySubmitter(body);
+        if (v.error) return res.status(403).json({ ok: false, error: v.error, relogin: true });
+        submitter = v.id;
+      }
+
       const { entry, error } = cleanEntry(def, survey, body.profile, body.answers);
       if (error) return res.status(400).json({ ok: false, error });
 
       entry.t = new Date().toISOString();
       entry.s = 'web';
+      if (submitter) entry.u = submitter;
       await kvLPush(ANS_KEY(survey.id), JSON.stringify(entry));
       await kvLTrim(ANS_KEY(survey.id), 0, MAX_ENTRIES - 1);
       return res.status(200).json({ ok: true });
@@ -355,6 +391,10 @@ export default async function handler(req, res) {
       const survey = findSurvey(def, String(body.sid || ''));
       if (!survey) return res.status(404).json({ ok: false, error: '該当するアンケートが見つかりません' });
       if (survey.status === 'closed') return res.status(403).json({ ok: false, error: 'このアンケートは受付を終了しています' });
+      // 一括取り込みは複数人分をまとめて登録する仕組みなので、記名式とは両立しません
+      if (survey.identify === true) {
+        return res.status(403).json({ ok: false, error: 'このアンケートは記名式のため、表形式の取り込みは使えません。回答画面から提出してください' });
+      }
 
       const rows = Array.isArray(body.rows) ? body.rows : [];
       if (rows.length === 0) return res.status(400).json({ ok: false, error: '取り込む行がありません' });
@@ -465,15 +505,8 @@ export default async function handler(req, res) {
     const subid = String(body.subid || '').trim();
     const note = String(body.note || '').trim();
 
-    if (!id || !subid) {
-      return res.status(400).json({ ok: false, error: 'ID と SubID の両方を入力してください' });
-    }
-    if (!/^[A-Za-z0-9_\-.]{2,40}$/.test(id)) {
-      return res.status(400).json({ ok: false, error: 'ID は半角の英数字・ハイフン・アンダースコア・ピリオドで、2〜40文字にしてください' });
-    }
-    if (subid.length < 4 || subid.length > 60) {
-      return res.status(400).json({ ok: false, error: 'SubID は 4〜60文字にしてください' });
-    }
+    const bad = checkUserInput(id, subid);
+    if (bad) return res.status(400).json({ ok: false, error: bad });
 
     const users = await loadUsers();
     if (users.some(u => u.id === id)) {
@@ -482,6 +515,35 @@ export default async function handler(req, res) {
     users.push({ id, subid, note, created: new Date().toISOString().slice(0, 10) });
     await saveUsers(users);
     return res.status(200).json({ ok: true, users });
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // ③' 利用者の一括追加（記名式の提出者ごとに ID を発行するため）
+  //     1行でも不備があれば、1件も登録せずに不備の行を返します。
+  // ──────────────────────────────────────────────────────────
+  if (action === 'addUsers') {
+    const rows = Array.isArray(body.users) ? body.users : [];
+    if (rows.length === 0) return res.status(400).json({ ok: false, error: '登録する行がありません' });
+    if (rows.length > MAX_BULK_USERS) {
+      return res.status(400).json({ ok: false, error: `一度に登録できるのは ${MAX_BULK_USERS} 件までです` });
+    }
+    const users = await loadUsers();
+    const seen = new Set(users.map(u => u.id));
+    const today = new Date().toISOString().slice(0, 10);
+    const errors = [];
+    const added = [];
+    rows.forEach((r, i) => {
+      const id = String((r && r.id) || '').trim();
+      const subid = String((r && r.subid) || '').trim();
+      const note = String((r && r.note) || '').trim().slice(0, 100);
+      const bad = checkUserInput(id, subid) || (seen.has(id) ? `ID「${id}」はすでに登録されています` : null);
+      if (bad) { errors.push({ line: i + 1, error: bad }); return; }
+      seen.add(id);
+      added.push({ id, subid, note, created: today });
+    });
+    if (errors.length) return res.status(400).json({ ok: false, error: '不備のある行があるため、登録しませんでした', errors });
+    await saveUsers(users.concat(added));
+    return res.status(200).json({ ok: true, users: users.concat(added), added: added.length });
   }
 
   // ──────────────────────────────────────────────────────────

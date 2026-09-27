@@ -14,6 +14,23 @@
     return true;
   }
 
+  /* ---------- ログイン中の利用者 ---------- */
+  // 記名式アンケートの送信時に添えます（サーバ側で照合します）
+  function me() {
+    return {
+      id: sessionStorage.getItem('inoki_id') || '',
+      subid: sessionStorage.getItem('inoki_subid') || ''
+    };
+  }
+
+  // ログインし直してもらい、終わったら今のページに戻します
+  function relogin() {
+    sessionStorage.removeItem('inoki_ok');
+    sessionStorage.removeItem('inoki_id');
+    sessionStorage.removeItem('inoki_subid');
+    location.href = '../?back=' + encodeURIComponent(location.pathname + location.search);
+  }
+
   /* ---------- API ---------- */
   function api(payload) {
     return fetch('/api/inoki-ken', {
@@ -214,13 +231,14 @@
         e.preventDefault();
         sessionStorage.removeItem('inoki_ok');
         sessionStorage.removeItem('inoki_id');
+        sessionStorage.removeItem('inoki_subid');
         location.href = '../';
       });
     }
   }
 
   global.SV = {
-    guard: guard, api: api, esc: esc, qs: qs,
+    guard: guard, me: me, relogin: relogin, api: api, esc: esc, qs: qs,
     scaleOf: scaleOf, allQuestions: allQuestions, labelOf: labelOf, isRequired: isRequired,
     questionHTML: questionHTML, fieldHTML: fieldHTML, readBlock: readBlock,
     mean: mean, sd: sd, median: median, fmt: fmt,

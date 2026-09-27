@@ -138,7 +138,7 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
     var actions = open
       ? '<a class="sv-btn" href="take.html?s=' + sid + '">回答する →</a>' +
         '<a class="sv-btn ghost" href="report.html?s=' + sid + '">集計を見る</a>' +
-        '<a class="sv-btn ghost" href="sheet.html?s=' + sid + '">表形式で回答</a>'
+        (s.identify ? '' : '<a class="sv-btn ghost" href="sheet.html?s=' + sid + '">表形式で回答</a>')
       : '<a class="sv-btn ghost" href="report.html?s=' + sid + '">集計を見る</a>';
 
     return '<article class="sv-card" style="--c:' + SV.esc(s.color || '#2e74b5') + '">' +
@@ -146,7 +146,7 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
       '<h3>' + SV.esc(s.title) + '</h3>' +
       '<p class="sv-summary">' + SV.esc(s.summary || '') + '</p>' +
       '<div class="sv-actions">' + actions + '</div>' +
-      '<p class="sv-meta">' + statusBadge(s) +
+      '<p class="sv-meta">' + statusBadge(s) + (s.identify ? '<span class="badge named">記名式</span>' : '') +
         '<span>約' + (s.minutes || 5) + '分</span>' +
         '<span>設問' + c.total + '問' + (c.text ? '（記述' + c.text + '問）' : '') + '</span>' +
         '<span>回答' + (count == null ? '—' : count) + '件</span>' +

@@ -102,6 +102,8 @@ p{margin:0 0 1.1em}
 .box.phil .box-title{color:var(--purple)}
 .box.plain{border-color:#bfc6cd;background:#f4f5f6}
 .box.plain .box-title{color:var(--ink-3)}
+.box.named-box{border-color:#ddd0e8;background:var(--purple-pale)}
+.box.named-box .box-title{color:var(--purple)}
 
 /* ---------- 定義（中央・大きめ） ---------- */
 .define{
@@ -272,7 +274,7 @@ a.card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(31,78,121,.10);
 .btn.mini{width:auto;font-size:.85rem;padding:7px 14px}
 .btn.danger{background:#fff;color:#a5342c;border-color:#d9b3af}
 .btn.danger:hover{background:#fbecea}
-.msg{border-radius:8px;padding:11px 15px;font-size:.9rem;margin:0 0 16px}
+.msg{border-radius:8px;padding:11px 15px;font-size:.9rem;margin:0 0 16px;white-space:pre-line}
 .msg.err{background:#fbecea;color:#8f2c25;border:1px solid #e8c6c2}
 .msg.ok{background:#eaf6ef;color:#1f6144;border:1px solid #bfe0cd}
 .auth-foot{text-align:center;margin:1.4em 0 0;font-size:.82rem}
@@ -347,6 +349,7 @@ a.card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(31,78,121,.10);
 .badge.open{background:#eaf6ef;color:#1f6144;border:1px solid #bfe0cd}
 .badge.closed{background:#eef1f4;color:var(--ink-3);border:1px solid var(--line)}
 .badge.draft{background:var(--orange-pale);color:var(--orange);border:1px solid #e5c9a8}
+.badge.named{background:var(--purple-pale);color:var(--purple);border:1px solid #ddd0e8}
 
 /* ---------- 手順の表示 ---------- */
 .wiz-steps{
@@ -489,3 +492,14 @@ a.card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(31,78,121,.10);
 }
 .tabs button:hover{color:var(--ink)}
 .tabs button.on{color:var(--navy);font-weight:700;border-bottom-color:var(--navy)}
+
+/* ---------- 管理画面：提出物（記名式） ---------- */
+.sub-id{border:1px solid var(--line);border-radius:10px;margin:0 0 10px;background:#fff}
+.sub-id > summary{cursor:pointer;padding:12px 16px;list-style-position:inside}
+.sub-id[open] > summary{border-bottom:1px solid var(--line)}
+.sub-item{margin:8px 16px;border-left:3px solid #ddd0e8;padding-left:12px}
+.sub-item > summary{cursor:pointer;padding:6px 0;font-size:.92rem}
+.sub-body{margin:.4em 0 1em;font-size:.9rem}
+.sub-body dt{color:var(--ink-3);margin-top:.7em}
+.sub-body dd{margin:.2em 0 0}
+.sub-body dd.long{white-space:pre-wrap;background:#f7f8f9;border:1px solid var(--line);border-radius:6px;padding:10px 12px;line-height:1.8}

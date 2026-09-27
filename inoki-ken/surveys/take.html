@@ -68,10 +68,41 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
       '</div>';
   }
 
+  /* ---------- 記名式の表示 ---------- */
+  var ME = SV.me();
+
+  // 記名式でありながら SubID を持っていない（変更前にログインした）場合は、ログインし直してもらいます
+  function needRelogin() {
+    return SURVEY.identify === true && !(ME.id && ME.subid);
+  }
+
+  function namedHTML() {
+    if (SURVEY.identify !== true) return '';
+    return '<div class="box named-box"><p class="box-title">記名式のアンケートです</p>' +
+      '<p style="margin-bottom:0">この提出は、ログイン中の <strong>ID：' + SV.esc(ME.id) + '</strong> と結びつけて保存されます。' +
+      'ご自分の ID でないときは、いったんログアウトして、ご自分の ID でログインし直してください。</p></div>';
+  }
+
+  function privacyHTML() {
+    if (SURVEY.identify === true) {
+      return '<div class="box plain"><p class="box-title">個人情報の取り扱い</p>' +
+        '<p style="margin-bottom:0">このアンケートは記名式です。提出した内容は、ログインに使った ID と結びつけて保存され、' +
+        '管理者（研究の担当者）が ID ごとに確認します。ID や本文が集計ページに出ることはなく、' +
+        'ほかの回答者の方に読まれることもありません。氏名・所属機関名・連絡先はお尋ねしません。</p></div>';
+    }
+    return '<div class="box plain"><p class="box-title">個人情報の取り扱い</p>' +
+      '<p style="margin-bottom:0">氏名・所属機関名・連絡先など、個人を特定しうる項目は一切採取しません。' +
+      '採取するのは、次の画面でお尋ねする五つのプロフィール項目と、設問へのお答えだけです。' +
+      '送信された回答は匿名のまま統計的に集計され、個々の回答が単独で公開されることはありません。' +
+      '自由記述にお書きいただいた文章は集計ページには出しませんので、' +
+      'ほかの回答者の方に読まれることはありません。</p></div>';
+  }
+
   /* ---------- 各画面 ---------- */
   function renderIntro() {
     var s = SURVEY;
     var closed = s.status === 'closed' || s.status === 'draft';
+    var relog = !closed && needRelogin();
     stage.innerHTML =
       '<div class="page-head"><p class="eyebrow">' + SV.esc(s.eyebrow || 'Survey') + '</p>' +
       '<h1>' + SV.esc(s.title) + '</h1>' +
@@ -82,16 +113,16 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
         (s.conditions || []).map(function (c) { return '<li>' + SV.esc(c) + '</li>'; }).join('') +
       '</ul>' +
       '<h2>結果の検討方針</h2><p>' + SV.esc(s.policy || '') + '</p>' +
-      '<div class="box plain"><p class="box-title">個人情報の取り扱い</p>' +
-      '<p style="margin-bottom:0">氏名・所属機関名・連絡先など、個人を特定しうる項目は一切採取しません。' +
-      '採取するのは、次の画面でお尋ねする五つのプロフィール項目と、設問へのお答えだけです。' +
-      '送信された回答は匿名のまま統計的に集計され、個々の回答が単独で公開されることはありません。' +
-      '自由記述にお書きいただいた文章は集計ページには出しませんので、' +
-      'ほかの回答者の方に読まれることはありません。</p></div>' +
+      privacyHTML() +
       (closed
         ? '<p class="empty-note">このアンケートは現在お答えいただけません。</p>' +
           '<p style="text-align:center"><a class="sv-btn ghost" href="report.html?s=' + encodeURIComponent(s.id) + '">集計を見る</a></p>'
-        : barHTML('', '回答をはじめる →'));
+        : relog
+          ? '<div class="msg err">このアンケートは記名式です。ご自分の ID で提出していただくため、お手数ですがログインし直してください。</div>' +
+            '<p style="text-align:center"><button type="button" class="btn mini" id="relogin-btn" style="width:auto">ログインし直す</button></p>'
+          : namedHTML() + barHTML('', '回答をはじめる →'));
+    var rb = document.getElementById('relogin-btn');
+    if (rb) rb.addEventListener('click', SV.relogin);
     bind();
   }
 
@@ -176,6 +207,7 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
       stepsHTML() +
       '<p class="lead">直したい箇所があれば「戻る」で該当の画面まで戻ってください。' +
       '送信するまでは、内容はこの端末の中にとどまっており、どこにも送られていません。</p>' +
+      namedHTML() +
       '<div id="submit-msg"></div>' +
       blocks +
       barHTML('← 戻る', '送信する', 'wiz-submit');
@@ -201,9 +233,13 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
     stage.innerHTML =
       '<div class="page-head"><p class="eyebrow">thank you</p><h1>送信しました</h1>' +
       '<p class="sub">ご協力をありがとうございました</p></div>' +
-      '<div class="box"><p class="box-title">受け付けました</p>' +
-      '<p style="margin-bottom:0">お答えいただいた内容は匿名のまま集計に加わりました。' +
-      'いま集まっている回答の分布は、下の「集計を見る」からご覧いただけます。</p></div>' +
+      (SURVEY.identify === true
+        ? '<div class="box"><p class="box-title">受け付けました</p>' +
+          '<p style="margin-bottom:0"><strong>ID：' + SV.esc(ME.id) + '</strong> の提出として保存しました。' +
+          '書き直したいときは、もう一度提出してください。以前の提出も残り、いちばん新しいものが最新として扱われます。</p></div>'
+        : '<div class="box"><p class="box-title">受け付けました</p>' +
+          '<p style="margin-bottom:0">お答えいただいた内容は匿名のまま集計に加わりました。' +
+          'いま集まっている回答の分布は、下の「集計を見る」からご覧いただけます。</p></div>') +
       fb +
       '<div class="sv-actions" style="justify-content:center;margin-top:2em">' +
       '<a class="sv-btn" href="report.html?s=' + encodeURIComponent(SURVEY.id) + '">集計を見る →</a>' +
@@ -348,12 +384,19 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
 
     var fb = feedbackData();
 
-    SV.api({ action: 'submitSurvey', sid: SURVEY.id, profile: state.profile, answers: state.answers })
+    var payload = { action: 'submitSurvey', sid: SURVEY.id, profile: state.profile, answers: state.answers };
+    if (SURVEY.identify === true) { payload.id = ME.id; payload.subid = ME.subid; }
+
+    SV.api(payload)
       .then(function (d) {
         if (!d.ok) {
           btn.disabled = false;
           btn.textContent = '送信する';
           msg.innerHTML = '<div class="msg err">' + SV.esc(d.error || '送信に失敗しました') + '</div>';
+          if (d.relogin) {
+            msg.innerHTML += '<p class="lead">ログインし直すと、お書きいただいた内容は失われます。' +
+              '記述は先にコピーして控えを取っておいてください。</p>';
+          }
           return;
         }
         cur = steps.length - 1;

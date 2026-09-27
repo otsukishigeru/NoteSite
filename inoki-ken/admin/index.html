@@ -47,6 +47,7 @@
   <div class="tabs">
     <button type="button" data-tab="users" class="on">利用者</button>
     <button type="button" data-tab="surveys">アンケート</button>
+    <button type="button" data-tab="subs">提出物</button>
     <button type="button" data-tab="data">回答データ</button>
     <button type="button" data-tab="json">定義（JSON）</button>
   </div>
@@ -99,12 +100,27 @@
       </div>
     </form>
 
+    <h2 id="bulk">まとめて追加する</h2>
+
+    <p>
+      記名式のアンケートでは、提出する方ごとに別の ID が必要です。人数が多いときは、
+      1行に1名ずつ「ID,SubID,メモ」の形で貼り付けて、まとめて登録できます（メモは省略可、一度に200件まで）。
+      表計算ソフトから貼り付けた、タブ区切りの行もそのまま使えます。
+      1行でも不備があると、1件も登録せずに不備のある行をお知らせします。
+    </p>
+    <textarea id="bulk-area" class="def-area" style="min-height:140px" spellcheck="false"
+              placeholder="s2026001,apple-7431,1600字チャレンジ&#10;s2026002,lemon-2958,1600字チャレンジ"></textarea>
+    <div class="form-row" style="margin:.8em 0 1.6em">
+      <button type="button" class="btn mini" id="bulk-btn" style="width:auto">まとめて追加する</button>
+    </div>
+
     <div class="box">
       <p class="box-title">入力の決まり</p>
       <ul class="dots" style="margin-bottom:0">
         <li>ID は半角の英数字・ハイフン・アンダースコア・ピリオドで、2〜40文字。</li>
         <li>SubID は 4〜60文字。日本語も使えますが、伝えやすさを考えると半角がおすすめです。</li>
         <li>同じ ID を二つ登録することはできません。</li>
+        <li>記名式のアンケートに提出する方には、共有の ID ではなく、一人ずつ別の ID をお渡しください。</li>
       </ul>
     </div>
 
@@ -156,6 +172,47 @@
 
   </section>
 
+  <!-- ================= 提出物（記名式） ================= -->
+  <section id="tab-subs" style="display:none">
+
+    <div class="page-head">
+      <p class="eyebrow">submissions</p>
+      <h1>提出物（記名式アンケート）</h1>
+      <p class="sub">記名式のアンケートに寄せられた提出を、ID ごとに確認・書き出します</p>
+    </div>
+
+    <p>
+      「アンケートの編集」で「記名式にする」を選んだアンケートについて、提出を ID ごとにまとめて表示します。
+      ID を押すと、その ID の提出が新しい順に開きます。同じ ID から何度か提出された場合はすべて残り、
+      いちばん新しいものに［最新］の印が付きます。記名式に切り替える前の提出は、ID が記録されていないため
+      「ID不明」にまとめています。
+    </p>
+
+    <div class="form-row" style="margin:1.4em 0">
+      <div class="field" style="min-width:280px">
+        <label for="subs-pick">表示するアンケート</label>
+        <select id="subs-pick" style="width:100%;font:inherit;font-size:1rem;padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:#fff"></select>
+      </div>
+      <button type="button" class="btn mini sub" id="subs-reload" style="width:auto">最新の状態に更新</button>
+      <button type="button" class="btn mini" id="subs-zip" style="width:auto">ZIPで書き出す</button>
+    </div>
+
+    <div id="subs-summary" class="quiet" style="margin-bottom:.8em"></div>
+    <div id="subs-tree"></div>
+
+    <div class="box">
+      <p class="box-title">ZIP のフォルダ構成</p>
+      <p style="margin-bottom:0">
+        書き出した ZIP を展開すると、いちばん上のフォルダの中に「一覧.csv」と、ID ごとのフォルダができます。
+        各 ID のフォルダには、提出1件につき1つのテキストファイル（UTF-8）が入ります。
+        ファイル名は「アンケートid_提出日時.txt」で、本文のほか、プロフィールと各設問への回答も含みます。
+        「すべての記名式アンケート」を選んで書き出すと、同じ方の事前アンケート・本体・事後アンケートが
+        一つの ID フォルダにそろいます。
+      </p>
+    </div>
+
+  </section>
+
   <!-- ================= 回答データ ================= -->
   <section id="tab-data" style="display:none">
 
@@ -166,8 +223,9 @@
     </div>
 
     <p>
-      回答は匿名で保存されています。CSVとして書き出せば、Googleスプレッドシートや Dropbox に取り込んで、
+      回答は匿名で保存されています（記名式のアンケートを除きます）。CSVとして書き出せば、Googleスプレッドシートや Dropbox に取り込んで、
       独自の分析を行うことができます。書き出しても、もとの回答は残ります。
+      記名式のアンケートのCSVには「ID」の列が加わります。ID ごとに確認したいときは「提出物」タブをお使いください。
     </p>
 
     <div class="box">
@@ -289,10 +347,11 @@
     b.addEventListener('click', function () {
       document.querySelectorAll('.tabs button').forEach(function (x) { x.classList.remove('on'); });
       b.classList.add('on');
-      ['users', 'surveys', 'data', 'json'].forEach(function (t) {
+      ['users', 'surveys', 'subs', 'data', 'json'].forEach(function (t) {
         document.getElementById('tab-' + t).style.display = (t === b.dataset.tab) ? '' : 'none';
       });
       if (b.dataset.tab === 'data') renderData();
+      if (b.dataset.tab === 'subs') renderSubsPick();
     });
   });
 
@@ -368,6 +427,21 @@
     call('addUser', { id: id, subid: subid, note: note }, function (d) {
       if (d.ok) { showMsg('ID「' + id + '」を追加しました。', true); addForm.reset(); renderUsers(d.users); }
       else { showMsg(d.error || '追加に失敗しました。', false); }
+    });
+  });
+
+  document.getElementById('bulk-btn').addEventListener('click', function () {
+    var area = document.getElementById('bulk-area');
+    var rows = area.value.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean)
+      .map(function (l) {
+        var c = l.split(/\t|,|，/).map(function (x) { return x.trim(); });
+        return { id: c[0] || '', subid: c[1] || '', note: c.slice(2).join(' ') };
+      });
+    if (!rows.length) { showMsg('登録する行がありません。', false); return; }
+    call('addUsers', { users: rows }, function (d) {
+      if (d.ok) { showMsg(d.added + '件の ID を追加しました。', true); area.value = ''; renderUsers(d.users); return; }
+      var detail = (d.errors || []).slice(0, 8).map(function (e) { return e.line + '行目：' + e.error; }).join('\n');
+      showMsg((d.error || '追加に失敗しました。') + (detail ? '\n' + detail : ''), false);
     });
   });
 
@@ -477,6 +551,8 @@
         }).join('') + '</select></div>' +
         field('所要（分）', 'minutes', s.minutes || 5, { type: 'number', flex: 'width:110px' }) +
         field('回答直後の表示', 'feedback', s.feedback || '', { flex: 'width:170px' }) +
+        '<label style="font-size:.9rem;white-space:nowrap;align-self:flex-end;padding-bottom:10px">' +
+        '<input type="checkbox" data-f="identify"' + (s.identify === true ? ' checked' : '') + '> 記名式にする</label>' +
       '</div>' +
       '<div style="margin-top:8px">' + field('一覧に出す要約', 'summary', s.summary || '', { area: true, rows: 2, flex: 'flex:1' }) + '</div>' +
       '<div style="margin-top:8px">' + field('この調査の目的', 'purpose', s.purpose || '', { area: true, rows: 4, flex: 'flex:1' }) + '</div>' +
@@ -484,6 +560,8 @@
       '<div style="margin-top:8px">' + field('結果の検討方針', 'policy', s.policy || '', { area: true, rows: 4, flex: 'flex:1' }) + '</div>' +
       '</div>' +
       '<p class="report-note">「回答直後の表示」に <code>sections</code> と書くと、送信直後に区分ごとの平均が回答者に示されます。空欄なら何も表示しません。</p>' +
+      '<p class="report-note">「記名式にする」を選ぶと、提出がログイン中の ID と結びつけて保存され、「提出物」タブで ID ごとに確認できるようになります。' +
+      '表形式での回答は使えなくなります。選ばない場合は、これまでどおり匿名で保存します。</p>' +
       '<h2>設問</h2>' +
       '<div id="sv-secs">' + (s.sections || []).map(sectionHTML).join('') + '</div>' +
       '<button type="button" class="btn mini sub" id="sec-add" style="width:auto">区分を追加</button>';
@@ -562,6 +640,7 @@
     s.minutes = Number(val(b, 'minutes')) || 5;
     var fb = String(val(b, 'feedback') || '').trim();
     if (fb) s.feedback = fb; else delete s.feedback;
+    if (val(b, 'identify')) s.identify = true; else delete s.identify;
     s.summary = String(val(b, 'summary') || '').trim();
     s.purpose = String(val(b, 'purpose') || '').trim();
     s.policy  = String(val(b, 'policy') || '').trim();
@@ -718,12 +797,13 @@
       if (!d.ok) { showMsg(d.error || '取得に失敗しました。', false); return; }
       if (d.redacted) { showMsg('自由記述を含まない形でしか取得できませんでした。もう一度ログインしてお試しください。', false); return; }
       var qs = SV.allQuestions(d.survey);
-      var head = ['回答日時', '経路']
+      var named = d.survey.identify === true || (d.entries || []).some(function (e) { return e.u; });
+      var head = (named ? ['ID'] : []).concat(['回答日時', '経路'])
         .concat(d.profile.map(function (f) { return f.label; }))
         .concat(qs.map(function (q) { return q.id + '：' + q.text; }));
       var rows = [head];
       (d.entries || []).forEach(function (e) {
-        var row = [e.t || '', e.s === 'sheet' ? '表形式' : '画面'];
+        var row = (named ? [e.u || 'ID不明'] : []).concat([e.t || '', e.s === 'sheet' ? '表形式' : '画面']);
         d.profile.forEach(function (f) {
           var v = e.p && e.p[f.id];
           row.push(Array.isArray(v) ? v.map(function (x) { return SV.labelOf(f, x); }).join('｜')
@@ -744,6 +824,208 @@
       btn.disabled = false; btn.textContent = old;
       showMsg('取得に失敗しました。', false);
     });
+  }
+
+  /* ================= 提出物（記名式） ================= */
+  var subsPick = document.getElementById('subs-pick');
+  var subsTree = document.getElementById('subs-tree');
+  var subsSummary = document.getElementById('subs-summary');
+  var SUBS = null; // [{survey, profile, entries}] 最後に取得した内容
+
+  function namedSurveys() {
+    return (DEF ? DEF.surveys : []).filter(function (s) { return s.identify === true; });
+  }
+
+  function renderSubsPick() {
+    var list = namedSurveys();
+    if (!list.length) {
+      subsPick.innerHTML = '<option value="">（記名式のアンケートはありません）</option>';
+      subsTree.innerHTML = '<p class="empty-note">記名式のアンケートがまだありません。' +
+        '「アンケート」タブで対象のアンケートを開き、「記名式にする」を選んで保存してください。</p>';
+      subsSummary.textContent = '';
+      SUBS = null;
+      return;
+    }
+    var keep = subsPick.value;
+    subsPick.innerHTML = '<option value="*">すべての記名式アンケート</option>' + list.map(function (s) {
+      return '<option value="' + esc(s.id) + '">' + esc(s.title) + '（' + esc(s.id) + '）</option>';
+    }).join('');
+    if (keep && subsPick.querySelector('option[value="' + CSS.escape(keep) + '"]')) subsPick.value = keep;
+    loadSubs();
+  }
+
+  subsPick.addEventListener('change', loadSubs);
+  document.getElementById('subs-reload').addEventListener('click', loadSubs);
+  document.getElementById('subs-zip').addEventListener('click', exportZip);
+
+  function loadSubs() {
+    var list = namedSurveys();
+    if (subsPick.value !== '*') list = list.filter(function (s) { return s.id === subsPick.value; });
+    if (!list.length) return;
+    subsTree.innerHTML = '<p class="empty-note">読み込んでいます…</p>';
+    SUBS = null;
+    Promise.all(list.map(function (s) {
+      return SV.api({ action: 'getReport', sid: s.id, adminPassword: adminPassword });
+    })).then(function (rs) {
+      var bad = rs.filter(function (d) { return !d.ok || d.redacted; })[0];
+      if (bad) { subsTree.innerHTML = ''; showMsg(bad.error || '全文を取得できませんでした。もう一度ログインしてお試しください。', false); return; }
+      SUBS = rs.map(function (d) { return { survey: d.survey, profile: d.profile, entries: d.entries || [] }; });
+      renderSubs();
+    }).catch(function () {
+      subsTree.innerHTML = '';
+      showMsg('取得に失敗しました。', false);
+    });
+  }
+
+  // 本文の字数（自由記述の合計。改行は数えません）
+  function hasText(survey) {
+    return SV.allQuestions(survey).some(function (q) { return q.type === 'text'; });
+  }
+
+  function textLength(survey, e) {
+    var n = 0;
+    SV.allQuestions(survey).forEach(function (q) {
+      if (q.type === 'text' && e.a && e.a[q.id]) n += Array.from(String(e.a[q.id]).replace(/\r?\n/g, '')).length;
+    });
+    return n;
+  }
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function stamp(iso, forFile) {
+    var d = new Date(iso);
+    if (isNaN(d)) return forFile ? 'unknown' : '—';
+    var ymd = d.getFullYear() + (forFile ? '' : '-') + pad(d.getMonth() + 1) + (forFile ? '' : '-') + pad(d.getDate());
+    var hm = pad(d.getHours()) + (forFile ? '' : ':') + pad(d.getMinutes()) + (forFile ? pad(d.getSeconds()) : '');
+    return ymd + (forFile ? '-' : ' ') + hm;
+  }
+
+  // ID → [{survey, profile, e, latest}] に並べ替えます（新しい順）
+  var NO_ID = '_ID不明';
+  function groupById() {
+    var map = {};
+    SUBS.forEach(function (g) {
+      var seen = {};
+      g.entries.forEach(function (e) { // entries は新しい順
+        var id = e.u || NO_ID;
+        (map[id] = map[id] || []).push({ survey: g.survey, profile: g.profile, e: e, latest: id !== NO_ID && !seen[id] });
+        seen[id] = true;
+      });
+    });
+    Object.keys(map).forEach(function (id) {
+      map[id].sort(function (a, b) { return String(b.e.t).localeCompare(String(a.e.t)); });
+    });
+    var ids = Object.keys(map).filter(function (id) { return id !== NO_ID; }).sort();
+    if (map[NO_ID]) ids.push(NO_ID);
+    return { map: map, ids: ids };
+  }
+
+  function answerText(q, v, survey) {
+    if (v == null || v === '') return '（未回答）';
+    if (q.type === 'likert') {
+      var sc = SV.scaleOf(q, survey);
+      return v + '（' + sc.min + '〜' + sc.max + 'の' + (sc.max - sc.min + 1) + '段階' +
+        (sc.low || sc.high ? '　' + sc.min + '＝' + (sc.low || '') + '／' + sc.max + '＝' + (sc.high || '') : '') + '）';
+    }
+    if (Array.isArray(v)) return v.map(function (x) { return SV.labelOf(q, x) || x; }).join('、');
+    if (q.type === 'single') return SV.labelOf(q, v) || v;
+    return String(v);
+  }
+
+  function renderSubs() {
+    var g = groupById();
+    var total = SUBS.reduce(function (a, x) { return a + x.entries.length; }, 0);
+    var people = g.ids.filter(function (id) { return id !== NO_ID; }).length;
+    subsSummary.textContent = '提出者 ' + people + '名／提出 ' + total + '件';
+    if (!g.ids.length) { subsTree.innerHTML = '<p class="empty-note">まだ提出はありません。</p>'; return; }
+
+    subsTree.innerHTML = g.ids.map(function (id) {
+      var items = g.map[id];
+      return '<details class="sub-id">' +
+        '<summary><strong>' + esc(id === NO_ID ? 'ID不明（記名式にする前の提出）' : id) + '</strong>' +
+        '<span class="quiet">　提出 ' + items.length + '件（最新 ' + esc(stamp(items[0].e.t)) + '）</span></summary>' +
+        items.map(function (it) {
+          var qs = SV.allQuestions(it.survey);
+          return '<details class="sub-item"><summary>' +
+            esc(stamp(it.e.t)) + '　' + esc(it.survey.title) +
+            (hasText(it.survey) ? '　' + textLength(it.survey, it.e).toLocaleString() + '字' : '') +
+            (it.latest ? '　<span class="badge open">最新</span>' : '') + '</summary>' +
+            '<dl class="sub-body">' + qs.map(function (q) {
+              var v = it.e.a && it.e.a[q.id];
+              return '<dt>' + esc(q.text) + '</dt><dd' + (q.type === 'text' ? ' class="long"' : '') + '>' + esc(answerText(q, v, it.survey)) + '</dd>';
+            }).join('') + '</dl></details>';
+        }).join('') + '</details>';
+    }).join('');
+  }
+
+  function submissionText(it, id) {
+    var lines = [];
+    var s = it.survey;
+    lines.push('アンケート：' + s.title + '（' + s.id + '）');
+    lines.push('ID：' + (id === NO_ID ? 'ID不明' : id));
+    lines.push('提出日時：' + stamp(it.e.t) + (it.latest ? '（最新）' : ''));
+    lines.push('');
+    lines.push('■ プロフィール');
+    (it.profile || []).forEach(function (f) {
+      lines.push(f.label + '：' + answerText(f, it.e.p && it.e.p[f.id]));
+    });
+    SV.allQuestions(s).forEach(function (q, i) {
+      lines.push('');
+      lines.push('■ Q' + (i + 1) + '　' + q.text);
+      var v = it.e.a && it.e.a[q.id];
+      lines.push(answerText(q, v, s));
+      if (q.type === 'text' && v) lines.push('（' + Array.from(String(v).replace(/\r?\n/g, '')).length + '字）');
+    });
+    return lines.join('\r\n') + '\r\n';
+  }
+
+  function loadJsZip() {
+    if (window.JSZip) return Promise.resolve(window.JSZip);
+    return new Promise(function (ok, ng) {
+      var sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      sc.onload = function () { ok(window.JSZip); };
+      sc.onerror = function () { ng(new Error('ZIP の部品を読み込めませんでした')); };
+      document.head.appendChild(sc);
+    });
+  }
+
+  function safeName(s) { return String(s).replace(/[\\\/:*?"<>|]/g, '_'); }
+
+  function exportZip() {
+    if (!SUBS) { showMsg('先に提出物を読み込んでください。', false); return; }
+    var btn = document.getElementById('subs-zip');
+    btn.disabled = true;
+    loadJsZip().then(function (JSZip) {
+      var g = groupById();
+      var today = stamp(new Date().toISOString(), true).slice(0, 8);
+      var rootName = subsPick.value === '*' ? '記名式アンケート_提出物_' + today
+                                            : safeName(SUBS[0].survey.id + '_' + SUBS[0].survey.title) + '_' + today;
+      var zip = new JSZip();
+      var root = zip.folder(rootName);
+      var rows = [['ID', 'アンケートid', 'アンケート', '提出日時', '字数', '最新', 'ファイル']];
+      g.ids.forEach(function (id) {
+        var dir = root.folder(safeName(id));
+        g.map[id].forEach(function (it) {
+          var file = safeName(it.survey.id) + '_' + stamp(it.e.t, true) + '.txt';
+          var n = 1;
+          while (dir.file(file)) { file = file.replace(/(_\d+)?\.txt$/, '_' + (++n) + '.txt'); }
+          dir.file(file, '\ufeff' + submissionText(it, id));
+          rows.push([id === NO_ID ? 'ID不明' : id, it.survey.id, it.survey.title, stamp(it.e.t),
+                     hasText(it.survey) ? textLength(it.survey, it.e) : '', it.latest ? '最新' : '', safeName(id) + '/' + file]);
+        });
+      });
+      root.file('一覧.csv', '\ufeff' + SV.toCsv(rows));
+      return zip.generateAsync({ type: 'blob' }).then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = rootName + '.zip';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        showMsg('ZIP を書き出しました（提出 ' + (rows.length - 1) + '件）。', true);
+      });
+    }).catch(function (e) {
+      showMsg(e.message || 'ZIP の書き出しに失敗しました。', false);
+    }).then(function () { btn.disabled = false; });
   }
 
   /* ================= JSON ================= */

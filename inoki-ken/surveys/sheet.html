@@ -347,6 +347,7 @@ if (sessionStorage.getItem('inoki_ok') !== '1') {
     SURVEY = (DEF.surveys || []).filter(function (s) { return s.id === sid; })[0];
     if (!SURVEY) return fail('該当するアンケートが見つかりませんでした。');
     if (SURVEY.status === 'closed') return fail('このアンケートは受付を終了しています。');
+    if (SURVEY.identify === true) return fail('このアンケートは記名式のため、表形式ではお答えいただけません。一覧の「回答する」から提出してください。');
     COLS = buildCols();
     document.title = SURVEY.title + '（表形式）｜ AI時代の要求工学 意識調査';
     render();
