@@ -270,6 +270,52 @@ em{ font-style:normal; }
 }
 .trk-col.is-b .sess.is-wrap{ background:#F6F6F7; }
 
+/* ── 時間割（目安） ── */
+.tl-time small.end{ font-size:11.5px; color:var(--ink-sub); }
+.tt{
+  margin-top:18px; border:1px solid var(--gray-line); border-radius:var(--radius);
+  overflow:hidden; background:#fff; box-shadow:var(--shadow-sm);
+}
+.tt-cap{
+  display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;
+  padding:12px 18px; background:#FCFCFC; border-bottom:1px solid var(--gray-line);
+}
+.tt-cap b{ font-size:14px; font-weight:900; color:var(--ink); }
+.tt-cap span{ font-size:11.5px; font-weight:700; color:var(--ink-light); }
+.tt-row{ display:grid; grid-template-columns:118px 1fr 1fr; border-top:1px solid var(--gray-line); }
+.tt-row:first-of-type{ border-top:0; }
+.tt-row > div{ padding:10px 14px; font-size:13px; line-height:1.55; }
+.tt-head > div{ font-size:12px; font-weight:800; color:var(--ink-sub); background:var(--gray); padding:8px 14px; }
+.tt-head .a{ color:var(--red); } .tt-head .b{ color:var(--black); }
+.tt-when{ font-weight:900; color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tt-cell{ display:flex; align-items:baseline; gap:8px; border-left:1px solid var(--gray-line); }
+.tt-cell i{
+  flex-shrink:0; font-style:normal; font-size:11px; font-weight:900; color:#fff;
+  background:var(--red); border-radius:5px; padding:1px 7px; line-height:1.7;
+}
+.tt-cell.b i{ background:var(--black); }
+.tt-cell.tt-sum{ background:#FFF7F7; } .tt-cell.tt-sum.b{ background:#F6F6F7; }
+.tt-break > div:last-child{
+  grid-column:2 / 4; border-left:1px solid var(--gray-line);
+  color:var(--ink-light); font-weight:700; font-size:12.5px; letter-spacing:.08em; text-align:center;
+  background:repeating-linear-gradient(135deg,#fff 0 8px,#FAFAFA 8px 16px);
+}
+@media(max-width:600px){
+  .tt-row{ grid-template-columns:84px 1fr 1fr; }
+  .tt-row > div{ padding:9px 9px; font-size:12px; }
+  .tt-when{ white-space:normal; }
+  .tt-cell{ flex-direction:column; gap:3px; }
+}
+.sess-time{
+  display:inline-block; font-size:11.5px; font-weight:800; color:var(--ink-sub);
+  font-variant-numeric:tabular-nums; margin-bottom:6px;
+}
+.sess-time::before{ content:"🕐 "; }
+.sess-break{
+  margin:2px 0; padding:8px 0; text-align:center; font-size:11.5px; font-weight:700;
+  color:var(--ink-light); letter-spacing:.08em; border-bottom:1px dashed var(--gray-line);
+}
+
 /* ── 研究マップ ── */
 .map-block{ margin-top:52px; padding-top:36px; border-top:1px solid var(--gray-line); }
 .map-head{ text-align:center; }
@@ -506,12 +552,53 @@ em{ font-style:normal; }
         </div>
       </div>
       <div class="tl-item">
-        <div class="tl-time">13:00<small>〜</small></div>
+        <div class="tl-time">12:00<small class="end">〜13:00</small></div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <p class="tl-title">ポスター説明<small style="font-weight:700;color:var(--ink-light);">会場 A-0611</small></p>
+          <p class="tl-desc">位野木研究室の学生が、研究ポスターの前で内容をご説明します。昼食後のひとときに、お気軽にお立ち寄りください。</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">13:00<small class="end">〜17:30</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
           <p class="tl-title">トラックセッション（２トラック並行）</p>
           <p class="tl-desc">ＡとＢの２トラックを並行して開催します。どちらのトラックも、三つのセッションと、知働化コミュニティの取り組みを見渡す「まとめ」で構成されます。会場間の移動は自由です。位野木研究室 学生によるポスター展示も同時に行います（会場 A-0611）。<br>
-            <small style="color:var(--ink-light);">※ テーマの一部は仮題です。セッションの時間割は決まりしだい掲載します。</small></p>
+            <small style="color:var(--ink-light);">※ テーマの一部は仮題です。時間は目安で、当日の進行により前後することがあります。</small></p>
+
+          <div class="tt" role="table" aria-label="トラックセッションの時間割（目安）">
+            <div class="tt-cap"><b>時間割（目安）</b><span>15:00〜15:30 は休憩です</span></div>
+            <div class="tt-row tt-head" role="row">
+              <div role="columnheader">時間</div>
+              <div role="columnheader" class="a" style="border-left:1px solid var(--gray-line)">Ａトラック（A-0615）</div>
+              <div role="columnheader" class="b" style="border-left:1px solid var(--gray-line)">Ｂトラック（A-0611）</div>
+            </div>
+            <div class="tt-row" role="row">
+              <div class="tt-when" role="cell">13:00〜14:00</div>
+              <div class="tt-cell" role="cell"><i>Ａ１</i>自由エネルギー原理から考える社会・心・AI</div>
+              <div class="tt-cell b" role="cell"><i>Ｂ１</i>AI時代のソフトウェア技術者に求められる能力</div>
+            </div>
+            <div class="tt-row" role="row">
+              <div class="tt-when" role="cell">14:00〜15:00</div>
+              <div class="tt-cell" role="cell"><i>Ａ２</i>AIに〈離〉はあるか</div>
+              <div class="tt-cell b" role="cell"><i>Ｂ２</i>メタウェアで見る要求定義という仕事</div>
+            </div>
+            <div class="tt-row tt-break" role="row">
+              <div class="tt-when" role="cell">15:00〜15:30</div>
+              <div role="cell">休　憩</div>
+            </div>
+            <div class="tt-row" role="row">
+              <div class="tt-when" role="cell">15:30〜16:30</div>
+              <div class="tt-cell" role="cell"><i>Ａ３</i>意味の構造</div>
+              <div class="tt-cell b" role="cell"><i>Ｂ３</i>これからの要求定義はひと味違う</div>
+            </div>
+            <div class="tt-row" role="row">
+              <div class="tt-when" role="cell">16:30〜17:30</div>
+              <div class="tt-cell tt-sum" role="cell"><i>まとめ</i>知働化パラダイムのゆくえ</div>
+              <div class="tt-cell tt-sum b" role="cell"><i>まとめ</i>人間の役割をどこに置くか</div>
+            </div>
+          </div>
 
           <div class="trk-grid">
 
@@ -528,6 +615,7 @@ em{ font-style:normal; }
               <div class="trk-body">
 
                 <div class="sess">
+                  <span class="sess-time">13:00〜14:00</span>
                   <div class="sess-head">
                     <span class="sess-no">Ａ１</span>
                     <p class="sess-title">自由エネルギー原理から考える社会・心・AI</p>
@@ -537,6 +625,7 @@ em{ font-style:normal; }
                 </div>
 
                 <div class="sess">
+                  <span class="sess-time">14:00〜15:00</span>
                   <div class="sess-head">
                     <span class="sess-no">Ａ２</span>
                     <p class="sess-title">AIに〈離〉はあるか<br><small style="font-size:12.5px;font-weight:700;color:var(--ink-light);">── 無くせないものから〈本〉を描く</small></p>
@@ -547,7 +636,10 @@ em{ font-style:normal; }
                   <p class="sess-desc">答えを出す場ではなく、〈本〉を言葉にする作業を参加者と共に試みる場とします。</p>
                 </div>
 
+                <div class="sess-break">休憩　15:00〜15:30</div>
+
                 <div class="sess">
+                  <span class="sess-time">15:30〜16:30</span>
                   <div class="sess-head">
                     <span class="sess-no">Ａ３</span>
                     <p class="sess-title">意味の構造</p>
@@ -557,6 +649,7 @@ em{ font-style:normal; }
                 </div>
 
                 <div class="sess is-wrap">
+                  <span class="sess-time">16:30〜17:30</span>
                   <div class="sess-head">
                     <span class="sess-no">まとめ</span>
                     <p class="sess-title">知働化パラダイムのゆくえ</p>
@@ -581,6 +674,7 @@ em{ font-style:normal; }
               <div class="trk-body">
 
                 <div class="sess">
+                  <span class="sess-time">13:00〜14:00</span>
                   <div class="sess-head">
                     <span class="sess-no">Ｂ１</span>
                     <p class="sess-title">AI時代のソフトウェア技術者に求められる能力について考える<br><small style="font-size:12.5px;font-weight:700;color:var(--ink-light);">── 「書く」と「創る」の実践から</small></p>
@@ -594,6 +688,7 @@ em{ font-style:normal; }
                 </div>
 
                 <div class="sess">
+                  <span class="sess-time">14:00〜15:00</span>
                   <div class="sess-head">
                     <span class="sess-no">Ｂ２</span>
                     <p class="sess-title">メタウェアで見る要求定義という仕事</p>
@@ -606,7 +701,10 @@ em{ font-style:normal; }
                   <p class="sess-desc">別のメタウェアを使えば、同じ仕事が違って見えます。本セッションでは一つを取り上げ、構造を道具として扱うとはどういうことかを、実例でお示ししたいと思います。</p>
                 </div>
 
+                <div class="sess-break">休憩　15:00〜15:30</div>
+
                 <div class="sess">
+                  <span class="sess-time">15:30〜16:30</span>
                   <div class="sess-head">
                     <span class="sess-no">Ｂ３</span>
                     <p class="sess-title">これからの要求定義はひと味違う</p>
@@ -616,6 +714,7 @@ em{ font-style:normal; }
                 </div>
 
                 <div class="sess is-wrap">
+                  <span class="sess-time">16:30〜17:30</span>
                   <div class="sess-head">
                     <span class="sess-no">まとめ</span>
                     <p class="sess-title">人間の役割をどこに置くか</p>
@@ -631,11 +730,11 @@ em{ font-style:normal; }
         </div>
       </div>
       <div class="tl-item">
-        <div class="tl-time">18:00<small>〜</small></div>
+        <div class="tl-time">18:00<small class="end">〜19:00頃</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
-          <p class="tl-title">懇親会</p>
-          <p class="tl-desc">参加者同士の交流の場です。</p>
+          <p class="tl-title">懇親会<small style="font-weight:700;color:var(--ink-light);">会場未定</small></p>
+          <p class="tl-desc">参加者同士の交流の場です。会場は決まりしだい掲載します。</p>
         </div>
       </div>
     </div>
