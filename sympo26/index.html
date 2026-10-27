@@ -316,6 +316,49 @@ em{ font-style:normal; }
   color:var(--ink-light); letter-spacing:.08em; border-bottom:1px dashed var(--gray-line);
 }
 
+/* ── 司会・統合まとめ ── */
+.tl-roles{ font-size:13px; font-weight:800; color:var(--ink); margin:2px 0 6px; }
+.tl-roles span, .trk-chair span{
+  display:inline-block; font-size:11px; font-weight:800; color:var(--ink-sub);
+  background:var(--gray); border-radius:999px; padding:1px 10px; margin-right:8px;
+}
+.trk-chair{ font-size:13px; font-weight:800; color:var(--ink); margin-top:10px; }
+.tt-all .tt-cell{ grid-column:2 / 4; background:linear-gradient(90deg,#FFF7F7,#F6F6F7); }
+.tt-all .tt-cell i{ background:linear-gradient(90deg,var(--red),var(--black)); }
+.tt-cell em{ font-style:normal; font-size:11.5px; font-weight:700; color:var(--ink-light); margin-left:auto; padding-left:8px; white-space:nowrap; }
+@media(max-width:600px){ .tt-cell em{ margin-left:0; padding-left:0; white-space:normal; } }
+.wrapup{
+  margin-top:12px; background:#fff; border:1px solid var(--gray-line); border-radius:var(--radius);
+  box-shadow:var(--shadow-sm); padding:20px 22px; position:relative; overflow:hidden;
+}
+.wrapup::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:4px;
+  background:linear-gradient(90deg,var(--red) 0 50%,var(--black) 50% 100%);
+}
+.wrapup-head{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.wrapup-badge{
+  font-size:11.5px; font-weight:900; color:#fff; border-radius:5px; padding:2px 9px; line-height:1.7;
+  background:linear-gradient(90deg,var(--red),var(--black));
+}
+.wrapup-title{ font-size:17px; font-weight:900; color:var(--ink); line-height:1.5; }
+.wrapup-roles{ display:grid; gap:4px; margin:12px 0 10px; }
+.wrapup-roles > div{ display:flex; gap:10px; font-size:13px; }
+.wrapup-roles dt{ flex-shrink:0; min-width:84px; font-weight:800; color:var(--ink-light); }
+.wrapup-roles dd{ font-weight:800; color:var(--ink); }
+.wrapup-desc{ font-size:13.5px; color:var(--ink-sub); line-height:1.85; }
+.wrapup-flow{ display:flex; flex-wrap:wrap; gap:8px 24px; margin-top:14px; align-items:center; }
+.wrapup-flow span{
+  font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px;
+  background:var(--gray); color:var(--ink-sub);
+}
+.wrapup-flow span.a{ background:rgba(228,44,44,.08); color:var(--red); }
+.wrapup-flow span.b{ background:#ECECEE; color:var(--black); }
+.wrapup-flow span{ position:relative; }
+.wrapup-flow span + span::before{
+  content:"→"; position:absolute; left:-18px; top:50%; transform:translateY(-50%);
+  color:var(--ink-light); font-weight:700;
+}
+
 /* ── 研究マップ ── */
 .map-block{ margin-top:52px; padding-top:36px; border-top:1px solid var(--gray-line); }
 .map-head{ text-align:center; }
@@ -543,10 +586,19 @@ em{ font-style:normal; }
     </div>
     <div class="timeline fade-in">
       <div class="tl-item">
-        <div class="tl-time">10:00<small>〜</small></div>
+        <div class="tl-time">10:00<small class="end">5分程度</small></div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <p class="tl-title">開会挨拶<small style="font-weight:700;color:var(--ink-light);">会場 A-0611</small></p>
+          <p class="tl-desc">アジャイルプロセス協議会 会長　水越 明哉</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">10:05<small class="end">頃〜</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
           <p class="tl-title">基調講演：連想情報学とボーム・ダイアローグ<small style="font-weight:700;color:var(--ink-light);">会場 A-0611</small></p>
+          <p class="tl-roles"><span>司会</span>水越 明哉（アジャイルプロセス協議会 会長）</p>
           <p class="tl-desc">国立情報学研究所 名誉教授　高野 明彦<br>
             1995年からの「連想情報学」の探究は、情報空間としての神保町古書街、さらには、共通知識基盤としてのデジタルアーカイブ構築へと広がりました。真実のありかがますます不透明となるAI時代に、この蓄積を活かしたボーム・ダイアローグという『共にあるための学習法』の可能性について考えます。</p>
         </div>
@@ -560,11 +612,11 @@ em{ font-style:normal; }
         </div>
       </div>
       <div class="tl-item">
-        <div class="tl-time">13:00<small class="end">〜17:30</small></div>
+        <div class="tl-time">13:00<small class="end">〜16:30</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
           <p class="tl-title">トラックセッション（２トラック並行）</p>
-          <p class="tl-desc">ＡとＢの２トラックを並行して開催します。どちらのトラックも、三つのセッションと、知働化コミュニティの取り組みを見渡す「まとめ」で構成されます。会場間の移動は自由です。位野木研究室 学生によるポスター展示も同時に行います（会場 A-0611）。<br>
+          <p class="tl-desc">ＡとＢの２トラックを並行して開催します。それぞれのトラックは三つのセッションで構成され、Ａトラックは萩原 正義、Ｂトラックは濵 勝巳が全体の司会を務めます。会場間の移動は自由です。16:30からは、両トラックを統合した「まとめ」を行います。位野木研究室 学生によるポスター展示も同時に行います（会場 A-0611）。<br>
             <small style="color:var(--ink-light);">※ テーマの一部は仮題です。時間は目安で、当日の進行により前後することがあります。</small></p>
 
           <div class="tt" role="table" aria-label="トラックセッションの時間割（目安）">
@@ -582,7 +634,7 @@ em{ font-style:normal; }
             <div class="tt-row" role="row">
               <div class="tt-when" role="cell">14:00〜15:00</div>
               <div class="tt-cell" role="cell"><i>Ａ２</i>AIに〈離〉はあるか</div>
-              <div class="tt-cell b" role="cell"><i>Ｂ２</i>メタウェアで見る要求定義という仕事</div>
+              <div class="tt-cell b" role="cell"><i>Ｂ２</i>これからの要求定義はひと味違う</div>
             </div>
             <div class="tt-row tt-break" role="row">
               <div class="tt-when" role="cell">15:00〜15:30</div>
@@ -591,12 +643,11 @@ em{ font-style:normal; }
             <div class="tt-row" role="row">
               <div class="tt-when" role="cell">15:30〜16:30</div>
               <div class="tt-cell" role="cell"><i>Ａ３</i>意味の構造</div>
-              <div class="tt-cell b" role="cell"><i>Ｂ３</i>これからの要求定義はひと味違う</div>
+              <div class="tt-cell b" role="cell"><i>Ｂ３</i>メタウェアで見る要求定義という仕事</div>
             </div>
-            <div class="tt-row" role="row">
+            <div class="tt-row tt-all" role="row">
               <div class="tt-when" role="cell">16:30〜17:30</div>
-              <div class="tt-cell tt-sum" role="cell"><i>まとめ</i>知働化パラダイムのゆくえ</div>
-              <div class="tt-cell tt-sum b" role="cell"><i>まとめ</i>人間の役割をどこに置くか</div>
+              <div class="tt-cell" role="cell"><i>まとめ</i>AI活用のパラダイムと人間の役割<em>Ａ・Ｂ統合／会場 A-0611</em></div>
             </div>
           </div>
 
@@ -611,6 +662,7 @@ em{ font-style:normal; }
                 </div>
                 <p class="trk-title">AI活用の実践原理と哲学</p>
                 <p class="trk-sub">情報・意味・価値・経営の再構築と知働化パラダイムのゆくえ</p>
+                <p class="trk-chair"><span>トラック司会</span>萩原 正義</p>
               </div>
               <div class="trk-body">
 
@@ -648,15 +700,6 @@ em{ font-style:normal; }
                   <p class="sess-desc">AI活用での精度向上や説明責任を考えるうえで、意味をどのように扱えばよいのでしょうか。意味の構造化という観点から、コンテキスト管理、オントロジー、digital twin、世界モデルを俯瞰し、具体的な事例や実現法を討論します。後半は、参加者のみなさんに意味の構造化を体験していただき、理解を深めます。</p>
                 </div>
 
-                <div class="sess is-wrap">
-                  <span class="sess-time">16:30〜17:30</span>
-                  <div class="sess-head">
-                    <span class="sess-no">まとめ</span>
-                    <p class="sess-title">知働化パラダイムのゆくえ</p>
-                  </div>
-                  <p class="sess-coord"><span>進行</span>知働化コミュニティ</p>
-                  <p class="sess-desc">意味・予測・価値という三つの入口から見えてきたものを重ね合わせ、知働化パラダイムがどこへ向かうのかを描きます。アジャイルプロセス協議会から独立したアライアンスとしての取り組みと、その広がりについてもあわせてご紹介します。</p>
-                </div>
 
               </div>
             </div>
@@ -670,6 +713,7 @@ em{ font-style:normal; }
                 </div>
                 <p class="trk-title">要求工学新時代の人間の役割</p>
                 <p class="trk-sub">要求から意図へ、人間しかできないことは何か？</p>
+                <p class="trk-chair"><span>トラック司会</span>濵 勝巳</p>
               </div>
               <div class="trk-body">
 
@@ -691,6 +735,18 @@ em{ font-style:normal; }
                   <span class="sess-time">14:00〜15:00</span>
                   <div class="sess-head">
                     <span class="sess-no">Ｂ２</span>
+                    <p class="sess-title">これからの要求定義はひと味違う</p>
+                  </div>
+                  <p class="sess-coord"><span>コーディネータ</span>大槻 繁</p>
+                  <p class="sess-desc">〈作ることは高い〉という前提が生成AIによって崩れたとき、要求定義の何が変わるのでしょうか。既存の要求工学が置いてきた八つの前提を棄て、〈目的〉〈抽象化〉〈コミュニケーション〉の三語から手順を組み立て直します。五つの局面と五つの技法、そしてAIに任せられることと人が持ち込むしかないことの境界を、事例を交えて確かめます。</p>
+                </div>
+
+                <div class="sess-break">休憩　15:00〜15:30</div>
+
+                <div class="sess">
+                  <span class="sess-time">15:30〜16:30</span>
+                  <div class="sess-head">
+                    <span class="sess-no">Ｂ３</span>
                     <p class="sess-title">メタウェアで見る要求定義という仕事</p>
                   </div>
                   <p class="sess-coord"><span>コーディネータ</span>濵 勝巳（株式会社アッズーリ）</p>
@@ -701,31 +757,31 @@ em{ font-style:normal; }
                   <p class="sess-desc">別のメタウェアを使えば、同じ仕事が違って見えます。本セッションでは一つを取り上げ、構造を道具として扱うとはどういうことかを、実例でお示ししたいと思います。</p>
                 </div>
 
-                <div class="sess-break">休憩　15:00〜15:30</div>
-
-                <div class="sess">
-                  <span class="sess-time">15:30〜16:30</span>
-                  <div class="sess-head">
-                    <span class="sess-no">Ｂ３</span>
-                    <p class="sess-title">これからの要求定義はひと味違う</p>
-                  </div>
-                  <p class="sess-coord"><span>コーディネータ</span>大槻 繁</p>
-                  <p class="sess-desc">〈作ることは高い〉という前提が生成AIによって崩れたとき、要求定義の何が変わるのでしょうか。既存の要求工学が置いてきた八つの前提を棄て、〈目的〉〈抽象化〉〈コミュニケーション〉の三語から手順を組み立て直します。五つの局面と五つの技法、そしてAIに任せられることと人が持ち込むしかないことの境界を、事例を交えて確かめます。</p>
-                </div>
-
-                <div class="sess is-wrap">
-                  <span class="sess-time">16:30〜17:30</span>
-                  <div class="sess-head">
-                    <span class="sess-no">まとめ</span>
-                    <p class="sess-title">人間の役割をどこに置くか</p>
-                  </div>
-                  <p class="sess-coord"><span>進行</span>知働化コミュニティ</p>
-                  <p class="sess-desc">書く力と創る力、思考構造の非対称性、要求定義の組み替えという三つの議論を突き合わせ、AIに委ねられることと人にしかできないことの境界を引き直します。知働化コミュニティの活動が実践や教育の場へどう広がっているかも、あわせてご紹介します。</p>
-                </div>
 
               </div>
             </div>
 
+          </div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">16:30<small class="end">〜17:30</small></div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <p class="tl-title">まとめ（Ａ・Ｂトラック統合）<small style="font-weight:700;color:var(--ink-light);">会場 A-0611</small></p>
+          <div class="wrapup">
+            <div class="wrapup-head">
+              <span class="wrapup-badge">まとめ</span>
+              <p class="wrapup-title">AI活用のパラダイムと人間の役割</p>
+            </div>
+            <dl class="wrapup-roles">
+              <div><dt>司会</dt><dd>大槻 繁</dd></div>
+              <div><dt>コメンテータ</dt><dd>高野 明彦（基調講演）と、Ａ・Ｂ各トラックのスピーカ</dd></div>
+            </dl>
+            <p class="wrapup-desc">はじめに、Ａトラック「AI活用の実践原理と哲学」とＢトラック「要求工学新時代の人間の役割」の概要を、それぞれご紹介します。そのうえで、基調講演を含めた一日のセッション全体から見えてきた事項を総括し、AI活用のパラダイムがどこへ向かい、そこで人間がどのような役割を担うのかを、コメンテータとともに議論します。最後に、これからの知働化探究の将来性と方向性をお示しします。</p>
+            <div class="wrapup-flow">
+              <span class="a">Ａトラックの概要</span><span class="b">Ｂトラックの概要</span><span class="x">全体の総括</span><span class="x">知働化探究のこれから</span>
+            </div>
           </div>
         </div>
       </div>
