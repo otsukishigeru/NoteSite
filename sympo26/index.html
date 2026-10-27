@@ -316,6 +316,19 @@ em{ font-style:normal; }
   color:var(--ink-light); letter-spacing:.08em; border-bottom:1px dashed var(--gray-line);
 }
 
+/* ── 懇親会 ── */
+.party{
+  display:flex; align-items:center; gap:12px 16px; flex-wrap:wrap; margin-top:10px;
+  background:var(--gray); border-radius:10px; padding:12px 16px;
+}
+.party-fee{
+  flex-shrink:0; font-size:12.5px; font-weight:800; color:var(--ink-sub);
+  background:#fff; border:1px solid var(--gray-line); border-radius:999px; padding:4px 14px;
+}
+.party-fee b{ font-size:15px; font-weight:900; color:var(--red); margin-left:4px; }
+.party-how{ flex:1; min-width:220px; font-size:13px; color:var(--ink-sub); line-height:1.75; }
+.party-how a{ color:var(--red); font-weight:800; text-decoration:underline; }
+
 /* ── 司会・統合まとめ ── */
 .tl-roles{ font-size:13px; font-weight:800; color:var(--ink); margin:2px 0 6px; }
 .tl-roles span, .trk-chair span{
@@ -570,7 +583,7 @@ em{ font-style:normal; }
         <span class="dv" style="margin-top:12px;display:block;"><small style="color:var(--ink-sub);font-weight:500;">参加予定 約60名程度</small></span>
         <div class="fee-cta">
           <a class="btn btn-primary" href="/sympo26/register/">参加申込 →</a>
-          <span class="fee-cta-note">参加される方は、必ず申込みをお願いします。</span>
+          <span class="fee-cta-note">参加される方は、必ず申込みをお願いします。懇親会（参加費 ¥5,000）をご希望の方は、フォームの「メッセージ」欄に「懇親会参加希望」とご記入ください。</span>
         </div>
       </div>
     </div>
@@ -789,8 +802,12 @@ em{ font-style:normal; }
         <div class="tl-time">18:00<small class="end">〜19:00頃</small></div>
         <div class="tl-dot"></div>
         <div class="tl-body">
-          <p class="tl-title">懇親会<small style="font-weight:700;color:var(--ink-light);">会場未定</small></p>
-          <p class="tl-desc">参加者同士の交流の場です。会場は決まりしだい掲載します。</p>
+          <p class="tl-title">懇親会<small style="font-weight:700;color:var(--ink-light);">会場 近くの中華レストラン</small></p>
+          <p class="tl-desc">参加者同士の交流の場です。会場の近くにある中華レストランを予約しています。</p>
+          <div class="party">
+            <span class="party-fee">参加費 <b>¥5,000</b></span>
+            <p class="party-how">参加を希望される方は、あらかじめ<a href="/sympo26/register/">参加登録フォーム</a>の「メッセージ」欄に「懇親会参加希望」とご記入ください。</p>
+          </div>
         </div>
       </div>
     </div>
