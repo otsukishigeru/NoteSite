@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Symposium2026 講演資料ダウンロード。閲覧には合言葉が必要です。">
+<title>講演資料ダウンロード — Symposium2026</title>
+
+<style>
+/* ================================================================
+   Symposium2026 ── 講演資料ダウンロード
+   配色・書体は /sympo26/ と共通
+   ================================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+  --red:        #E42C2C;
+  --red-dark:   #C01E1E;
+  --ink:        #16181D;
+  --ink-sub:    #4A4F58;
+  --ink-light:  #8A9099;
+  --bg:         #FFFFFF;
+  --gray:       #F2F2F2;
+  --gray-line:  #E2E2E2;
+  --black:      #14151A;
+  --green:      #1a9e57;
+  --shadow-sm:  0 2px 10px rgba(0,0,0,.06);
+  --shadow-md:  0 8px 30px rgba(0,0,0,.10);
+  --radius:     14px;
+  --max-w:      1000px;
+}
+
+html{ scroll-behavior:smooth; font-size:16px; }
+body{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+a{ color:inherit; text-decoration:none; }
+img{ display:block; max-width:100%; }
+
+/* ── コミュニティ トップバー ── */
+.community-bar{
+  background:var(--black); padding:8px 20px;
+  display:flex; align-items:center; justify-content:center;
+}
+.community-bar a{
+  display:flex; align-items:center; gap:9px; color:#fff;
+  font-size:13px; font-weight:700; letter-spacing:.04em; opacity:.92;
+  transition:opacity .15s;
+}
+.community-bar a:hover{ opacity:1; }
+.community-bar img{ height:20px; width:auto; }
+
+/* ── ヘッダー ── */
+.site-header{
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--gray-line);
+}
+.header-inner{
+  max-width:var(--max-w); margin:0 auto; padding:0 24px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:40px; height:40px; background:var(--red); border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:13px; font-weight:900; flex-shrink:0;
+}
+.brand-text{ display:flex; flex-direction:column; line-height:1.25; }
+.brand-main{ font-size:15px; font-weight:800; color:var(--ink); }
+.brand-sub{ font-size:10px; color:var(--ink-light); letter-spacing:.06em; }
+.nav-links{ display:flex; gap:26px; }
+.nav-links a{ font-size:13.5px; font-weight:700; color:var(--ink-sub); transition:color .15s; }
+.nav-links a:hover{ color:var(--red); }
+@media(max-width:760px){ .nav-links{ display:none; } }
+
+/* ── ヒーロー ── */
+.hero{
+  position:relative; overflow:hidden;
+  background:var(--black); color:#fff;
+  padding:62px 24px 66px;
+}
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(228,44,44,.40), transparent 46%),
+    radial-gradient(circle at 12% 92%, rgba(228,44,44,.18), transparent 44%);
+  pointer-events:none;
+}
+.hero-inner{ position:relative; max-width:var(--max-w); margin:0 auto; }
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:12px; font-weight:800; letter-spacing:.18em;
+  color:#fff; background:var(--red);
+  padding:6px 14px; border-radius:999px; margin-bottom:22px;
+}
+.hero-title{ font-size:clamp(30px,5.4vw,50px); font-weight:900; line-height:1.14; margin-bottom:12px; }
+.hero-sub{ font-size:clamp(14.5px,2vw,17px); font-weight:600; color:#D7DAE0; max-width:46em; }
+
+/* ── 共通セクション ── */
+.section{ padding:66px 24px; }
+.section.gray{ background:var(--gray); }
+.wrap{ max-width:var(--max-w); margin:0 auto; }
+.sec-head{ margin-bottom:34px; }
+.sec-label{
+  display:inline-block; font-size:12px; font-weight:800; letter-spacing:.18em;
+  color:var(--red); margin-bottom:10px;
+}
+.sec-title{
+  font-size:clamp(22px,3.4vw,30px); font-weight:900; color:var(--ink);
+  line-height:1.25; position:relative; padding-bottom:14px;
+}
+.sec-title::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:54px; height:4px; background:var(--red); border-radius:2px;
+}
+
+/* ── 合言葉 ── */
+.lock-card{
+  background:#fff; border:1px solid var(--gray-line); border-radius:var(--radius);
+  box-shadow:var(--shadow-md); padding:40px 34px; max-width:560px; margin:0 auto;
+  text-align:center;
+}
+.lock-icon{
+  width:56px; height:56px; margin:0 auto 18px; border-radius:50%;
+  background:rgba(228,44,44,.10); color:var(--red);
+  display:flex; align-items:center; justify-content:center; font-size:26px;
+}
+.lock-title{ font-size:20px; font-weight:900; margin-bottom:8px; }
+.lock-note{ font-size:14px; color:var(--ink-sub); margin-bottom:24px; line-height:1.75; }
+.lock-form{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+.lock-form input{
+  flex:1 1 240px; min-width:0;
+  font:inherit; font-size:16px; padding:13px 18px;
+  border:1.5px solid var(--gray-line); border-radius:999px; background:#fff; color:var(--ink);
+  text-align:center; letter-spacing:.08em;
+  transition:border-color .15s, box-shadow .15s;
+}
+.lock-form input:focus{ outline:none; border-color:var(--red); box-shadow:0 0 0 4px rgba(228,44,44,.12); }
+.lock-form input.shake{ animation:shake .4s; border-color:var(--red); }
+@keyframes shake{
+  0%,100%{ transform:translateX(0); }
+  20%{ transform:translateX(-8px); } 40%{ transform:translateX(8px); }
+  60%{ transform:translateX(-5px); } 80%{ transform:translateX(5px); }
+}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  font:inherit; font-size:14.5px; font-weight:800; letter-spacing:.02em;
+  padding:13px 28px; border:none; border-radius:999px; cursor:pointer;
+  transition:transform .15s, box-shadow .2s, background .2s;
+}
+.btn-primary{ background:var(--red); color:#fff; }
+.btn-primary:hover{ background:var(--red-dark); transform:translateY(-2px); box-shadow:0 10px 26px rgba(228,44,44,.40); }
+.lock-error{
+  min-height:1.6em; margin-top:16px; font-size:14px; font-weight:700; color:var(--red);
+}
+
+/* ── 資料一覧 ── */
+#list-section[hidden]{ display:none; }
+.list-meta{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px;
+  margin-bottom:30px; font-size:14px; color:var(--ink-sub);
+}
+.count-chip{
+  display:inline-flex; align-items:baseline; gap:6px;
+  background:var(--gray); border-radius:999px; padding:7px 16px;
+  font-size:14px; font-weight:700; color:var(--ink);
+}
+.count-chip .n{ color:var(--red); font-weight:900; font-size:16px; }
+.btn-lock-again{
+  margin-left:auto; font-size:13px; font-weight:700; color:var(--ink-light);
+  background:none; border:none; cursor:pointer; font-family:inherit; text-decoration:underline;
+}
+.btn-lock-again:hover{ color:var(--red); }
+
+.group{ margin-bottom:38px; }
+.group-head{
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+  padding-bottom:10px; border-bottom:2px solid var(--gray-line);
+}
+.group-name{ font-size:17px; font-weight:900; color:var(--ink); }
+.group-sub{ font-size:12.5px; color:var(--ink-light); font-weight:700; }
+
+.card{
+  display:flex; flex-wrap:wrap; align-items:center; gap:18px;
+  background:#fff; border:1px solid var(--gray-line); border-radius:var(--radius);
+  padding:20px 24px; margin-bottom:12px; box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s, transform .15s;
+}
+.card.ready:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.card.pending{ background:#FAFAFA; box-shadow:none; }
+.card-no{
+  flex:0 0 58px; height:58px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:900; line-height:1.15; text-align:center;
+  background:var(--red); color:#fff;
+}
+.card.pending .card-no{ background:#C9CDD3; }
+.card-body{ flex:1 1 320px; min-width:0; }
+.card-time{ font-size:12px; font-weight:800; letter-spacing:.1em; color:var(--red); }
+.card.pending .card-time{ color:var(--ink-light); }
+.card-title{ font-size:16.5px; font-weight:800; color:var(--ink); line-height:1.5; margin:2px 0 4px; }
+.card-speaker{ font-size:13.5px; color:var(--ink-sub); }
+.card-file{ font-size:12px; color:var(--ink-light); margin-top:4px; }
+.card-action{ flex:0 0 auto; }
+.dl{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--red); color:#fff; font-size:14px; font-weight:800;
+  padding:11px 22px; border-radius:999px; white-space:nowrap;
+  transition:background .2s, transform .15s, box-shadow .2s;
+}
+.dl:hover{ background:var(--red-dark); transform:translateY(-2px); box-shadow:0 8px 20px rgba(228,44,44,.35); }
+.pending-tag{
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--gray); color:var(--ink-light); font-size:13px; font-weight:700;
+  padding:10px 20px; border-radius:999px; white-space:nowrap;
+}
+
+/* ── 注意書き ── */
+.notice{
+  background:#fff; border:1px solid var(--gray-line); border-left:4px solid var(--red);
+  border-radius:10px; padding:22px 26px; font-size:14px; color:var(--ink-sub); line-height:1.85;
+}
+.notice strong{ color:var(--ink); font-weight:800; }
+.notice ul{ margin:8px 0 0 1.2em; }
+.notice li{ margin-bottom:4px; }
+
+/* ── フッター ── */
+.site-footer{
+  background:var(--black); color:#9AA0A8; text-align:center;
+  padding:46px 24px 38px; font-size:13px; line-height:1.9;
+}
+.footer-back{ display:inline-block; color:#fff; font-weight:700; margin-bottom:14px; font-size:14px; }
+.footer-back:hover{ color:var(--red); }
+.footer-meta strong{ color:#fff; }
+.footer-copy{ margin-top:12px; font-size:12px; color:#6E747C; }
+
+.fade-in{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.fade-in.visible{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- コミュニティ トップバー -->
+<div class="community-bar">
+  <a href="/">
+    <img src="/assets/images/ParadigmIcon.png" alt="知働化コミュニティ">
+    ← 知働化コミュニティ トップへ（chidouka-lab.com）
+  </a>
+</div>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/sympo26/" class="brand">
+      <span class="brand-mark">S26</span>
+      <span class="brand-text">
+        <span class="brand-main">Symposium2026</span>
+        <span class="brand-sub">アジャイルプロセス協議会 知働化研究会</span>
+      </span>
+    </a>
+    <nav class="nav-links">
+      <a href="/sympo26/">シンポジウム概要</a>
+      <a href="/sympo26/#program">プログラム</a>
+      <a href="/sympo26/register/">参加申込</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-eyebrow">MATERIALS</span>
+    <h1 class="hero-title">講演資料<br>ダウンロード</h1>
+    <p class="hero-sub">
+      基調講演および各トラックのスピーカにご用意いただいた資料を公開しています。
+      ご覧いただくには合言葉の入力が必要です。資料は準備ができ次第、順次追加していきます。
+    </p>
+  </div>
+</section>
+
+<!-- 合言葉 -->
+<section class="section gray" id="lock-section">
+  <div class="wrap">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <h2 class="lock-title">合言葉を入力してください</h2>
+      <p class="lock-note">
+        合言葉は、参加登録をされた方へのご案内、および当日の会場でお知らせしています。
+      </p>
+      <form class="lock-form" id="lock-form" autocomplete="off">
+        <label for="pass" class="sr-only" style="position:absolute;left:-9999px;">合言葉</label>
+        <input type="password" id="pass" name="pass" placeholder="合言葉" autocomplete="off"
+               autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button type="submit" class="btn btn-primary">資料を表示する</button>
+      </form>
+      <p class="lock-error" id="lock-error" role="alert" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 資料一覧 -->
+<section class="section" id="list-section" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-label">DOWNLOAD</span>
+      <h2 class="sec-title">資料一覧</h2>
+    </div>
+
+    <div class="list-meta">
+      <span class="count-chip">公開済み <span class="n" id="count-ready">0</span> / <span id="count-all">0</span> セッション</span>
+      <span id="updated"></span>
+      <button type="button" class="btn-lock-again" id="relock">合言葉の入力に戻る</button>
+    </div>
+
+    <div id="groups"></div>
+
+    <div class="notice">
+      <strong>ご利用にあたって</strong>
+      <ul>
+        <li>各資料の著作権は、それぞれの登壇者に帰属します。</li>
+        <li>ご参加の皆さまご自身の学習・参考のためにご利用ください。無断での転載・再配布はご遠慮ください。</li>
+        <li>資料は登壇者の準備が整い次第、順次追加します。当日までに差し替えられる場合があります。</li>
+        <li>お問い合わせは <a href="mailto:info@chidouka-lab.com?subject=Symposium2026%20%E8%AC%9B%E6%BC%94%E8%B3%87%E6%96%99%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" style="color:var(--red);font-weight:700;">info@chidouka-lab.com</a> まで。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer class="site-footer">
+  <a class="footer-back" href="/sympo26/">← Symposium2026 のページへ戻る</a>
+  <p class="footer-meta">
+    <strong>Symposium2026</strong>　アジャイルプロセス協議会 知働化研究会<br>
+    2026年11月14日（土）／ 工学院大学 新宿キャンパス
+  </p>
+  <p class="footer-copy">© 知働化研究会 / Agile Process Association　|　chidouka-lab.com/sympo26/materials/</p>
+</footer>
+
+<script>
+/* ==================================================================
+   ■ 保守のしかた（ここだけ触れば大丈夫です）
+
+   【1】合言葉を変えたいとき
+        すぐ下の PASSPHRASE の 'chidouka' を書き換えてください。
+        大文字・小文字と前後の空白は無視されるので、
+        参加者が「Chidouka」と入れても通ります。
+
+   【2】資料を追加したいとき（よく使うのはこちら）
+        (a) PDF を  /sympo26/assets/pdfs/  に置く
+        (b) 下の MATERIALS の中から該当セッションの行を探し、
+            file: '' の '' の中にファイル名を書く
+            （例） file: 'Sympo26_TrackA2_Shiota.pdf'
+        (c) ついでに size（ファイルの大きさ）と pages（ページ数）も
+            書いておくと親切です。分からなければ空のままで構いません。
+        これだけで、そのセッションの行にダウンロードボタンが出ます。
+
+   【3】セッションを増やしたいとき
+        MATERIALS に 1 行コピーして貼り付け、中身を書き換えてください。
+        group（見出しのまとまり）は、上から出てくる順に表示されます。
+   ================================================================== */
+
+const PASSPHRASE = 'chidouka';
+
+const PDF_DIR = '/sympo26/assets/pdfs/';
+
+const UPDATED = '2026年11月4日';
+
+const MATERIALS = [
+  {
+    group: '基調講演', groupSub: '10:05頃〜／会場 A-0611',
+    no: '基調<br>講演', time: '10:05頃〜',
+    title: '連想情報学とボーム・ダイアローグ',
+    speaker: '高野 明彦（国立情報学研究所 名誉教授）',
+    file: '', pages: '', size: ''
+  },
+  {
+    group: 'Ａトラック', groupSub: 'AI活用の実践原理と哲学／会場 A-0615',
+    no: 'Ａ１', time: '13:00〜14:00',
+    title: '自由エネルギー原理から考える社会・心・AI',
+    speaker: 'コーディネータ：野村 一行',
+    file: '', pages: '', size: ''
+  },
+  {
+    group: 'Ａトラック',
+    no: 'Ａ２', time: '14:00〜15:00',
+    title: 'AIに〈離〉はあるか ── 無くせないものから〈本〉を描く',
+    speaker: 'コーディネータ：塩田 英二',
+    file: '', pages: '', size: ''
+  },
+  {
+    group: 'Ａトラック',
+    no: 'Ａ３', time: '15:30〜16:30',
+    title: '意味の構造',
+    speaker: 'コーディネータ：萩原 正義',
+    file: '', pages: '', size: ''
+  },
+  {
+    group: 'Ｂトラック', groupSub: '要求工学新時代の人間の役割／会場 A-0611',
+    no: 'Ｂ１', time: '13:00〜14:00',
+    title: 'AI時代のソフトウェア技術者に求められる能力について考える',
+    speaker: 'コーディネータ：位野木 万里（工学院大学）',
+    file: '', pages: '', size: ''
+  },
+  {
+    group: 'Ｂトラック',
+    no: 'Ｂ２', time: '14:00〜15:00',
+    title: 'これからの要求定義はひと味違う',
+    speaker: 'コーディネータ：大槻 繁',
+    file: 'Sympo26_TrackB2_Slides.pdf', pages: 21, size: '1.6 MB'
+  },
+  {
+    group: 'Ｂトラック',
+    no: 'Ｂ３', time: '15:30〜16:30',
+    title: 'メタウェアで見る要求定義という仕事',
+    speaker: 'コーディネータ：濵 勝巳（株式会社アッズーリ）',
+    file: 'Sympo260912_TrackB3_Metaware.pdf', pages: 55, size: '350 KB'
+  },
+  {
+    group: 'まとめ', groupSub: 'Ａ・Ｂトラック統合／会場 A-0611',
+    no: 'まとめ', time: '16:30〜17:30',
+    title: 'AI活用のパラダイムと人間の役割',
+    speaker: '司会：大槻 繁',
+    file: 'Sympo26_TrackAB_Matome.pdf', pages: 9, size: '974 KB'
+  }
+];
+
+/* ------------------------------------------------------------------
+   ここから下は、ふだん触る必要はありません
+   ------------------------------------------------------------------ */
+
+const KEY = 'sympo26-materials-unlocked';
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
+  ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+function buildList(){
+  const groups = [];
+  MATERIALS.forEach((m) => {
+    let g = groups.find((x) => x.name === m.group);
+    if (!g) { g = { name: m.group, sub: m.groupSub || '', items: [] }; groups.push(g); }
+    if (m.groupSub && !g.sub) g.sub = m.groupSub;
+    g.items.push(m);
+  });
+
+  const html = groups.map((g) => {
+    const cards = g.items.map((m) => {
+      const ready = !!m.file;
+      const meta = [m.pages ? m.pages + ' ページ' : '', m.size || ''].filter(Boolean).join('／');
+      const action = ready
+        ? '<a class="dl" href="' + esc(PDF_DIR + m.file) + '" download>⬇ ダウンロード</a>'
+        : '<span class="pending-tag">準備中</span>';
+      return '' +
+        '<div class="card ' + (ready ? 'ready' : 'pending') + '">' +
+          '<div class="card-no">' + m.no + '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-time">' + esc(m.time) + '</div>' +
+            '<div class="card-title">' + esc(m.title) + '</div>' +
+            '<div class="card-speaker">' + esc(m.speaker) + '</div>' +
+            (ready && meta ? '<div class="card-file">PDF ' + esc(meta) + '</div>' : '') +
+          '</div>' +
+          '<div class="card-action">' + action + '</div>' +
+        '</div>';
+    }).join('');
+
+    return '' +
+      '<div class="group fade-in">' +
+        '<div class="group-head">' +
+          '<span class="group-name">' + esc(g.name) + '</span>' +
+          (g.sub ? '<span class="group-sub">' + esc(g.sub) + '</span>' : '') +
+        '</div>' + cards +
+      '</div>';
+  }).join('');
+
+  document.getElementById('groups').innerHTML = html;
+  document.getElementById('count-ready').textContent = MATERIALS.filter((m) => m.file).length;
+  document.getElementById('count-all').textContent = MATERIALS.length;
+  document.getElementById('updated').textContent = '最終更新：' + UPDATED;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll('.fade-in').forEach((el) => io.observe(el));
+}
+
+function unlock(scroll){
+  document.getElementById('lock-section').hidden = true;
+  document.getElementById('list-section').hidden = false;
+  buildList();
+  try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+  if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function relock(){
+  document.getElementById('list-section').hidden = true;
+  document.getElementById('lock-section').hidden = false;
+  document.getElementById('pass').value = '';
+  document.getElementById('lock-error').textContent = '';
+  try { sessionStorage.removeItem(KEY); } catch (e) {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('lock-form').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  const input = document.getElementById('pass');
+  const err = document.getElementById('lock-error');
+  const value = input.value.trim().toLowerCase();
+
+  if (value === PASSPHRASE.toLowerCase()) {
+    err.textContent = '';
+    unlock(true);
+  } else {
+    err.textContent = value ? '合言葉が違うようです。もう一度お試しください。' : '合言葉を入力してください。';
+    input.classList.remove('shake');
+    void input.offsetWidth;
+    input.classList.add('shake');
+    input.select();
+  }
+});
+
+document.getElementById('relock').addEventListener('click', relock);
+
+/* 同じタブで開き直したときは、入力し直さずに済むようにする */
+try {
+  if (sessionStorage.getItem(KEY) === '1') unlock(false);
+} catch (e) {}
+</script>
+
+</body>
+</html>
