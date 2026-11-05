@@ -272,6 +272,28 @@ em{ font-style:normal; }
 
 /* ── 時間割（目安） ── */
 .tl-time small.end{ font-size:11.5px; color:var(--ink-sub); }
+
+/* ── ポスター一覧 ── */
+.poster-box{ margin-top:14px; padding-top:12px; border-top:1px solid var(--gray-line); }
+.poster-head{
+  display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:.1em;
+  color:var(--red); margin-bottom:8px;
+}
+.poster-list{ list-style:none; counter-reset:pst; }
+.poster-list li{
+  counter-increment:pst; position:relative; padding:7px 0 7px 32px;
+  border-bottom:1px dashed var(--gray-line);
+}
+.poster-list li:last-child{ border-bottom:none; }
+.poster-list li::before{
+  content:counter(pst); position:absolute; left:0; top:10px;
+  width:21px; height:21px; border-radius:6px;
+  background:var(--red); color:#fff; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+}
+.poster-list .pt{ display:block; font-size:14px; font-weight:700; color:var(--ink); line-height:1.65; }
+.poster-list .pa{ display:block; font-size:12.5px; color:var(--ink-light); margin-top:1px; }
+@media(max-width:600px){ .poster-list li{ padding-left:28px; } }
 .tt{
   margin-top:18px; border:1px solid var(--gray-line); border-radius:var(--radius);
   overflow:hidden; background:#fff; box-shadow:var(--shadow-sm);
@@ -623,6 +645,20 @@ em{ font-style:normal; }
         <div class="tl-body">
           <p class="tl-title">ポスター説明<small style="font-weight:700;color:var(--ink-light);">会場 A-0611</small></p>
           <p class="tl-desc">位野木研究室の学生が、研究ポスターの前で内容をご説明します。昼食後のひとときに、お気軽にお立ち寄りください。</p>
+          <div class="poster-box">
+            <span class="poster-head">展示ポスター　全9件</span>
+            <ol class="poster-list">
+              <li><span class="pt">要求工学の知見をプロンプト連鎖に融合したChatGPTによる要求定義支援ツールの適用評価</span><span class="pa">島川遼太郎、宅間健生、奥田博隆、位野木万里</span></li>
+              <li><span class="pt">プロセスモデル視点によるハッカソンプロジェクトの事例分析 ── 工程管理は有益なのか害があるのか</span><span class="pa">戸上晃希、位野木万里</span></li>
+              <li><span class="pt">太鼓の達人とCHUNITHMの事例分析によるアーケード型音楽ゲームのイベント開発における要求獲得に関する研究</span><span class="pa">有墨日南人、位野木万里</span></li>
+              <li><span class="pt">要求定義支援ツールの適用ユースケース：変動性分析・差分抽出・派生開発</span><span class="pa">石井遥翔、稲葉健斗、奈良凰春、位野木万里</span></li>
+              <li><span class="pt">要求仕様書のデータセットの整備：ヒアリングシート、SRS、ユーザストーリーの作成</span><span class="pa">櫻庭純清、野村裕隆、柳町唯央</span></li>
+              <li><span class="pt">デザイン思考を適用したプロジェクトにおける工数分析</span><span class="pa">榎本陸、淺野空、小西渚月、高橋昂己、田中蓮悠</span></li>
+              <li><span class="pt">AI時代のソフトウェア技術者に求められる能力について考える</span><span class="pa">小西渚月、位野木万里</span></li>
+              <li><span class="pt">デザイン思考を用いたプロジェクト遂行プロセス ── AR探偵アプリ「TWiiN探偵団」</span><span class="pa">高橋昂己、左遥日、戸上晃希</span></li>
+              <li><span class="pt">持続可能なソフトウェアサービス開発のためのオントロジーの提案</span><span class="pa">位野木万里、戸上晃希、島川遼太郎</span></li>
+            </ol>
+          </div>
         </div>
       </div>
       <div class="tl-item">
