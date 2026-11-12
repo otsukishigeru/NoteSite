@@ -206,6 +206,19 @@ img{ display:block; max-width:100%; }
 .card-speaker{ font-size:13.5px; color:var(--ink-sub); }
 .card-file{ font-size:12px; color:var(--ink-light); margin-top:4px; }
 .card-action{ flex:0 0 auto; }
+
+/* ── 1セッションに複数の資料がある場合（カード下段に一覧表示） ── */
+.card-docs{
+  flex:1 1 100%; display:flex; flex-direction:column; gap:10px;
+  border-top:1px solid var(--gray-line); padding-top:14px;
+}
+.doc-row{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; }
+.doc-label{ font-size:14px; font-weight:800; color:var(--ink); }
+.doc-meta{ font-size:12px; color:var(--ink-light); }
+.doc-row .dl{ margin-left:auto; font-size:13px; padding:9px 18px; }
+@media (max-width:560px){
+  .doc-row .dl{ margin-left:0; width:100%; justify-content:center; }
+}
 .dl{
   display:inline-flex; align-items:center; gap:8px;
   background:var(--red); color:#fff; font-size:14px; font-weight:800;
@@ -358,6 +371,15 @@ img{ display:block; max-width:100%; }
             書いておくと親切です。分からなければ空のままで構いません。
         これだけで、そのセッションの行にダウンロードボタンが出ます。
 
+   【2'】1つのセッションに資料が複数あるとき
+        file / pages / size のかわりに docs を書きます。
+        （例）
+          docs: [
+            { label: '講演スライド', file: 'xxx_Slides.pdf', pages: 30, size: '9.0 MB' },
+            { label: '配布資料',     file: 'xxx_Handout.pdf', pages: 17, size: '969 KB' }
+          ]
+        上から書いた順に並び、それぞれにダウンロードボタンが出ます。
+
    【3】セッションを増やしたいとき
         MATERIALS に 1 行コピーして貼り付け、中身を書き換えてください。
         group（見出しのまとまり）は、上から出てくる順に表示されます。
@@ -367,7 +389,7 @@ const PASSPHRASE = 'chidouka';
 
 const PDF_DIR = '/sympo26/assets/pdfs/';
 
-const UPDATED = '2026年11月9日';
+const UPDATED = '2026年11月13日';
 
 const MATERIALS = [
   {
@@ -382,7 +404,11 @@ const MATERIALS = [
     no: 'Ａ１', time: '13:00〜14:00',
     title: '自由エネルギー原理から考える社会・心・AI',
     speaker: 'コーディネータ：野村 一行',
-    file: 'Sympo26_TrackA1_Handout.pdf', pages: 17, size: '969 KB'
+    docs: [
+      { label: '講演スライド', file: 'Sympo26_TrackA1_Slides.pdf',  pages: 30, size: '9.0 MB' },
+      { label: '配布資料',     file: 'Sympo26_TrackA1_Handout.pdf', pages: 17, size: '969 KB' },
+      { label: '補足ノート',   file: 'Sympo26_TrackA1_Notes.pdf',   pages: 14, size: '1.3 MB' }
+    ]
   },
   {
     group: 'Ａトラック',
@@ -437,6 +463,21 @@ const KEY = 'sympo26-materials-unlocked';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
   ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
+/* 1件でも複数でも同じ形（配列）であつかえるようにそろえます */
+function docsOf(m){
+  if (m.docs && m.docs.length) return m.docs;
+  if (m.file) return [{ label: '', file: m.file, pages: m.pages, size: m.size }];
+  return [];
+}
+
+function metaOf(d){
+  return [d.pages ? d.pages + ' ページ' : '', d.size || ''].filter(Boolean).join('／');
+}
+
+function dlLink(d, label){
+  return '<a class="dl" href="' + esc(PDF_DIR + d.file) + '" download>' + label + '</a>';
+}
+
 function buildList(){
   const groups = [];
   MATERIALS.forEach((m) => {
@@ -448,11 +489,29 @@ function buildList(){
 
   const html = groups.map((g) => {
     const cards = g.items.map((m) => {
-      const ready = !!m.file;
-      const meta = [m.pages ? m.pages + ' ページ' : '', m.size || ''].filter(Boolean).join('／');
-      const action = ready
-        ? '<a class="dl" href="' + esc(PDF_DIR + m.file) + '" download>⬇ ダウンロード</a>'
-        : '<span class="pending-tag">準備中</span>';
+      const docs = docsOf(m);
+      const ready = docs.length > 0;
+
+      /* 資料が1件のときは従来どおり右端にボタン、複数のときは下段に一覧 */
+      let action = '<span class="pending-tag">準備中</span>';
+      let single = '';
+      let docsHtml = '';
+      if (docs.length === 1) {
+        action = dlLink(docs[0], '⬇ ダウンロード');
+        const meta = metaOf(docs[0]);
+        if (meta) single = '<div class="card-file">PDF ' + esc(meta) + '</div>';
+      } else if (docs.length > 1) {
+        action = '<span class="card-file">資料 ' + docs.length + ' 点</span>';
+        docsHtml = '<div class="card-docs">' + docs.map((d) => {
+          const meta = metaOf(d);
+          return '<div class="doc-row">' +
+            '<span class="doc-label">' + esc(d.label || 'PDF') + '</span>' +
+            (meta ? '<span class="doc-meta">PDF ' + esc(meta) + '</span>' : '') +
+            dlLink(d, '⬇ ダウンロード') +
+          '</div>';
+        }).join('') + '</div>';
+      }
+
       return '' +
         '<div class="card ' + (ready ? 'ready' : 'pending') + '">' +
           '<div class="card-no">' + m.no + '</div>' +
@@ -460,9 +519,10 @@ function buildList(){
             '<div class="card-time">' + esc(m.time) + '</div>' +
             '<div class="card-title">' + esc(m.title) + '</div>' +
             '<div class="card-speaker">' + esc(m.speaker) + '</div>' +
-            (ready && meta ? '<div class="card-file">PDF ' + esc(meta) + '</div>' : '') +
+            single +
           '</div>' +
           '<div class="card-action">' + action + '</div>' +
+          docsHtml +
         '</div>';
     }).join('');
 
@@ -476,7 +536,7 @@ function buildList(){
   }).join('');
 
   document.getElementById('groups').innerHTML = html;
-  document.getElementById('count-ready').textContent = MATERIALS.filter((m) => m.file).length;
+  document.getElementById('count-ready').textContent = MATERIALS.filter((m) => docsOf(m).length).length;
   document.getElementById('count-all').textContent = MATERIALS.length;
   document.getElementById('updated').textContent = '最終更新：' + UPDATED;
 
