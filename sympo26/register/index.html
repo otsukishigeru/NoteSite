@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Symposium2026（2026年11月14日／工学院大学 新宿キャンパス）の参加申込みフォームです。">
-<meta property="og:title" content="参加申込み — Symposium2026">
-<meta property="og:description" content="アジャイルプロセス協議会 知働化研究会 Symposium2026 の参加申込みフォーム。">
+<meta name="description" content="Symposium2026（2026年11月14日／工学院大学 新宿キャンパス）は無事に開催を終えました。参加申込みの受付は終了しています。">
+<meta property="og:title" content="参加申込み 受付終了 — Symposium2026">
+<meta property="og:description" content="アジャイルプロセス協議会 知働化研究会 Symposium2026 は無事に閉会しました。参加申込みの受付は終了しています。">
 <meta property="og:type" content="website">
-<title>参加申込み — Symposium2026</title>
+<title>参加申込み 受付終了 — Symposium2026</title>
 
 <style>
 /* ================================================================
@@ -205,6 +205,8 @@ em{ font-style:normal; }
 }
 .reg-done .ttl{ font-size:20px; font-weight:900; color:var(--ink); margin-bottom:12px; }
 .reg-done .txt{ font-size:14.5px; color:var(--ink-sub); line-height:1.9; }
+.reg-closed-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:26px; }
+.reg-closed-links .reg-btn{ display:inline-flex; align-items:center; text-decoration:none; }
 
 /* ── フッター ── */
 .site-footer{ background:var(--black); color:#C9CDD4; padding:46px 24px 40px; text-align:center; }
@@ -249,86 +251,29 @@ em{ font-style:normal; }
   <div class="wrap">
     <div class="sec-head fade-in">
       <span class="sec-label">Registration</span>
-      <h2 class="sec-title">Symposium2026 参加申込み</h2>
+      <h2 class="sec-title">Symposium2026 参加申込み（受付終了）</h2>
     </div>
     <p class="lead fade-in">
-      シンポジウムに参加する方は、必ず、以下のフォームにて申込みしてください。
+      Symposium2026 は、2026年11月14日（土）に<strong>無事に開催を終えました</strong>。
+      お申込みいただいた皆さま、当日ご参加いただいた皆さまに、心より御礼申しあげます。
     </p>
     <p class="lead fade-in">
-      申込み情報に基づき、後日、登録したメールアドレス宛に、シンポジウムでの発表資料などのご案内をいたします。
+      これにともない、<span class="accent">参加申込みの受付は終了いたしました</span>。
     </p>
 
     <div class="reg-card fade-in">
-
-      <!-- ① 入力 -->
-      <form id="reg-form" novalidate>
-        <div class="reg-row">
-          <div class="reg-group">
-            <label class="reg-label" for="reg-name">お名前<span class="req">必須</span></label>
-            <input id="reg-name" class="reg-input" type="text" placeholder="大槻 繁" autocomplete="name" required>
-          </div>
-          <div class="reg-group">
-            <label class="reg-label" for="reg-kana">お名前の読み<small>（カタカナ）</small></label>
-            <input id="reg-kana" class="reg-input" type="text" placeholder="オオツキ シゲル">
-          </div>
-        </div>
-
-        <div class="reg-row">
-          <div class="reg-group">
-            <label class="reg-label" for="reg-email">メールアドレス<span class="req">必須</span></label>
-            <input id="reg-email" class="reg-input" type="email" placeholder="example@email.com" autocomplete="email" required>
-          </div>
-          <div class="reg-group">
-            <label class="reg-label" for="reg-org">会社名・所属</label>
-            <input id="reg-org" class="reg-input" type="text" placeholder="（任意）" autocomplete="organization">
-          </div>
-        </div>
-
-        <div class="reg-group">
-          <span class="reg-label">以下に当てはまりますか？<small>（複数選択可）</small></span>
-          <div class="reg-checks">
-            <label class="reg-check"><input type="checkbox" name="reg-cat" value="apa_member"><span>アジャイルプロセス協議会 会員</span></label>
-            <label class="reg-check"><input type="checkbox" name="reg-cat" value="student"><span>学生</span></label>
-            <label class="reg-check"><input type="checkbox" name="reg-cat" value="speaker"><span>シンポジウムコーディネータまたはスピーカー</span></label>
-          </div>
-          <p class="reg-fee-note">
-            上記のどれにも当てはまらない方は「一般」で、参加料は（総額）¥5,000になります。<br>
-            当日、受付にて現金にてお支払いください。
-          </p>
-          <div class="reg-fee">
-            <span class="k">参加料</span>
-            <span class="v" id="reg-fee-val">¥5,000</span>
-            <span class="t" id="reg-fee-kind">一般</span>
-          </div>
-        </div>
-
-        <div class="reg-group">
-          <label class="reg-label" for="reg-message">メッセージ</label>
-          <p class="reg-help">なお、参加申込みについて、メッセージがある方は、下記欄に記入ください。<br>
-            <strong>懇親会（18:00〜、近くの中華レストラン、参加費 ¥5,000）に参加を希望される方は、「懇親会参加希望」とご記入ください。</strong></p>
-          <textarea id="reg-message" class="reg-textarea" placeholder="（任意）例：懇親会参加希望"></textarea>
-        </div>
-
-        <button type="submit" class="reg-btn" id="reg-check-btn">入力内容を確認する →</button>
-        <div id="reg-msg" class="reg-msg"></div>
-      </form>
-
-      <!-- ② 確認 -->
-      <div id="reg-confirm" hidden>
-        <p class="reg-confirm-head">以下の内容で申込みます。よろしければ「送信する」を押してください。</p>
-        <dl class="reg-summary" id="reg-summary"></dl>
-        <div class="reg-actions">
-          <button type="button" class="reg-btn ghost" id="reg-back-btn">← 修正する</button>
-          <button type="button" class="reg-btn" id="reg-send-btn">送信する</button>
-        </div>
-        <div id="reg-msg2" class="reg-msg"></div>
-      </div>
-
-      <!-- ③ 完了 -->
-      <div id="reg-done" class="reg-done" hidden>
+      <div class="reg-done">
         <div class="mark">✓</div>
-        <p class="ttl">参加申込みを受け付けました</p>
-        <p class="txt" id="reg-done-txt"></p>
+        <p class="ttl">参加申込みの受付は終了しました</p>
+        <p class="txt">
+          当日の講演資料は、下記のページで公開しています。<br>
+          ご覧いただくには合言葉が必要です。合言葉は、お申込みいただいた方にご案内しております。<br>
+          お問い合わせは、プログラム委員長（otsuki.s.1corp@gmail.com）までお願いいたします。
+        </p>
+        <div class="reg-closed-links">
+          <a class="reg-btn" href="/sympo26/materials/">講演資料を見る →</a>
+          <a class="reg-btn ghost" href="/sympo26/">開催要領へ戻る</a>
+        </div>
       </div>
     </div>
   </div>

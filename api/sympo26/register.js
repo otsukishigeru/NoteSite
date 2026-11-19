@@ -15,6 +15,9 @@ const SITE_NAME  = 'Symposium2026';
 const REDIS_KEY  = 'sympo26:registrations';
 const FEE_GENERAL = 5000;
 
+// 受付を終了したら true（開催後の誤送信を受け付けないようにするため）
+const REGISTRATION_CLOSED = true;
+
 // 区分の定義（キー → 表示名）。いずれかに該当すれば参加料は無料。
 // コーディネータ／スピーカーも無料扱いとする（開催概要の参加料チップには表示しない）。
 const CATEGORY_LABELS = {
@@ -287,6 +290,12 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Method not allowed' });
+
+  // 2026年11月14日の開催をもって受付を終了しました。
+  // 再開するときは、この 1 行（REGISTRATION_CLOSED）を false にしてください。
+  if (REGISTRATION_CLOSED) {
+    return res.status(410).json({ ok: false, error: 'Symposium2026 の参加申込みの受付は終了しました。' });
+  }
 
   let body;
   try { body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body; }

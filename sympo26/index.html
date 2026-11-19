@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="アジャイルプロセス協議会 知働化研究会 Symposium2026 開催要領。テーマ「知働化（Executable Knowledge and Texture）」。2026年11月14日（土）工学院大学 新宿キャンパスにて開催。">
+<meta name="description" content="アジャイルプロセス協議会 知働化研究会 Symposium2026 は、2026年11月14日（土）工学院大学 新宿キャンパスにて無事に開催を終えました。テーマ「知働化（Executable Knowledge and Texture）」。講演資料を公開しています。">
 <meta property="og:title" content="Symposium2026 — 知働化研究会">
-<meta property="og:description" content="産学研究交流を主目的としたオープン形式のシンポジウム。2026年11月14日（土）工学院大学 新宿キャンパス。">
+<meta property="og:description" content="産学研究交流を主目的としたオープン形式のシンポジウム。2026年11月14日（土）工学院大学 新宿キャンパスにて開催し、無事に閉会いたしました。">
 <meta property="og:type" content="website">
 <title>Symposium2026 — アジャイルプロセス協議会 知働化研究会</title>
 
@@ -460,7 +460,23 @@ em{ font-style:normal; }
 /* ── 参加申込への導線（フォームは /sympo26/register/ に独立） ── */
 .fee-cta{ display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:18px; }
 .fee-cta .fee-cta-note{ font-size:13px; font-weight:600; color:var(--ink-sub); }
+.fee-cta .fee-cta-note a{ color:var(--red); font-weight:800; }
 .nav-cta{ color:var(--red) !important; }
+
+/* ── 開催終了のお知らせ ── */
+.hero-closed{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:12px; font-weight:800; letter-spacing:.14em;
+  color:#fff; background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.38);
+  padding:6px 14px; border-radius:999px; margin:0 0 24px 10px;
+}
+@media(max-width:560px){ .hero-closed{ margin-left:0; } }
+.fee-closed{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--gray); border:1px solid var(--gray-line); border-radius:999px;
+  padding:12px 22px; font-size:14.5px; font-weight:800; color:var(--ink-sub);
+}
 
 /* ── フッター ── */
 .site-footer{ background:var(--black); color:#C9CDD4; padding:46px 24px 40px; text-align:center; }
@@ -511,7 +527,7 @@ em{ font-style:normal; }
       <a href="#detail">開催概要</a>
       <a href="#program">プログラム</a>
       <a href="/sympo26/materials/">講演資料</a>
-      <a href="/sympo26/register/" class="nav-cta">参加申込</a>
+      <a href="#thanks" class="nav-cta">開催御礼</a>
       <a href="#series">シリーズ</a>
       <a href="#contact">問い合わせ</a>
     </nav>
@@ -521,7 +537,7 @@ em{ font-style:normal; }
 <!-- ヒーロー -->
 <section class="hero" id="top">
   <div class="hero-inner">
-    <span class="hero-eyebrow">アジャイルプロセス協議会 知働化研究会</span>
+    <span class="hero-eyebrow">アジャイルプロセス協議会 知働化研究会</span><span class="hero-closed">開催終了</span>
     <h1 class="hero-title">Symposium<span class="yr">2026</span></h1>
     <p class="hero-sub">産学研究交流のためのオープン・シンポジウム</p>
 
@@ -539,9 +555,44 @@ em{ font-style:normal; }
         <span class="v">工学院大学 新宿キャンパス</span>
       </div>
       <div class="item">
-        <span class="k">FEE</span>
-        <span class="v">一般 ¥5,000 ／ メンバ・学生 無料</span>
+        <span class="k">STATUS</span>
+        <span class="v">閉会しました（ご参加ありがとうございました）</span>
       </div>
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="/sympo26/materials/">講演資料ダウンロード →</a>
+      <a class="btn btn-ghost" href="#thanks">開催御礼</a>
+    </div>
+  </div>
+</section>
+
+<!-- 開催御礼 -->
+<section class="section gray" id="thanks">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <span class="sec-label">Thank You</span>
+      <h2 class="sec-title">開催御礼</h2>
+    </div>
+    <p class="lead fade-in">
+      Symposium2026 は、2026年11月14日（土）に工学院大学 新宿キャンパスにて開催し、<strong>無事に閉会いたしました</strong>。
+      ご参加くださった皆さま、基調講演および各トラックでお話しくださった皆さま、当日の運営にお力添えをいただいた皆さまに、心より御礼申しあげます。
+    </p>
+    <p class="lead fade-in">
+      基調講演「連想情報学とボーム・ダイアローグ」にはじまり、午後のＡ・Ｂ両トラック、そして最後の統合セッション「AI活用のパラダイムと人間の役割」まで、
+      <span class="accent">産学の立場を越えた対話</span>の場をもつことができました。これもひとえに、ご登壇・ご参加いただいた皆さまのおかげです。
+    </p>
+    <p class="lead fade-in">
+      開催にあたり、ご協賛・ご後援を賜りました<strong>情報処理学会 ソフトウェア工学研究会</strong>、<strong>ソフトウェア技術者協会</strong>、<strong>日本科学技術連盟</strong>、<strong>神奈川県 情報サービス産業協会</strong>、<strong>情報サービス産業協会</strong>の各団体さまに、あらためて深く感謝申しあげます。
+      また、会場をご提供いただきました<strong>工学院大学</strong>に厚く御礼申しあげます。
+    </p>
+    <p class="lead fade-in">
+      当日の講演資料は、講演資料ダウンロードのページで公開しています。なお、参加申込みの受付は終了いたしました。
+      知働化研究会は2027年度から知働化アライアンスとして活動を続けてまいります。引き続きのご支援をよろしくお願いいたします。
+    </p>
+    <div class="fee-cta fade-in">
+      <a class="btn btn-primary" href="/sympo26/materials/">講演資料ダウンロード →</a>
+      <span class="fee-cta-note">ご覧いただくには合言葉が必要です。</span>
     </div>
   </div>
 </section>
@@ -559,9 +610,9 @@ em{ font-style:normal; }
       次世代のソフトウェア構築やテクノロジーの社会的意義などについて探求を行っています。
     </p>
     <p class="lead fade-in">
-      このたび当協会では、<span class="accent">産学研究交流を主目的としたオープン形式のシンポジウム</span>を開催する運びとなりました。
-      午後は各種テーマに沿ったコミュニケーション主体のワークショップを行います。
-      企画・プログラム等については、今後詳細化していく予定です。
+      このたび当協会では、<span class="accent">産学研究交流を主目的としたオープン形式のシンポジウム</span>を開催いたしました。
+      午後は各種テーマに沿ったコミュニケーション主体のワークショップを行い、
+      2026年11月14日（土）に無事、閉会しております。以下は当日のプログラムと開催要領の記録です。
     </p>
   </div>
 </section>
@@ -605,8 +656,8 @@ em{ font-style:normal; }
         </div>
         <span class="dv" style="margin-top:12px;display:block;"><small style="color:var(--ink-sub);font-weight:500;">参加予定 約60名程度</small></span>
         <div class="fee-cta">
-          <a class="btn btn-primary" href="/sympo26/register/">参加申込 →</a>
-          <span class="fee-cta-note">参加される方は、必ず申込みをお願いします。懇親会（参加費 ¥5,000）をご希望の方は、フォームの「メッセージ」欄に「懇親会参加希望」とご記入ください。</span>
+          <span class="fee-closed">参加申込みの受付は終了しました</span>
+          <span class="fee-cta-note">Symposium2026 は閉会いたしました。当日の資料は<a href="/sympo26/materials/">講演資料ダウンロード</a>のページでご覧いただけます。</span>
         </div>
       </div>
     </div>
@@ -843,7 +894,7 @@ em{ font-style:normal; }
           <p class="tl-desc">参加者同士の交流の場です。会場の近くにある中華レストランを予約しています。</p>
           <div class="party">
             <span class="party-fee">参加費 <b>¥5,000</b></span>
-            <p class="party-how">参加を希望される方は、あらかじめ<a href="/sympo26/register/">参加登録フォーム</a>の「メッセージ」欄に「懇親会参加希望」とご記入ください。</p>
+            <p class="party-how">こちらも無事に終了いたしました。ご参加いただいた皆さま、ありがとうございました。</p>
           </div>
         </div>
       </div>
@@ -976,6 +1027,7 @@ em{ font-style:normal; }
 
       <div class="list-block fade-in">
         <h3>協賛・後援</h3>
+        <p style="font-size:14px;color:var(--ink-sub);line-height:1.9;margin-bottom:12px;">下記の団体さまにご協賛・ご後援を賜りました。開催にあたってのお力添えに、心より御礼申しあげます。</p>
         <ul class="org-list">
           <li>情報処理学会　ソフトウェア工学研究会</li>
           <li>ソフトウェア技術者協会</li>
