@@ -147,7 +147,7 @@ img { display: block; max-width: 100%; }
 
 /* ParadigmIcon ── ヒーロー右に配置 */
 .hero-icon-wrap {
-  flex-shrink: 0; width: 220px; display: flex; flex-direction: column;
+  flex-shrink: 0; width: 320px; display: flex; flex-direction: column;
   align-items: center; gap: 12px;
 }
 .hero-icon-img {
@@ -157,6 +157,11 @@ img { display: block; max-width: 100%; }
   transition: opacity .3s;
 }
 .hero-icon-wrap:hover .hero-icon-img { opacity: .90; }
+.hero-logo-img {
+  width: 100%; height: auto; opacity: .92;
+  transition: opacity .3s;
+}
+.hero-icon-wrap:hover .hero-logo-img { opacity: 1; }
 .hero-icon-caption {
   font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,.5);
   text-align: center; text-transform: uppercase;
@@ -413,7 +418,7 @@ img { display: block; max-width: 100%; }
     <div class="logo-block">
       <div class="logo-mark">知</div>
       <div class="logo-text-block">
-        <span class="logo-main">知働化コミュニティ</span>
+        <span class="logo-main">知働化アライアンス</span>
         <span class="logo-sub">chidouka-lab.com</span>
       </div>
     </div>
@@ -448,9 +453,9 @@ img { display: block; max-width: 100%; }
 <section class="hero" aria-label="メインビジュアル">
   <div class="hero-inner">
     <div>
-      <p class="hero-eyebrow">CHIDOUKA COMMUNITY / chidouka-lab.com</p>
+      <p class="hero-eyebrow">CHIDOUKA ALLIANCE / chidouka-lab.com</p>
       <h1 class="hero-h1">
-        <em>知働化</em>コミュニティ
+        <em>知働化</em>アライアンス
       </h1>
       <p class="hero-lead">
         知働化活動（探究・実践・啓蒙など）に関わっている人々の状況をお知らせし、
@@ -464,10 +469,9 @@ img { display: block; max-width: 100%; }
         <a class="hero-badge" href="/St/">St</a>
       </div>
     </div>
-    <!-- ParadigmIcon — さりげなく右に配置 -->
-    <div class="hero-icon-wrap" aria-hidden="true">
-      <img class="hero-icon-img" src="assets/images/ParadigmIcon.png" alt="人働説から知働説へ">
-      <span class="hero-icon-caption">人働説 → 知働説</span>
+    <!-- 知働化ロゴ（人働説から知働説へ）— 右に配置 -->
+    <div class="hero-icon-wrap">
+      <img class="hero-logo-img" src="assets/images/ChidoukaLogoLight.png" alt="人働説から知働説へ — chidouka-lab.com">
     </div>
   </div>
 </section>
@@ -516,11 +520,11 @@ img { display: block; max-width: 100%; }
   .sympo-banner-cta{ width:100%; justify-content:center; }
 }
 </style>
-<a href="/sympo26/" class="sympo-banner fade-in" aria-label="Symposium2026 開催要領を見る">
+<a href="/sympo26/" class="sympo-banner fade-in" aria-label="Symposium2026 特設サイトを見る">
   <div class="sympo-banner-inner">
     <div class="sympo-banner-txt">
       <span class="sympo-banner-eyebrow">アジャイルプロセス協議会 知働化研究会</span>
-      <div class="sympo-banner-title">Symposium<span class="yr">2026</span> 開催要領</div>
+      <div class="sympo-banner-title">Symposium<span class="yr">2026</span></div>
       <p class="sympo-banner-sub">
         テーマ「<b>知働化（Executable Knowledge and Texture）</b>」<br>
         2026年11月14日（土）／ 工学院大学 新宿キャンパス　— 産学研究交流のオープン・シンポジウム
@@ -837,11 +841,7 @@ img { display: block; max-width: 100%; }
       <div class="info-card-title">最新の活動</div>
       <div class="info-item">
         <div class="info-dot"></div>
-        <span><strong>2026年10月</strong>　缶詰会第222回（10月17日）開催予定。知働化の継続的な議論・記録を進めています。</span>
-      </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年8月</strong>　ライブラリ（会員向け）に「AI時代の要求定義（ドラフト）」を公開。</span>
+        <span><strong>2026年11月</strong>　缶詰会第224回（11月28日）開催予定。知働化の継続的な議論・記録を進めています。</span>
       </div>
       <div class="info-item">
         <div class="info-dot"></div>
