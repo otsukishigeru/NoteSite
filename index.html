@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="知働化コミュニティ — 知働化活動（探究・実践・啓蒙）に関わっている人々の状況をお知らせし、交流のきっかけを提供するコミュニティサイト。">
-<meta property="og:title"       content="知働化コミュニティ — chidouka-lab.com">
-<meta property="og:description" content="知働化活動に関わる人々をつなぐコミュニティ。1_s_o・t0rapa・Hg・Stの活動を紹介します。">
+<meta name="description" content="知働化アライアンス — 人働説から知働説へ。事業体やコミュニティが独立性を保ちながら、共通の目的・課題・テーマに連携して取り組むための｢場｣を提供します。">
+<meta property="og:title"       content="知働化アライアンス — chidouka-lab.com">
+<meta property="og:description" content="知働化研究会（缶詰会）の発展形として始動した知働化アライアンス。コアメンバ・組織メンバの活動、イベント、お知らせを掲載します。">
 <meta property="og:type"        content="website">
-<title>知働化コミュニティ — chidouka-lab.com</title>
+<title>知働化アライアンス — chidouka-lab.com</title>
 <style>
 /* ================================================================
-   知働化コミュニティ メインサイト
+   知働化アライアンス メインサイト
    ================================================================ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -343,6 +343,133 @@ img { display: block; max-width: 100%; }
 .info-item a:hover { text-decoration: underline; }
 
 /* ================================================================
+   方針・経緯・構造（2026.11 知働化アライアンス改訂）
+   ================================================================ */
+a.logo-block { color: inherit; }
+.policy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.policy-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md); padding: 32px 36px;
+  border-top: 4px solid var(--accent);
+}
+.policy-key { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 12px; }
+.policy-key span {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px; color: var(--text-light);
+  margin-left: 10px; text-transform: uppercase;
+}
+.policy-text { font-size: 14px; color: var(--text-sub); line-height: 1.95; }
+.policy-text strong { color: var(--text-main); }
+
+.history-band, .structure-band { grid-template-columns: 1fr 300px; align-items: start; }
+.timeline { list-style: none; position: relative; padding-left: 18px; }
+.timeline::before {
+  content: ''; position: absolute; left: 4px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--border);
+}
+.timeline li { position: relative; padding: 0 0 16px 14px; }
+.timeline li:last-child { padding-bottom: 0; }
+.timeline li::before {
+  content: ''; position: absolute; left: -18px; top: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #0E1E32; border: 2px solid var(--text-light);
+}
+.timeline li.is-now::before { background: var(--accent); border-color: var(--accent); }
+.tl-yr { display: block; font-size: 13px; font-weight: 900; color: var(--accent); letter-spacing: .04em; }
+.tl-ev { display: block; font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+.timeline li.is-now .tl-ev { color: var(--text-main); font-weight: 700; }
+
+.chain { display: flex; flex-direction: column; gap: 8px; }
+.chain-step {
+  position: relative; background: #0E1E32; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px 12px 50px;
+}
+.chain-step + .chain-step::before {
+  content: '↓'; position: absolute; top: -15px; left: 24px;
+  font-size: 12px; color: var(--text-light);
+}
+.cs-n {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #0E1420; font-size: 12px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+.chain-step b { display: block; font-size: 13px; color: var(--text-main); }
+.chain-step small { display: block; font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+.chain-loop { font-size: 12px; font-weight: 700; color: var(--accent); text-align: center; margin-top: 4px; }
+
+.outcome {
+  margin-top: 20px; background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 24px 32px;
+}
+.outcome-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
+.outcome-lead { font-size: 12px; color: var(--text-sub); margin: 4px 0 12px; }
+.outcome-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.outcome-chips span {
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  padding: 5px 14px; border-radius: 20px;
+  background: rgba(142,180,227,.08); border: 1px solid rgba(142,180,227,.28);
+}
+
+/* ── メンバ ── */
+.members-lead { font-size: 13px; color: var(--text-sub); line-height: 1.95; margin-bottom: 20px; max-width: 860px; }
+.sub-title {
+  font-size: 16px; font-weight: 800; color: var(--text-main);
+  margin: 32px 0 10px; padding-left: 12px; border-left: 4px solid var(--accent);
+}
+#coc { margin-top: 12px; }
+#coc .coc-grid { grid-template-columns: repeat(2, 1fr); }
+.coc-card.is-static:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--border); }
+.org-tag {
+  display: inline-block; font-size: 11px; font-weight: 900; letter-spacing: .06em;
+  color: #0E1420; background: var(--accent); border-radius: 6px;
+  padding: 1px 7px; margin-right: 8px; vertical-align: 2px;
+}
+.org-mark {
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900; color: #fff; letter-spacing: .02em;
+}
+.org-mark-yd { background: linear-gradient(135deg, #0f4c5c 0%, #1b7a8c 100%); }
+.org-mark-mh { background: linear-gradient(135deg, #5a4a1a 0%, #9a7b2c 100%); }
+
+/* ── イベント ── */
+.sympo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.sympo-card {
+  display: flex; flex-direction: column; gap: 4px;
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 18px 16px; box-shadow: var(--shadow-sm);
+  transition: transform .25s, border-color .25s;
+}
+.sympo-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.sy-yr { font-size: 26px; font-weight: 900; color: var(--text-main); line-height: 1; }
+.sy-name { font-size: 11px; letter-spacing: 1px; color: var(--text-light); }
+.sy-theme { font-size: 13px; font-weight: 700; color: var(--text-sub); line-height: 1.5; margin-top: 6px; flex: 1; }
+.sy-url { font-size: 10px; color: var(--accent); margin-top: 8px; word-break: break-all; }
+.sympo-card.is-latest {
+  background: linear-gradient(120deg, #1A1116 0%, #2A1418 55%, #3A171B 100%);
+  border-color: #5a2326;
+}
+.sympo-card.is-latest:hover { border-color: #E42C2C; }
+.sympo-card.is-latest .sy-yr { color: #FF6B6B; }
+.sympo-card.is-latest .sy-url { color: #FF9C9C; }
+
+.footer-logo { width: 220px; margin: 0 auto 16px; opacity: .9; }
+
+@media (max-width: 900px) {
+  .sympo-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .policy-grid { grid-template-columns: 1fr; }
+  .policy-card { padding: 26px 24px; }
+  .history-band, .structure-band { grid-template-columns: 1fr; }
+  .outcome { padding: 20px; }
+  #coc .coc-grid { grid-template-columns: 1fr; }
+  .coc-card { padding: 20px; gap: 14px; }
+}
+@media (max-width: 480px) {
+  .sympo-grid { grid-template-columns: 1fr; }
+}
+
+/* ================================================================
    フッター
    ================================================================ */
 .site-footer {
@@ -415,17 +542,17 @@ img { display: block; max-width: 100%; }
      ================================================================ -->
 <header class="site-header">
   <div class="header-inner">
-    <div class="logo-block">
+    <a class="logo-block" href="/">
       <div class="logo-mark">知</div>
       <div class="logo-text-block">
         <span class="logo-main">知働化アライアンス</span>
         <span class="logo-sub">chidouka-lab.com</span>
       </div>
-    </div>
+    </a>
     <nav class="header-nav" aria-label="メインナビゲーション">
-      <a class="nav-link" href="#about">コミュニティについて</a>
-      <a class="nav-link" href="#members">メンバーサイト</a>
-      <a class="nav-link" href="#coc">連携コミュニティ</a>
+      <a class="nav-link" href="#about">アライアンスについて</a>
+      <a class="nav-link" href="#members">メンバ</a>
+      <a class="nav-link" href="#events">イベント</a>
       <a class="nav-link" href="#info">お知らせ</a>
       <a class="nav-link" href="/members.html">交流</a>
       <a class="nav-link nav-pill" href="/guide/">ちょっと実験室</a>
@@ -438,9 +565,11 @@ img { display: block; max-width: 100%; }
 </header>
 
 <nav class="mobile-nav" aria-label="モバイルナビゲーション">
-  <a href="#about">コミュニティについて</a>
-  <a href="#members">メンバーサイト</a>
-  <a href="#coc">連携コミュニティ</a>
+  <a href="#about">方針</a>
+  <a href="#history">経緯</a>
+  <a href="#structure">アライアンスの構造</a>
+  <a href="#members">メンバ</a>
+  <a href="#events">イベント</a>
   <a href="#info">お知らせ</a>
   <a href="/members.html">交流</a>
   <a href="/guide/">ちょっと実験室</a>
@@ -458,146 +587,158 @@ img { display: block; max-width: 100%; }
         <em>知働化</em>アライアンス
       </h1>
       <p class="hero-lead">
-        知働化活動（探究・実践・啓蒙など）に関わっている人々の状況をお知らせし、
-        交流のきっかけにしていただくことを意図したコミュニティサイトです。<br>
-        それぞれのメンバーが発信するメッセージを、ここから探索できます。
+        事業体やコミュニティが独立性を保ちながら、共通の目的・課題・テーマに連携して取り組むための｢場｣を提供します。<br>
+        人働説から知働説へ。探究の途中経過を持ち寄り、対話を重ねていきましょう。
       </p>
       <div class="hero-badges">
-        <a class="hero-badge" href="/ichi_s_otsuki/">1_s_o ichi_s_otsuki</a>
-        <a class="hero-badge" href="/carl/">t0rapa carl</a>
+        <a class="hero-badge" href="/ichi_s_otsuki/">Ot</a>
+        <a class="hero-badge" href="/carl/">Nr</a>
         <a class="hero-badge" href="/Hg/">Hg</a>
         <a class="hero-badge" href="/St/">St</a>
       </div>
     </div>
-    <!-- 知働化ロゴ（人働説から知働説へ）— 右に配置 -->
+    <!-- 知働化アライアンスのロゴ（人働説から知働説へ） -->
     <div class="hero-icon-wrap">
-      <img class="hero-logo-img" src="assets/images/ChidoukaLogoLight.png" alt="人働説から知働説へ — chidouka-lab.com">
+      <img class="hero-logo-img" src="assets/images/ChidoukaLogoLight.png" alt="知働化アライアンス ロゴ — 人働説から知働説へ / chidouka-lab.com">
     </div>
   </div>
 </section>
 
 <!-- ================================================================
-     Symposium2026 バナー（サブサイトへの参照）
-     ================================================================ -->
-<style>
-.sympo-banner{
-  max-width: var(--max-w); margin: 36px auto -8px; padding: 0 24px;
-}
-.sympo-banner-inner{
-  position: relative; overflow: hidden; display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: space-between; gap: 22px;
-  background: linear-gradient(120deg, #1A1116 0%, #2A1418 55%, #3A171B 100%);
-  border: 1px solid #5a2326; border-radius: var(--radius-lg);
-  padding: 26px 32px; box-shadow: var(--shadow-md);
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-}
-.sympo-banner-inner:hover{ transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: #E42C2C; }
-.sympo-banner-inner::before{
-  content:""; position:absolute; inset:0; pointer-events:none;
-  background: radial-gradient(circle at 88% 20%, rgba(228,44,44,.42), transparent 48%);
-}
-.sympo-banner-txt{ position: relative; }
-.sympo-banner-eyebrow{
-  display:inline-flex; align-items:center; gap:8px;
-  font-size:11px; font-weight:800; letter-spacing:.16em; color:#fff;
-  background:#E42C2C; padding:5px 12px; border-radius:999px; margin-bottom:12px;
-}
-.sympo-banner-title{ font-size:clamp(22px,3.6vw,30px); font-weight:900; color:#fff; line-height:1.2; }
-.sympo-banner-title .yr{ color:#FF6B6B; }
-.sympo-banner-sub{ font-size:14px; color:#E2C9CB; margin-top:8px; line-height:1.6; }
-.sympo-banner-sub b{ color:#fff; }
-.sympo-banner-cta{
-  position:relative; flex-shrink:0; display:inline-flex; align-items:center; gap:10px;
-  background:#E42C2C; color:#fff; font-size:15px; font-weight:800; letter-spacing:.02em;
-  padding:15px 28px; border-radius:999px; white-space:nowrap;
-  transition: background .2s ease, transform .15s ease;
-}
-.sympo-banner-inner:hover .sympo-banner-cta{ background:#C01E1E; }
-.sympo-banner-cta .arrow{ transition: transform .2s ease; }
-.sympo-banner-inner:hover .sympo-banner-cta .arrow{ transform: translateX(4px); }
-@media(max-width:640px){
-  .sympo-banner-inner{ flex-direction:column; align-items:flex-start; padding:24px; }
-  .sympo-banner-cta{ width:100%; justify-content:center; }
-}
-</style>
-<a href="/sympo26/" class="sympo-banner fade-in" aria-label="Symposium2026 特設サイトを見る">
-  <div class="sympo-banner-inner">
-    <div class="sympo-banner-txt">
-      <span class="sympo-banner-eyebrow">アジャイルプロセス協議会 知働化研究会</span>
-      <div class="sympo-banner-title">Symposium<span class="yr">2026</span></div>
-      <p class="sympo-banner-sub">
-        テーマ「<b>知働化（Executable Knowledge and Texture）</b>」<br>
-        2026年11月14日（土）／ 工学院大学 新宿キャンパス　— 産学研究交流のオープン・シンポジウム
-      </p>
-    </div>
-    <span class="sympo-banner-cta">特設サイトを見る <span class="arrow">→</span></span>
-  </div>
-</a>
-
-<!-- ================================================================
-     コミュニティについて
+     方針
      ================================================================ -->
 <section id="about" class="about-section">
   <div class="section-head fade-in">
-    <span class="section-label">About</span>
+    <span class="section-label">Policy</span>
     <div class="section-rule"></div>
-    <h2 class="section-title">コミュニティについて</h2>
+    <h2 class="section-title">方針</h2>
     <div class="section-rule"></div>
   </div>
-  <div class="about-band fade-in">
-    <div class="about-text">
-      <p>
-        <strong>「知働化」</strong>（ちどうか）とは、従来の人月主義的な「人働説」から
-        価値創造を重視する「知働説」へのパラダイムシフトを指す概念です。
-        AI・ソフトウェア工学・組織論・哲学が交差するこの時代において、
-        知働化をテーマに探究・実践・啓蒙を続けるメンバーたちが集まっています。
-      </p>
-      <p>
-        本サイトは各メンバーが発信するnote記事・格言・教えを横断的に紹介し、
-        <strong>知働化に関心を持つ人々の交流のきっかけ</strong>となることを目的としています。
-        知働化研究会（缶詰会）の活動成果もここから確認できます。
+  <div class="policy-grid">
+    <div class="policy-card fade-in">
+      <p class="policy-key">知働化<span>ちどうか</span></p>
+      <p class="policy-text">
+        「知働化」とは、事業経営や探究活動において、労務量（人月）でコストを測る<strong>「人働説」</strong>を脱し、
+        社会的な相互作用や文脈・様相から生じる価値を対象とする<strong>「知働説」</strong>のパラダイムに
+        移行していくことを目指しています。
       </p>
     </div>
-    <div class="about-stats">
-      <div class="stat-card">
-        <div class="stat-num">4</div>
-        <div class="stat-label">メンバーサイト</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">150<span style="font-size:18px">+</span></div>
-        <div class="stat-label">格言・記事</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">210</div>
-        <div class="stat-label">缶詰会 回数</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">AI</div>
-        <div class="stat-label">各サイトで質問可能</div>
-      </div>
+    <div class="policy-card fade-in">
+      <p class="policy-key">アライアンス<span>alliance</span></p>
+      <p class="policy-text">
+        「アライアンス」とは、複数の事業体（企業や個人事業）、コミュニティ（研究会・団体）が
+        独立性を保ちながら、かつ、共通の目的・課題・テーマに対して連携して取り組んでいくことを示しており、
+        知働化アライアンスでは、この活動の<strong>｢場｣</strong>を提供していきます。
+      </p>
     </div>
   </div>
 </section>
 
 <!-- ================================================================
-     メンバーサイト（4枚プレビューカード）
+     経緯
+     ================================================================ -->
+<section id="history" class="about-section">
+  <div class="section-head fade-in">
+    <span class="section-label">History</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">経緯</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="about-band history-band fade-in">
+    <div class="about-text">
+      <p>
+        アジャイルプロセス協議会の知働化研究会は、2009年から活動を開始しました。
+        現在の定常的な２週間に１回の開催頻度のZoom会合（通称<strong>缶詰会</strong>）を行い始めたのは2019年からです。
+      </p>
+      <p>
+        アジャイルプロセス協議会自体は、2003年から活動してきましたが、その使命を全うしたこともあり2026年度で幕を閉じることになっています。
+        すなわち、知働化研究会の活動を発展させていくためには、アジャイルプロセス協議会から独立しなくてはなりません。
+        そこで、このたび、知働化研究会の発展形として<strong>「知働化アライアンス」</strong>として活動する運びとなりました。
+      </p>
+    </div>
+    <ol class="timeline" aria-label="年表">
+      <li><span class="tl-yr">2003</span><span class="tl-ev">アジャイルプロセス協議会 設立</span></li>
+      <li><span class="tl-yr">2009</span><span class="tl-ev">知働化研究会 活動開始</span></li>
+      <li><span class="tl-yr">2019</span><span class="tl-ev">缶詰会（２週間に１回のZoom会合）開始</span></li>
+      <li><span class="tl-yr">2026</span><span class="tl-ev">協議会は2026年度で幕を閉じる</span></li>
+      <li class="is-now"><span class="tl-yr">2026.11</span><span class="tl-ev">知働化アライアンスとして始動</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================================================================
+     知働化アライアンスの構造
+     ================================================================ -->
+<section id="structure" class="about-section">
+  <div class="section-head fade-in">
+    <span class="section-label">Structure</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">知働化アライアンスの構造</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="about-band structure-band fade-in">
+    <div class="about-text">
+      <p>
+        事業や研究を実務推進している個人が抱えている問題を｢知働化｣という視点でアプローチしていく際に、
+        さまざまな人々とのコミュニケーション、議論を重ねていくことによって、個人がフィードバックを得て、
+        問題を明確化したり、解を得たり、はたまた認識を改め、新たな課題設定やアプローチに展開していくことでしょう。
+        こういったプロセスによって、質の高い探究を進めていくことができます。
+      </p>
+      <p>
+        このようにコミュニケーションの連鎖によって、探究を進めていくための<strong>｢場｣</strong>を提供することが
+        知働化アライアンスの役割です。この連鎖は、一つの社会的な構造であり、理論面の整備、実践面への展開、
+        啓蒙活動など多様な方向性を持つことになります。
+      </p>
+    </div>
+    <div class="chain" aria-label="コミュニケーションの連鎖">
+      <div class="chain-step"><span class="cs-n">1</span><b>問題を持ち込む</b><small>実務・研究で抱える問題を｢知働化｣の視点で</small></div>
+      <div class="chain-step"><span class="cs-n">2</span><b>｢場｣で議論する</b><small>さまざまな人々とのコミュニケーション</small></div>
+      <div class="chain-step"><span class="cs-n">3</span><b>フィードバックを得る</b><small>問題の明確化・解・認識の改め</small></div>
+      <div class="chain-step"><span class="cs-n">4</span><b>新たに展開する</b><small>新たな課題設定やアプローチへ</small></div>
+      <p class="chain-loop">↻ 連鎖が質の高い探究を生む</p>
+    </div>
+  </div>
+  <div class="outcome fade-in">
+    <p class="outcome-title">アライアンスを通じて顕在化する活動</p>
+    <p class="outcome-lead">典型的なものとして、次のようなものが考えられます。</p>
+    <div class="outcome-chips">
+      <span>論文</span><span>著作</span><span>イベント（シンポジウム）での発表</span>
+      <span>システム（プログラム）</span><span>サービス</span><span>ワークショップなどの会合</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     メンバ
      ================================================================ -->
 <section id="members" class="members-section">
   <div class="section-head fade-in">
     <span class="section-label">Members</span>
     <div class="section-rule"></div>
-    <h2 class="section-title">メンバーサイト</h2>
+    <h2 class="section-title">メンバ</h2>
     <div class="section-rule"></div>
   </div>
+  <p class="members-lead fade-in">
+    従来の一般的なコミュニティ活動でのメンバという概念はありません。
+    知働化アライアンスが設定する議論の｢場｣に参加する人々が、結果としてメンバと呼ばれることになるでしょう。
+  </p>
+
+  <h3 class="sub-title fade-in">コアメンバ</h3>
+  <p class="members-lead fade-in">
+    便宜的に知働化研究会（缶詰会）の参加メンバのことを「コアメンバ」と呼ぶことにします。
+    サイト表示の整理上、コアメンバは本名の名字の発音から想起できる２文字で表しています。
+    さらに、個人のnoteサイトでの愛称、書籍でのペンネームなどがあれば、その旨を添えています。
+    コアメンバごとのサブサイトは、以下のとおりです。
+  </p>
 
   <div class="member-grid">
 
-    <!-- ① 1_s_o ichi_s_otsuki -->
+    <!-- ① Ot -->
     <a href="/ichi_s_otsuki/" class="member-card card-iso fade-in">
       <div class="card-top">
-        <p class="card-eyebrow">SHIGERU OTSUKI / ichi_s_otsuki</p>
-        <div class="card-name">1_s_o</div>
-        <div class="card-role">知働化経営・思考の技法・ソフトウェア工学・哲学</div>
+        <p class="card-eyebrow">CORE MEMBER</p>
+        <div class="card-name">Ot</div>
+        <div class="card-role">note：1_s_o ／ Kindle：一繁（ninomae shigeru）</div>
         <div class="card-tagline">
           知働化の知恵を、思考の技法とともに広く伝えるために。
         </div>
@@ -613,18 +754,18 @@ img { display: block; max-width: 100%; }
           <span class="card-chip">AI問答</span>
         </div>
         <div class="card-cta">
-          <span>サイトを開く</span>
+          <span>chidouka-lab.com/ichi_s_otsuki/</span>
           <span class="card-cta-arrow">→</span>
         </div>
       </div>
     </a>
 
-    <!-- ② t0rapa carl -->
+    <!-- ② Nr -->
     <a href="/carl/" class="member-card card-carl fade-in">
       <div class="card-top">
-        <p class="card-eyebrow">KAZUYUKI NOMURA / carl / t0rapa</p>
-        <div class="card-name">t0rapa</div>
-        <div class="card-role">知働化の思想・ソフトウェア工学・哲学・AI時代</div>
+        <p class="card-eyebrow">CORE MEMBER</p>
+        <div class="card-name">Nr</div>
+        <div class="card-role">note：10rapa_carl</div>
         <div class="card-tagline">
           知働化の哲学とAI時代の人間論を、広く伝えるために。
         </div>
@@ -640,7 +781,7 @@ img { display: block; max-width: 100%; }
           <span class="card-chip">AI問答</span>
         </div>
         <div class="card-cta">
-          <span>サイトを開く</span>
+          <span>chidouka-lab.com/carl/</span>
           <span class="card-cta-arrow">→</span>
         </div>
       </div>
@@ -649,7 +790,7 @@ img { display: block; max-width: 100%; }
     <!-- ③ Hg -->
     <a href="/Hg/" class="member-card card-hg fade-in">
       <div class="card-top">
-        <p class="card-eyebrow">Hg</p>
+        <p class="card-eyebrow">CORE MEMBER</p>
         <div class="card-name">Hg</div>
         <div class="card-role">AI進化論・制約の哲学・理論と実務・システム思考</div>
         <div class="card-tagline">
@@ -667,7 +808,7 @@ img { display: block; max-width: 100%; }
           <span class="card-chip">AI問答</span>
         </div>
         <div class="card-cta">
-          <span>サイトを開く</span>
+          <span>chidouka-lab.com/Hg/</span>
           <span class="card-cta-arrow">→</span>
         </div>
       </div>
@@ -676,7 +817,7 @@ img { display: block; max-width: 100%; }
     <!-- ④ St -->
     <a href="/St/" class="member-card card-st fade-in">
       <div class="card-top">
-        <p class="card-eyebrow">St</p>
+        <p class="card-eyebrow">CORE MEMBER</p>
         <div class="card-name">St</div>
         <div class="card-role">実践知・技術史・守破離・投資判断・知働化の道</div>
         <div class="card-tagline">
@@ -694,171 +835,213 @@ img { display: block; max-width: 100%; }
           <span class="card-chip">AI問答</span>
         </div>
         <div class="card-cta">
-          <span>サイトを開く</span>
+          <span>chidouka-lab.com/St/</span>
           <span class="card-cta-arrow">→</span>
         </div>
       </div>
     </a>
 
   </div>
-</section>
 
-<!-- ================================================================
-     Community of Communities（連携コミュニティ）
-     ================================================================ -->
-<section id="coc" class="coc-section">
-  <div class="section-head fade-in">
-    <span class="section-label">Network</span>
-    <div class="section-rule"></div>
-    <h2 class="section-title">the Community of Communities（連携コミュニティ）</h2>
-    <div class="section-rule"></div>
-  </div>
-  <p class="coc-lead fade-in">知働化コミュニティと問題意識・活動を共有する、連携コミュニティ・研究機関のご紹介。</p>
-  <div class="coc-grid">
+  <!-- 組織メンバ（旧 the Community of Communities） -->
+  <div id="coc">
+    <h3 class="sub-title fade-in">組織メンバ</h3>
+    <p class="members-lead fade-in">
+      便宜的に知働化に関する探究活動を行っている組織・団体を率いている個人を｢組織メンバ｣と呼ぶことにします。
+      旧来の表現では｢the Community of Communities｣と呼んでいたものです。
+      サイト表示の整理上、組織メンバも本名の名字の発音から想起できる２文字で表しています。
+      なお、組織メンバが、各事業体での課題を持ち込むためにアライアンスに参加することもあります。
+    </p>
+    <div class="coc-grid">
 
-    <!-- メタウェア研究所 -->
-    <a href="https://www.metaware-lab.org/" target="_blank" rel="noopener" class="coc-card fade-in">
-      <div class="coc-card-logo" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="295 165 430 450" role="img" aria-label="メタウェア研究所ロゴ">
-          <!-- 外形（ヘキサゴン） -->
-          <path d="M 710.348,510.311 515.832,598.719 313.610,498.054 312.928,286.746 509.900,179.968 711.340,271.374 Z" fill="rgba(255,255,255,0.07)" />
-          <!-- 上面 -->
-          <path d="m 511.283,194.848 182.4,84.4 -189.373,106.829 -171.727,-94.629 z" fill="#4a4a8a" />
-          <!-- 左面 -->
-          <polygon points="325.1,301.9 563.1,432.6 326.9,484.9" fill="#3d3d78" />
-          <!-- 右（明） -->
-          <path d="m 699.490,290.310 0.911,210.920 -116.318,-61.708 z" fill="#a0a8b8" />
-          <!-- 琥珀 -->
-          <polygon points="570.1,443.3 335.6,495.3 512.6,583.3" fill="#e39c35" />
-          <!-- 右下（暗） -->
-          <path d="M 584.288,439.537 700.457,501.305 526.1,582.1 Z" fill="#2a2b5c" />
-        </svg>
-      </div>
-      <div>
-        <p class="coc-card-name">メタウェア研究所</p>
-        <p class="coc-card-url">metaware-lab.org ↗</p>
-        <p class="coc-card-desc">
-          人が持つ認識の前提の違いを社会システム再設計のツールとして活用する民間研究機関。
-          組織・法律・教育などの制度設計に認知的多様性の視点を持ち込む探究を続けている。
-          知働化コミュニティと深い問題意識を共有する連携機関。
-        </p>
-        <span class="coc-card-cta">サイトを開く →</span>
-      </div>
-    </a>
+      <!-- Hm：メタウェア研究所 -->
+      <a href="https://www.metaware-lab.org/" target="_blank" rel="noopener" class="coc-card fade-in">
+        <div class="coc-card-logo" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="295 165 430 450">
+            <path d="M 710.348,510.311 515.832,598.719 313.610,498.054 312.928,286.746 509.900,179.968 711.340,271.374 Z" fill="rgba(255,255,255,0.07)" />
+            <path d="m 511.283,194.848 182.4,84.4 -189.373,106.829 -171.727,-94.629 z" fill="#4a4a8a" />
+            <polygon points="325.1,301.9 563.1,432.6 326.9,484.9" fill="#3d3d78" />
+            <path d="m 699.490,290.310 0.911,210.920 -116.318,-61.708 z" fill="#a0a8b8" />
+            <polygon points="570.1,443.3 335.6,495.3 512.6,583.3" fill="#e39c35" />
+            <path d="M 584.288,439.537 700.457,501.305 526.1,582.1 Z" fill="#2a2b5c" />
+          </svg>
+        </div>
+        <div>
+          <p class="coc-card-name"><span class="org-tag">Hm</span>メタウェア研究所</p>
+          <p class="coc-card-url">metaware-lab.org ↗</p>
+          <p class="coc-card-desc">
+            人が持つ認識の前提の違いを社会システム再設計のツールとして活用する民間研究機関。
+            組織・法律・教育などの制度設計に認知的多様性の視点を持ち込む探究を続けています。
+          </p>
+          <span class="coc-card-cta">サイトを開く →</span>
+        </div>
+      </a>
 
-    <!-- 高信頼ソフトウェア開発工学研究室 -->
-    <a href="https://www.ns.kogakuin.ac.jp/relab/" target="_blank" rel="noopener" class="coc-card fade-in">
-      <div class="coc-card-logo" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="高信頼ソフトウェア開発工学研究室ロゴ">
-          <defs>
-            <clipPath id="cubeTop">
+      <!-- Ik：高信頼ソフトウェア開発工学研究室 -->
+      <a href="https://www.ns.kogakuin.ac.jp/relab/" target="_blank" rel="noopener" class="coc-card fade-in">
+        <div class="coc-card-logo" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <defs>
+              <clipPath id="cubeTop"><polygon points="50,8 88,28 50,50 12,28"/></clipPath>
+              <clipPath id="cubeRight"><polygon points="88,28 88,72 50,92 50,50"/></clipPath>
+              <clipPath id="cubeLeft"><polygon points="12,28 50,50 50,92 12,72"/></clipPath>
+            </defs>
+            <polygon points="50,8 88,28 50,50 12,28" fill="#5060d8"/>
+            <g clip-path="url(#cubeTop)" stroke="#ffc121" stroke-width="3">
+              <line x1="14" y1="-20" x2="-20" y2="14"/><line x1="28" y1="-20" x2="-20" y2="28"/>
+              <line x1="42" y1="-20" x2="-20" y2="42"/><line x1="56" y1="-20" x2="-20" y2="56"/>
+              <line x1="70" y1="-20" x2="-20" y2="70"/><line x1="84" y1="-20" x2="-20" y2="84"/>
+              <line x1="98" y1="-20" x2="-20" y2="98"/><line x1="112" y1="-20" x2="-20" y2="112"/>
+              <line x1="126" y1="-20" x2="-20" y2="126"/>
+            </g>
+            <polygon points="88,28 88,72 50,92 50,50" fill="#3e49ab"/>
+            <g clip-path="url(#cubeRight)" stroke="#d4a010" stroke-width="3">
+              <line x1="46" y1="-20" x2="-20" y2="46"/><line x1="60" y1="-20" x2="-20" y2="60"/>
+              <line x1="74" y1="-20" x2="-20" y2="74"/><line x1="88" y1="-20" x2="-20" y2="88"/>
+              <line x1="102" y1="-20" x2="-20" y2="102"/><line x1="116" y1="-20" x2="-20" y2="116"/>
+              <line x1="130" y1="-20" x2="-20" y2="130"/><line x1="144" y1="-20" x2="-20" y2="144"/>
+              <line x1="158" y1="-20" x2="-20" y2="158"/>
+            </g>
+            <polygon points="12,28 50,50 50,92 12,72" fill="#2d3680"/>
+            <g clip-path="url(#cubeLeft)" stroke="#a07808" stroke-width="3">
+              <line x1="-4" y1="-20" x2="-20" y2="-4"/><line x1="10" y1="-20" x2="-20" y2="10"/>
+              <line x1="24" y1="-20" x2="-20" y2="24"/><line x1="38" y1="-20" x2="-20" y2="38"/>
+              <line x1="52" y1="-20" x2="-20" y2="52"/><line x1="66" y1="-20" x2="-20" y2="66"/>
+              <line x1="80" y1="-20" x2="-20" y2="80"/><line x1="94" y1="-20" x2="-20" y2="94"/>
+              <line x1="108" y1="-20" x2="-20" y2="108"/>
+            </g>
+            <g stroke="rgba(255,255,255,0.35)" stroke-width="1" fill="none">
               <polygon points="50,8 88,28 50,50 12,28"/>
-            </clipPath>
-            <clipPath id="cubeRight">
-              <polygon points="88,28 88,72 50,92 50,50"/>
-            </clipPath>
-            <clipPath id="cubeLeft">
-              <polygon points="12,28 50,50 50,92 12,72"/>
-            </clipPath>
-          </defs>
-          <!-- 上面（明るい紺） -->
-          <polygon points="50,8 88,28 50,50 12,28" fill="#5060d8"/>
-          <g clip-path="url(#cubeTop)">
-            <line x1="14"  y1="-20" x2="-20" y2="14"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="28"  y1="-20" x2="-20" y2="28"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="42"  y1="-20" x2="-20" y2="42"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="56"  y1="-20" x2="-20" y2="56"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="70"  y1="-20" x2="-20" y2="70"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="84"  y1="-20" x2="-20" y2="84"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="98"  y1="-20" x2="-20" y2="98"  stroke="#ffc121" stroke-width="3"/>
-            <line x1="112" y1="-20" x2="-20" y2="112" stroke="#ffc121" stroke-width="3"/>
-            <line x1="126" y1="-20" x2="-20" y2="126" stroke="#ffc121" stroke-width="3"/>
-          </g>
-          <!-- 右面（中間の紺） -->
-          <polygon points="88,28 88,72 50,92 50,50" fill="#3e49ab"/>
-          <g clip-path="url(#cubeRight)">
-            <line x1="46"  y1="-20" x2="-20" y2="46"  stroke="#d4a010" stroke-width="3"/>
-            <line x1="60"  y1="-20" x2="-20" y2="60"  stroke="#d4a010" stroke-width="3"/>
-            <line x1="74"  y1="-20" x2="-20" y2="74"  stroke="#d4a010" stroke-width="3"/>
-            <line x1="88"  y1="-20" x2="-20" y2="88"  stroke="#d4a010" stroke-width="3"/>
-            <line x1="102" y1="-20" x2="-20" y2="102" stroke="#d4a010" stroke-width="3"/>
-            <line x1="116" y1="-20" x2="-20" y2="116" stroke="#d4a010" stroke-width="3"/>
-            <line x1="130" y1="-20" x2="-20" y2="130" stroke="#d4a010" stroke-width="3"/>
-            <line x1="144" y1="-20" x2="-20" y2="144" stroke="#d4a010" stroke-width="3"/>
-            <line x1="158" y1="-20" x2="-20" y2="158" stroke="#d4a010" stroke-width="3"/>
-          </g>
-          <!-- 左面（暗い紺） -->
-          <polygon points="12,28 50,50 50,92 12,72" fill="#2d3680"/>
-          <g clip-path="url(#cubeLeft)">
-            <line x1="-4"  y1="-20" x2="-20" y2="-4"  stroke="#a07808" stroke-width="3"/>
-            <line x1="10"  y1="-20" x2="-20" y2="10"  stroke="#a07808" stroke-width="3"/>
-            <line x1="24"  y1="-20" x2="-20" y2="24"  stroke="#a07808" stroke-width="3"/>
-            <line x1="38"  y1="-20" x2="-20" y2="38"  stroke="#a07808" stroke-width="3"/>
-            <line x1="52"  y1="-20" x2="-20" y2="52"  stroke="#a07808" stroke-width="3"/>
-            <line x1="66"  y1="-20" x2="-20" y2="66"  stroke="#a07808" stroke-width="3"/>
-            <line x1="80"  y1="-20" x2="-20" y2="80"  stroke="#a07808" stroke-width="3"/>
-            <line x1="94"  y1="-20" x2="-20" y2="94"  stroke="#a07808" stroke-width="3"/>
-            <line x1="108" y1="-20" x2="-20" y2="108" stroke="#a07808" stroke-width="3"/>
-          </g>
-          <!-- エッジライン -->
-          <polygon points="50,8 88,28 50,50 12,28" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-          <line x1="88" y1="28" x2="88" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-          <line x1="12" y1="28" x2="12" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-          <line x1="50" y1="50" x2="50" y2="92" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-          <line x1="88" y1="72" x2="50" y2="92" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-          <line x1="12" y1="72" x2="50" y2="92" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
-        </svg>
-      </div>
-      <div>
-        <p class="coc-card-name">高信頼ソフトウェア開発工学研究室</p>
-        <p class="coc-card-url">ns.kogakuin.ac.jp ↗</p>
-        <p class="coc-card-desc">
-          ソフトウェア開発の工業化への取り組みを通して、安心・安全な情報化
-          社会の実現に貢献することをめざします。
-        </p>
-        <span class="coc-card-cta">サイトを開く →</span>
-      </div>
-    </a>
+              <line x1="88" y1="28" x2="88" y2="72"/><line x1="12" y1="28" x2="12" y2="72"/>
+              <line x1="50" y1="50" x2="50" y2="92"/><line x1="88" y1="72" x2="50" y2="92"/>
+              <line x1="12" y1="72" x2="50" y2="92"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <p class="coc-card-name"><span class="org-tag">Ik</span>高信頼ソフトウェア開発工学研究室</p>
+          <p class="coc-card-url">ns.kogakuin.ac.jp ↗</p>
+          <p class="coc-card-desc">
+            ソフトウェア開発の工業化への取り組みを通して、安心・安全な情報化社会の実現に貢献することをめざします。
+          </p>
+          <span class="coc-card-cta">サイトを開く →</span>
+        </div>
+      </a>
 
-    <!-- 今後の連携コミュニティはここに追加 -->
+      <!-- Yd：メタボリックス -->
+      <a href="https://www.metabolics.co.jp/" target="_blank" rel="noopener" class="coc-card fade-in">
+        <div class="coc-card-logo org-mark org-mark-yd" aria-hidden="true">Yd</div>
+        <div>
+          <p class="coc-card-name"><span class="org-tag">Yd</span>メタボリックス</p>
+          <p class="coc-card-url">metabolics.co.jp ↗</p>
+          <p class="coc-card-desc">
+            有限会社メタボリックス。組織メンバ Yd が率いる事業体です。
+          </p>
+          <span class="coc-card-cta">サイトを開く →</span>
+        </div>
+      </a>
 
+      <!-- Mh：ゆるイズム研究所（外部サイトなし） -->
+      <div class="coc-card is-static fade-in">
+        <div class="coc-card-logo org-mark org-mark-mh" aria-hidden="true">Mh</div>
+        <div>
+          <p class="coc-card-name"><span class="org-tag">Mh</span>ゆるイズム研究所</p>
+          <p class="coc-card-url">（外部リンクなし）</p>
+          <p class="coc-card-desc">
+            組織メンバ Mh が率いる研究所です。
+          </p>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <!-- ================================================================
-     お知らせ / コミュニティ情報
+     イベント
+     ================================================================ -->
+<section id="events" class="members-section">
+  <div class="section-head fade-in">
+    <span class="section-label">Events</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">イベント</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="members-lead fade-in">
+    探究の状況をシェアしたり、報告・啓蒙するための活動として、シンポジウムやフォーラムのような会合を開催することにしています。
+    探究は終わりのない活動ですから、途中経過や課題の整理をするためのイベントがあると、ペースメイキングになります。
+    自らの探究状況を他人に披露することは、マーケティングや軌道修正のフィードバックが得られる効用もあります。
+  </p>
+  <h3 class="sub-title fade-in">今までのSymposium</h3>
+  <div class="sympo-grid">
+    <a class="sympo-card fade-in" href="http://ichi.jupiter.bindcloud.jp/sympo23an/" target="_blank" rel="noopener">
+      <span class="sy-yr">2023</span>
+      <span class="sy-name">Symposium2023</span>
+      <span class="sy-theme">AI時代のシステムの社会的意義</span>
+      <span class="sy-url">ichi.jupiter.bindcloud.jp/sympo23an/ ↗</span>
+    </a>
+    <a class="sympo-card fade-in" href="http://ichi.jupiter.bindcloud.jp/sympo24an/" target="_blank" rel="noopener">
+      <span class="sy-yr">2024</span>
+      <span class="sy-name">Symposium2024</span>
+      <span class="sy-theme">超・個の能力 Capability of Hyper Existence</span>
+      <span class="sy-url">ichi.jupiter.bindcloud.jp/sympo24an/ ↗</span>
+    </a>
+    <a class="sympo-card fade-in" href="https://1corp.biz/sympo25/" target="_blank" rel="noopener">
+      <span class="sy-yr">2025</span>
+      <span class="sy-name">Symposium2025</span>
+      <span class="sy-theme">知働化（Executable Knowledge and Texture）</span>
+      <span class="sy-url">1corp.biz/sympo25/ ↗</span>
+    </a>
+    <a class="sympo-card is-latest fade-in" href="/sympo26/">
+      <span class="sy-yr">2026</span>
+      <span class="sy-name">Symposium2026</span>
+      <span class="sy-theme">知働の本質 ── 知働化アライアンス始動</span>
+      <span class="sy-url">chidouka-lab.com/sympo26/ →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ================================================================
+     お知らせ
      ================================================================ -->
 <section id="info" class="info-section">
   <div class="section-head fade-in">
     <span class="section-label">Info</span>
     <div class="section-rule"></div>
-    <h2 class="section-title">お知らせ・コミュニティ情報</h2>
+    <h2 class="section-title">お知らせ</h2>
     <div class="section-rule"></div>
   </div>
 
   <div class="info-grid fade-in">
     <div class="info-card">
-      <div class="info-card-title">最新の活動</div>
+      <div class="info-card-title">最新のお知らせ</div>
       <div class="info-item">
         <div class="info-dot"></div>
-        <span><strong>2026年11月</strong>　缶詰会第224回（11月28日）開催予定。知働化の継続的な議論・記録を進めています。</span>
+        <span><strong>2026年11月28日（土曜）14時〜</strong>　次回缶詰会（第224回目）は、Zoom会合で開催します。
+          <a href="https://us02web.zoom.us/j/89160079252?pwd=HfIu66PE953EVGRBZfTgD5d4LXUHbm.1" target="_blank" rel="noopener">Zoomに参加する ↗</a></span>
       </div>
       <div class="info-item">
         <div class="info-dot"></div>
-        <span><strong>2026年7月</strong>　「ちょっと実験室」<a href="/guide/" style="color:var(--accent);">chidouka-lab.com/guide/</a>　を開設しました。<br>
-          「学習（要求工学）」を新設。（<a href="/learn/" style="color:var(--accent);">https://chidouka-lab.com/learn/</a>）</span>
+        <span><strong>2026年11月21日</strong>　知働化アライアンスのサイトとして、本ページを再構築しました。新しい知働化アライアンスのロゴもデザインしました。</span>
       </div>
       <div class="info-item">
         <div class="info-dot"></div>
-        <span><strong>2026年5月</strong>　『思考の技法2.0』の書籍を販売開始しました。<a href="/ichi_s_otsuki/" style="color:var(--accent);">chidouka-lab.com/ichi_s_otsuki/</a></span>
+        <span><strong>2026年11月14日（土曜）</strong>　無事、Symposium2026を成功裡に開催しました。
+          <a href="/sympo26/">chidouka-lab.com/sympo26/</a></span>
       </div>
       <div class="info-item">
         <div class="info-dot"></div>
-        <span><strong>2026年5月</strong>　ライブラリサイト（「交流」または「ライブラリ」メンバ登録要）を公開。</span>
+        <span><strong>2026年11月1日</strong>　知働化に関する書籍シリーズを出版開始しました。『知働の技法』シリーズ（52冊）
+          <a href="https://www.amazon.co.jp/s?k=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95&amp;crid=3A0SZBVXF6DS4&amp;sprefix=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95%2Caps%2C402&amp;ref=nb_sb_ss_fb_1_5_ts-doa-p" target="_blank" rel="noopener">Amazonで見る ↗</a></span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年5月5日</strong>　知働化に関する書籍を出版しています。『思考の技法2.0』
+          <a href="/ichi_s_otsuki/">chidouka-lab.com/ichi_s_otsuki/</a></span>
       </div>
     </div>
     <div class="info-card">
-      <div class="info-card-title">知働化コミュニティ協力組織</div>
+      <div class="info-card-title">知働化アライアンス協力企業</div>
       <div class="info-item">
         <div class="info-dot"></div>
         <span><a href="https://1corp.biz/primary2026/" target="_blank" rel="noopener">株式会社一（いち）↗</a></span>
@@ -887,15 +1070,16 @@ img { display: block; max-width: 100%; }
      フッター
      ================================================================ -->
 <footer class="site-footer">
-  <p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">知働化メンバ</p>
+  <img class="footer-logo" src="assets/images/ChidoukaLogoLight.png" alt="知働化アライアンス">
+  <p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">知働化アライアンス コアメンバ</p>
   <p>
-    <a href="/ichi_s_otsuki/">1_s_o</a>　｜
-    <a href="/carl/">t0rapa</a>　｜
+    <a href="/ichi_s_otsuki/">Ot</a>　｜
+    <a href="/carl/">Nr</a>　｜
     <a href="/Hg/">Hg</a>　｜
     <a href="/St/">St</a>
   </p>
   <p style="margin-top:12px;font-size:11px;opacity:.7;"><a href="/linkpage/">🗺 サイト リンク構成マップ</a></p>
-  <p style="margin-top:10px;font-size:10px;opacity:.5;">© 知働化コミュニティ</p>
+  <p style="margin-top:10px;font-size:10px;opacity:.5;">© 知働化アライアンス</p>
 </footer>
 
 <button class="page-top" aria-label="ページトップへ戻る">↑</button>
