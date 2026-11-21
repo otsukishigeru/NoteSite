@@ -469,6 +469,41 @@ a.logo-block { color: inherit; }
   .sympo-grid { grid-template-columns: 1fr; }
 }
 
+/* ── ヒーローのボタン配色（メンバカードに合わせる） ── */
+.hero-badge-sep { width: 1px; align-self: stretch; background: rgba(255,255,255,.25); margin: 0 4px; }
+.hb-ot { background: rgba(29,47,95,.55);  color: #8EB4E8; border-color: rgba(142,180,232,.55); }
+.hb-nm { background: rgba(26,74,46,.55);  color: #52B788; border-color: rgba(82,183,136,.55); }
+.hb-hg { background: rgba(92,36,7,.55);   color: #C8906A; border-color: rgba(200,144,106,.55); }
+.hb-st { background: rgba(61,21,88,.55);  color: #A875D0; border-color: rgba(168,117,208,.55); }
+.hb-hm { background: rgba(74,74,138,.45); color: #e39c35; border-color: rgba(227,156,53,.55); }
+.hb-ik { background: rgba(62,73,171,.45); color: #ffc121; border-color: rgba(255,193,33,.55); }
+.hb-yd { background: rgba(27,122,140,.40); color: #6fd0de; border-color: rgba(111,208,222,.55); }
+.hero-badge.hb-ot:hover, .hero-badge.hb-nm:hover, .hero-badge.hb-hg:hover, .hero-badge.hb-st:hover,
+.hero-badge.hb-hm:hover, .hero-badge.hb-ik:hover, .hero-badge.hb-yd:hover { filter: brightness(1.25); }
+
+/* ── 最新のお知らせ・協力企業 ── */
+.news-section .info-card { max-width: none; }
+.partners-grid { grid-template-columns: 1.4fr 1fr; align-items: stretch; }
+.contact-cta {
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+  border-radius: var(--radius-lg); padding: 32px;
+  background: linear-gradient(135deg, #8EB4E3 0%, #6E95C8 100%);
+  color: #0E1420; box-shadow: var(--shadow-md);
+  transition: transform .25s, box-shadow .25s;
+}
+.contact-cta:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.5); }
+.contact-cta-label { font-size: 11px; font-weight: 800; letter-spacing: 3px; opacity: .7; }
+.contact-cta-title { font-size: 22px; font-weight: 900; }
+.contact-cta-text { font-size: 13px; line-height: 1.8; }
+.contact-cta-btn {
+  align-self: flex-start; margin-top: 8px; padding: 10px 22px; border-radius: 24px;
+  background: #0E1420; color: #fff; font-size: 13px; font-weight: 700;
+}
+@media (max-width: 768px) {
+  .partners-grid { grid-template-columns: 1fr; }
+  .contact-cta { padding: 26px 24px; }
+}
+
 /* ================================================================
    フッター
    ================================================================ */
@@ -565,12 +600,13 @@ a.logo-block { color: inherit; }
 </header>
 
 <nav class="mobile-nav" aria-label="モバイルナビゲーション">
-  <a href="#about">方針</a>
+  <a href="#about">コンセプト</a>
   <a href="#history">経緯</a>
   <a href="#structure">アライアンスの構造</a>
   <a href="#members">メンバ</a>
   <a href="#events">イベント</a>
   <a href="#info">お知らせ</a>
+  <a href="#partners">協力企業</a>
   <a href="/members.html">交流</a>
   <a href="/guide/">ちょっと実験室</a>
   <a href="/contact/" class="cta">お問い合わせ</a>
@@ -587,14 +623,17 @@ a.logo-block { color: inherit; }
         <em>知働化</em>アライアンス
       </h1>
       <p class="hero-lead">
-        事業体やコミュニティが独立性を保ちながら、共通の目的・課題・テーマに連携して取り組むための｢場｣を提供します。<br>
-        人働説から知働説へ。探究の途中経過を持ち寄り、対話を重ねていきましょう。
+        知働化アライアンスは、既存のコミュニティ活動の枠には収まらない交流の場を提供します。研究・事業・経営・組織課題などを扱うための情報交換・交流・啓蒙・メディアなどをAI時代に相応しい統合された知働的社会プラットフォームです。
       </p>
       <div class="hero-badges">
-        <a class="hero-badge" href="/ichi_s_otsuki/">Ot</a>
-        <a class="hero-badge" href="/carl/">Nr</a>
-        <a class="hero-badge" href="/Hg/">Hg</a>
-        <a class="hero-badge" href="/St/">St</a>
+        <a class="hero-badge hb-ot" href="/ichi_s_otsuki/">Ot</a>
+        <a class="hero-badge hb-nm" href="/carl/">Nm</a>
+        <a class="hero-badge hb-hg" href="/Hg/">Hg</a>
+        <a class="hero-badge hb-st" href="/St/">St</a>
+        <span class="hero-badge-sep" aria-hidden="true"></span>
+        <a class="hero-badge hb-hm" href="https://www.metaware-lab.org/" target="_blank" rel="noopener">Hm ↗</a>
+        <a class="hero-badge hb-ik" href="https://www.ns.kogakuin.ac.jp/relab/" target="_blank" rel="noopener">Ik ↗</a>
+        <a class="hero-badge hb-yd" href="https://www.metabolics.co.jp/" target="_blank" rel="noopener">Yd ↗</a>
       </div>
     </div>
     <!-- 知働化アライアンスのロゴ（人働説から知働説へ） -->
@@ -605,18 +644,58 @@ a.logo-block { color: inherit; }
 </section>
 
 <!-- ================================================================
-     方針
+     最新のお知らせ
+     ================================================================ -->
+<section id="info" class="info-section news-section">
+  <div class="section-head fade-in">
+    <span class="section-label">News</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">最新のお知らせ</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="fade-in">
+    <div class="info-card">
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年11月28日（土曜）14時〜</strong>　次回缶詰会（第224回目）は、Zoom会合で開催します。
+          <a href="https://us02web.zoom.us/j/89160079252?pwd=HfIu66PE953EVGRBZfTgD5d4LXUHbm.1" target="_blank" rel="noopener">Zoomに参加する ↗</a></span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年11月21日</strong>　知働化アライアンスのサイトとして、本ページを再構築しました。新しい知働化アライアンスのロゴもデザインしました。</span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年11月14日（土曜）</strong>　無事、Symposium2026を成功裡に開催しました。
+          <a href="/sympo26/">chidouka-lab.com/sympo26/</a></span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年11月1日</strong>　知働化に関する書籍シリーズを出版開始しました。『知働の技法』シリーズ（52冊）
+          <a href="https://www.amazon.co.jp/s?k=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95&amp;crid=3A0SZBVXF6DS4&amp;sprefix=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95%2Caps%2C402&amp;ref=nb_sb_ss_fb_1_5_ts-doa-p" target="_blank" rel="noopener">Amazonで見る ↗</a></span>
+      </div>
+      <div class="info-item">
+        <div class="info-dot"></div>
+        <span><strong>2026年5月5日</strong>　知働化に関する書籍を出版しています。『思考の技法2.0』
+          <a href="/ichi_s_otsuki/">chidouka-lab.com/ichi_s_otsuki/</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     コンセプト
      ================================================================ -->
 <section id="about" class="about-section">
   <div class="section-head fade-in">
-    <span class="section-label">Policy</span>
+    <span class="section-label">Concept</span>
     <div class="section-rule"></div>
-    <h2 class="section-title">方針</h2>
+    <h2 class="section-title">コンセプト</h2>
     <div class="section-rule"></div>
   </div>
   <div class="policy-grid">
     <div class="policy-card fade-in">
-      <p class="policy-key">知働化<span>ちどうか</span></p>
+      <p class="policy-key">知働化<span>Executable Knowledge</span></p>
       <p class="policy-text">
         「知働化」とは、事業経営や探究活動において、労務量（人月）でコストを測る<strong>「人働説」</strong>を脱し、
         社会的な相互作用や文脈・様相から生じる価値を対象とする<strong>「知働説」</strong>のパラダイムに
@@ -740,13 +819,13 @@ a.logo-block { color: inherit; }
         <div class="card-name">Ot</div>
         <div class="card-role">note：1_s_o ／ Kindle：一繁（ninomae shigeru）</div>
         <div class="card-tagline">
-          知働化の知恵を、思考の技法とともに広く伝えるために。
+          知働化の思考・理論・技法を探究していく
         </div>
       </div>
       <div class="card-body">
         <p class="card-desc">
-          note.comに145本の論考を発表。知働化・ソフトウェア工学・哲学・システム学・デザイン学を統合した独自の思想体系を持つ。
-          20の原則とAIへの問答で、知働化の本質を探求します。
+          note.comで論考を発表。知働化・ソフトウェア工学・哲学・システム学・デザイン学を統合した独自の思想体系を持つ。
+          原則とAIへの問答で、知働化の本質を探求します。
         </p>
         <div class="card-chips">
           <span class="card-chip">145本のnote記事</span>
@@ -760,19 +839,19 @@ a.logo-block { color: inherit; }
       </div>
     </a>
 
-    <!-- ② Nr -->
+    <!-- ② Nm -->
     <a href="/carl/" class="member-card card-carl fade-in">
       <div class="card-top">
         <p class="card-eyebrow">CORE MEMBER</p>
-        <div class="card-name">Nr</div>
+        <div class="card-name">Nm</div>
         <div class="card-role">note：10rapa_carl</div>
         <div class="card-tagline">
-          知働化の哲学とAI時代の人間論を、広く伝えるために。
+          知働化の哲学とAI時代の実践論を、調査・研究・啓蒙を行う
         </div>
       </div>
       <div class="card-body">
         <p class="card-desc">
-          note.comに17本の論考を発表。意識・クオリア・4E認知・エナクティヴィズム・AI哲学など、
+          note.comで論考を発表。意識・クオリア・4E認知・エナクティヴィズム・AI哲学など、
           哲学と認知科学とAIが交差する最前線の問いを探求します。
         </p>
         <div class="card-chips">
@@ -794,12 +873,12 @@ a.logo-block { color: inherit; }
         <div class="card-name">Hg</div>
         <div class="card-role">AI進化論・制約の哲学・理論と実務・システム思考</div>
         <div class="card-tagline">
-          知働化のアーキテクトの実践の勘所を、広く伝えるために。
+          知働化のアーキテクトの実践の勘所を、伝えていく
         </div>
       </div>
       <div class="card-body">
         <p class="card-desc">
-          知働化研究会（缶詰会）の議事録から抽出した20の格言・教え。
+          知働化研究会（缶詰会）の議事録から抽出した格言・教え。
           AIと人間の本質的な違い・制約と創造性・理論と実務の統合・システム全体設計の知恵をまとめます。
         </p>
         <div class="card-chips">
@@ -821,12 +900,12 @@ a.logo-block { color: inherit; }
         <div class="card-name">St</div>
         <div class="card-role">実践知・技術史・守破離・投資判断・知働化の道</div>
         <div class="card-tagline">
-          知働化の道（みち）の心構えを、広く伝えるために。
+          知働化の道（みち）をきわめていく心構えを示していく
         </div>
       </div>
       <div class="card-body">
         <p class="card-desc">
-          知働化研究会（缶詰会）の議事録から抽出した15の格言・教え。
+          知働化研究会（缶詰会）の議事録から抽出した格言・教え。
           情報の実用性・投資タイミング・技術史の視点・守破離の精神にわたる実践知をまとめます。
         </p>
         <div class="card-chips">
@@ -1002,44 +1081,17 @@ a.logo-block { color: inherit; }
 </section>
 
 <!-- ================================================================
-     お知らせ
+     協力企業・お問い合わせ
      ================================================================ -->
-<section id="info" class="info-section">
+<section id="partners" class="info-section">
   <div class="section-head fade-in">
-    <span class="section-label">Info</span>
+    <span class="section-label">Partners</span>
     <div class="section-rule"></div>
-    <h2 class="section-title">お知らせ</h2>
+    <h2 class="section-title">協力企業</h2>
     <div class="section-rule"></div>
   </div>
 
-  <div class="info-grid fade-in">
-    <div class="info-card">
-      <div class="info-card-title">最新のお知らせ</div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年11月28日（土曜）14時〜</strong>　次回缶詰会（第224回目）は、Zoom会合で開催します。
-          <a href="https://us02web.zoom.us/j/89160079252?pwd=HfIu66PE953EVGRBZfTgD5d4LXUHbm.1" target="_blank" rel="noopener">Zoomに参加する ↗</a></span>
-      </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年11月21日</strong>　知働化アライアンスのサイトとして、本ページを再構築しました。新しい知働化アライアンスのロゴもデザインしました。</span>
-      </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年11月14日（土曜）</strong>　無事、Symposium2026を成功裡に開催しました。
-          <a href="/sympo26/">chidouka-lab.com/sympo26/</a></span>
-      </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年11月1日</strong>　知働化に関する書籍シリーズを出版開始しました。『知働の技法』シリーズ（52冊）
-          <a href="https://www.amazon.co.jp/s?k=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95&amp;crid=3A0SZBVXF6DS4&amp;sprefix=%E7%9F%A5%E5%83%8D%E3%81%AE%E6%8A%80%E6%B3%95%2Caps%2C402&amp;ref=nb_sb_ss_fb_1_5_ts-doa-p" target="_blank" rel="noopener">Amazonで見る ↗</a></span>
-      </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><strong>2026年5月5日</strong>　知働化に関する書籍を出版しています。『思考の技法2.0』
-          <a href="/ichi_s_otsuki/">chidouka-lab.com/ichi_s_otsuki/</a></span>
-      </div>
-    </div>
+  <div class="info-grid partners-grid fade-in">
     <div class="info-card">
       <div class="info-card-title">知働化アライアンス協力企業</div>
       <div class="info-item">
@@ -1058,11 +1110,13 @@ a.logo-block { color: inherit; }
         <div class="info-dot"></div>
         <span><a href="https://www.kogakuin.ac.jp/faculty/lab/info_lab145.html" target="_blank" rel="noopener">工学院大学 位野木研究室 ↗</a></span>
       </div>
-      <div class="info-item">
-        <div class="info-dot"></div>
-        <span><a href="/contact/">お問い合わせフォーム →</a></span>
-      </div>
     </div>
+    <a class="contact-cta" href="/contact/">
+      <span class="contact-cta-label">CONTACT</span>
+      <span class="contact-cta-title">お問い合わせ</span>
+      <span class="contact-cta-text">知働化アライアンスへのご質問・ご依頼は、お問い合わせフォームからお寄せください。</span>
+      <span class="contact-cta-btn">お問い合わせフォームへ →</span>
+    </a>
   </div>
 </section>
 
@@ -1071,13 +1125,6 @@ a.logo-block { color: inherit; }
      ================================================================ -->
 <footer class="site-footer">
   <img class="footer-logo" src="assets/images/ChidoukaLogoLight.png" alt="知働化アライアンス">
-  <p style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">知働化アライアンス コアメンバ</p>
-  <p>
-    <a href="/ichi_s_otsuki/">Ot</a>　｜
-    <a href="/carl/">Nr</a>　｜
-    <a href="/Hg/">Hg</a>　｜
-    <a href="/St/">St</a>
-  </p>
   <p style="margin-top:12px;font-size:11px;opacity:.7;"><a href="/linkpage/">🗺 サイト リンク構成マップ</a></p>
   <p style="margin-top:10px;font-size:10px;opacity:.5;">© 知働化アライアンス</p>
 </footer>
