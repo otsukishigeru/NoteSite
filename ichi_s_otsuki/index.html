@@ -14,6 +14,124 @@
 .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
 .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+/* 知働の技法 Kindle バナー */
+.kindle-banner {
+  background: linear-gradient(120deg, #051331 0%, #0d2252 60%, #051331 100%);
+  padding: 2.5rem 1rem 2rem;
+}
+.kindle-banner-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+.kindle-badge {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+}
+.kindle-badge-new {
+  background: #F5CA3C;
+  color: #051331;
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  padding: .2rem .7rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.kindle-badge-icon {
+  font-size: 3rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(245,202,60,.4));
+}
+.kindle-badge-count {
+  color: #F5CA3C;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.kindle-body {
+  flex: 1;
+  min-width: 220px;
+}
+.kindle-eyebrow {
+  color: #F5CA3C;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin: 0 0 .4rem;
+}
+.kindle-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin: 0 0 .4rem;
+}
+.kindle-title em {
+  color: #F5CA3C;
+  font-style: normal;
+}
+.kindle-sub {
+  color: #a8c0e8;
+  font-size: .875rem;
+  margin: 0 0 .9rem;
+  line-height: 1.6;
+}
+.kindle-schedule {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(245,202,60,.12);
+  border: 1px solid rgba(245,202,60,.35);
+  color: #F5CA3C;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: .3rem .9rem;
+  border-radius: 20px;
+  margin-bottom: .9rem;
+}
+.kindle-cta-row {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn-kindle-amazon {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: #F5CA3C;
+  color: #051331;
+  font-size: .9rem;
+  font-weight: 800;
+  padding: .65rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  letter-spacing: .02em;
+  transition: background .2s, transform .15s;
+  box-shadow: 0 4px 16px rgba(245,202,60,.35);
+}
+.btn-kindle-amazon:hover {
+  background: #ffd84d;
+  transform: translateY(-2px);
+}
+.kindle-note {
+  color: #6b89b8;
+  font-size: .75rem;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .kindle-banner-inner { gap: 1.5rem; }
+  .kindle-title { font-size: 1.2rem; }
+}
+
 /* ⑤ AIチャット */
 .chat-section { max-width: 720px; margin: 0 auto; }
 .chat-intro { color: var(--text-mid); margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.7; }
@@ -120,6 +238,42 @@
         <a class="hero-sample-thumb" href="assets/pdfs/ArtOfThought2_Sample.pdf" target="_blank" rel="noopener">
           <img src="assets/images/Sample_p1_thumb.png" alt="思考の技法2.0 サンプル1ページ目">
         </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     知働の技法 Kindle バナー
+     ================================================================ -->
+<section class="kindle-banner" aria-label="知働の技法シリーズ">
+  <div class="kindle-banner-inner">
+    <div class="kindle-badge">
+      <span class="kindle-badge-new">New</span>
+      <span class="kindle-badge-icon">📚</span>
+      <span class="kindle-badge-count">全52冊</span>
+    </div>
+    <div class="kindle-body">
+      <p class="kindle-eyebrow">啓蒙シリーズ Kindle本 出版開始</p>
+      <h2 class="kindle-title">
+        思考の技法 2.0 の知恵を、<br>
+        <em>『知働の技法』</em>シリーズとして。
+      </h2>
+      <p class="kindle-sub">
+        十年来の研究成果を平易にまとめた全52冊。1冊1時間で読める分冊構成で、<br>
+        AI時代を生き抜く「知の地図」を段階的に獲得できます。
+      </p>
+      <div class="kindle-schedule">
+        📅 2026年11月〜2027年5月 　週2冊ペースで順次発刊
+      </div>
+      <div class="kindle-cta-row">
+        <a class="btn-kindle-amazon"
+           href="https://www.amazon.co.jp/stores/%E4%B8%80%E7%B9%81/author/B0HQK8FKBT/allbooks"
+           target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Amazon で見る ↗
+        </a>
+        <p class="kindle-note">ペンネーム：一繁（にのまえ しげる）名義で発刊</p>
       </div>
     </div>
   </div>
